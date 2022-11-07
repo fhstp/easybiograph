@@ -1,8 +1,13 @@
 {
   "name": "easybiograph",
-  "version": "0.0.0",
+  "version": "1.9.0",
+  "private": true,
+  "author": "Alexander Rind (https://github.com/alex-rind/)",
+  "repository": "https://github.com/fhstp/easybiograph/",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
+    "serve": "vite",
     "build": "run-p type-check build-only",
     "preview": "vite preview",
     "build-only": "vite build",
