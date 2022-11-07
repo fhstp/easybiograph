@@ -13,6 +13,10 @@ defineProps<{
       <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>.
       What's next?
     </h3>
+    <h3>
+      Here is a fontawesome icon:
+      <font-awesome-icon icon="pencil-alt" />
+    </h3>
   </div>
 </template>
 
