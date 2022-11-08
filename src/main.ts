@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
+import { store } from "./store";
 
 import "./assets/main.css"; // TODO: remove (part of vue hello world)
 import "@/assets/main.scss";
@@ -90,5 +91,7 @@ library.add(
 app.component("font-awesome-icon", FontAwesomeIcon);
 
 // END fontawesome
+
+app.use(store);
 
 app.mount("#app");

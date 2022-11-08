@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { ref } from "vue";
+import { useStore } from "vuex";
+
+const store = useStore();
+const increment = () => store.commit("increment");
+
+const localCount = ref(0);
+
 defineProps<{
   msg: string;
 }>();
@@ -18,14 +26,23 @@ defineProps<{
       <font-awesome-icon icon="pencil-alt" />
     </h3>
     <p class="buttons">
-      <button class="button is-primary">
+      <button class="button is-primary" @click="localCount++">
         <span class="icon">
           <font-awesome-icon icon="arrows-alt" />
         </span>
-        <span>Bulma Button</span>
-        <span></span>
+        <span>Bulma Button: Increment Component Value</span>
       </button>
     </p>
+    <p>Value from component state: {{ localCount }}</p>
+    <p class="buttons">
+      <button class="button is-primary" @click="increment">
+        <span class="icon">
+          <font-awesome-icon icon="arrows-alt" />
+        </span>
+        <span>Bulma Button: Increment Stored Value</span>
+      </button>
+    </p>
+    <p>Value from vuex store: {{ store.state.count }}</p>
   </div>
 </template>
 
