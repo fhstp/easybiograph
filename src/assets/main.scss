@@ -1,0 +1,50 @@
+// style and bulma customizations here (optional)
+
+// Set your brand colors
+// @import "@/assets/variables.scss"; // via vite.config.js
+
+// Update some of Bulma's component variables
+// $body-background-color: aliceblue;
+$primary: $nwkhorizon;
+$info: $fhstpblue;
+$link: $fhstpblue;
+
+
+// box and panel should have no shadow
+$box-shadow: none;
+$panel-shadow: none;
+
+// Bulma Import
+// @import '~bulma';
+
+// Import only what you need from Bulma
+@import "bulma/sass/utilities/_all.sass";
+@import "bulma/sass/base/_all.sass";
+@import "bulma/sass/components/modal.sass";
+@import "bulma/sass/components/panel.sass";
+@import "bulma/sass/elements/box.sass";
+@import "bulma/sass/elements/button.sass";
+@import "bulma/sass/elements/container.sass";
+@import "bulma/sass/elements/icon.sass";
+@import "bulma/sass/elements/notification.sass";
+@import "bulma/sass/elements/other.sass";
+@import "bulma/sass/elements/table.sass";
+@import "bulma/sass/elements/title.sass";
+@import "bulma/sass/form/_all.sass";
+@import "bulma/sass/grid/columns.sass";
+// @import "../node_modules/bulma/sass/components/navbar.sass";
+// @import "../node_modules/bulma/sass/layout/hero.sass";
+// @import "../node_modules/bulma/sass/layout/section.sass";
+
+// override bulma's panel globally to add a simple border (instead of shadow)
+.panel-block,
+.panel-heading,
+.panel-tabs {
+  border-bottom: 1px solid #dbdbdb;
+  border-left: 1px solid #dbdbdb;
+  border-right: 1px solid #dbdbdb;
+}
+
+.clickAble {
+  cursor: pointer;
+}

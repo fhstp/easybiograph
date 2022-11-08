@@ -17,14 +17,24 @@ defineProps<{
       Here is a fontawesome icon:
       <font-awesome-icon icon="pencil-alt" />
     </h3>
+    <p class="buttons">
+      <button class="button is-primary">
+        <span class="icon">
+          <font-awesome-icon icon="arrows-alt" />
+        </span>
+        <span>Bulma Button</span>
+        <span></span>
+      </button>
+    </p>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 h1 {
   font-weight: 500;
   font-size: 2.6rem;
   top: -10px;
+  background: $nwkorange;
 }
 
 h3 {
