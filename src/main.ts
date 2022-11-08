@@ -1,11 +1,97 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import App from './App.vue'
+import { createApp } from "vue";
+import App from "./App.vue";
+import router from "./router";
+import { store } from "./store";
 
-import './assets/main.css'
+import "./assets/main.css"; // TODO: remove (part of vue hello world)
+import "@/assets/main.scss";
 
-const app = createApp(App)
+const app = createApp(App);
 
-app.use(createPinia())
+app.use(router);
 
-app.mount('#app')
+// BEGIN fontawesome
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
+// NB: import & add each used icon here
+import {
+  faBars,
+  faPencilAlt,
+  // faUserPlus,
+  // faMapPin,
+  // faUserMinus,
+  // faExchangeAlt,
+  // faProjectDiagram,
+  // faPeopleArrows,
+  // faExclamationTriangle,
+  // faTimes,
+  // faFolderOpen,
+  // faFile,
+  // faSave,
+  // faFileImage,
+  // faFileCsv,
+  // faChevronDown,
+  // faChevronUp,
+  // // faUndoAlt,
+  // // faRedoAlt,
+  // faUndo,
+  // faRedo,
+  // faChartBar,
+  // faUserSecret,
+  // faRss,
+  // faFont,
+  // faTrashAlt,
+  // faInfoCircle,
+  // faCheck,
+  // faFilePdf,
+  // faArrowLeft,
+  // faInfo,
+  // faLink,
+  // faUnlink,
+  faArrowsAlt,
+} from "@fortawesome/free-solid-svg-icons";
+library.add(
+  faBars,
+  faPencilAlt,
+  // faUserPlus,
+  // faMapPin,
+  // faUserMinus,
+  // faExchangeAlt,
+  // faProjectDiagram,
+  // faPeopleArrows,
+  // faExclamationTriangle,
+  // faTimes,
+  // faFolderOpen,
+  // faFile,
+  // faSave,
+  // faFileImage,
+  // faFileCsv,
+  // faChevronDown,
+  // faChevronUp,
+  // // faUndoAlt,
+  // // faRedoAlt,
+  // faUndo,
+  // faRedo,
+  // faChartBar,
+  // faUserSecret,
+  // faRss,
+  // faFont,
+  // faTrashAlt,
+  // faInfoCircle,
+  // faCheck,
+  // faFilePdf,
+  // faArrowLeft,
+  // faInfo,
+  // faLink,
+  // faUnlink,
+  faArrowsAlt
+);
+
+app.component("font-awesome-icon", FontAwesomeIcon);
+
+// END fontawesome
+
+app.use(store);
+
+app.mount("#app");
