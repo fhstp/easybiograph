@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
 import HelloWorld from "./components/HelloWorld.vue";
+import TimeGraph from "@/components/TimeGraph.vue";
 </script>
 
 <template>
+  <!--
   <header>
     <img
       alt="Vue logo"
@@ -22,11 +24,22 @@ import HelloWorld from "./components/HelloWorld.vue";
       </nav>
     </div>
   </header>
+  -->
 
-  <RouterView />
+  <TimeGraph />
+  <!--<RouterView /> -->
 </template>
 
 <style scoped>
+* {
+  margin: 0;
+  padding: 0;
+
+}
+html, body{
+  height: 100vh;
+  width: 100vw;
+}
 header {
   line-height: 1.5;
   max-height: 100vh;
