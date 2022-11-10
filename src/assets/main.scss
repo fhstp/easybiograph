@@ -11,8 +11,8 @@ $link: $fhstpblue;
 
 
 // box and panel should have no shadow
-$box-shadow: none;
-$panel-shadow: none;
+//$box-shadow: none;
+//$panel-shadow: none;
 
 // Bulma Import
 // @import '~bulma';
@@ -37,13 +37,13 @@ $panel-shadow: none;
 // @import "../node_modules/bulma/sass/layout/section.sass";
 
 // override bulma's panel globally to add a simple border (instead of shadow)
-.panel-block,
+/*.panel-block,
 .panel-heading,
 .panel-tabs {
   border-bottom: 1px solid #dbdbdb;
   border-left: 1px solid #dbdbdb;
   border-right: 1px solid #dbdbdb;
-}
+}*/
 
 .clickAble {
   cursor: pointer;

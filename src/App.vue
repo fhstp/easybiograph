@@ -2,6 +2,7 @@
 import { RouterLink, RouterView } from "vue-router";
 import HelloWorld from "./components/HelloWorld.vue";
 import TimeGraph from "@/components/TimeGraph.vue";
+import EventDialogue from "@/components/EventDialogue.vue";
 </script>
 
 <template>
@@ -27,6 +28,7 @@ import TimeGraph from "@/components/TimeGraph.vue";
   -->
 
   <TimeGraph />
+  <!-- <EventDialogue /> -->
   <!--<RouterView /> -->
 </template>
 
@@ -36,10 +38,13 @@ import TimeGraph from "@/components/TimeGraph.vue";
   padding: 0;
 
 }
+
 html, body{
   height: 100vh;
   width: 100vw;
+  overflow: hidden;
 }
+
 header {
   line-height: 1.5;
   max-height: 100vh;
