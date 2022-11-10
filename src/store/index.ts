@@ -1,4 +1,5 @@
 // import type { ZBSettings } from "@/data/ZBSettings";
+import type { ZBSettings } from "@/data/ZBSettings";
 import type { Zeitbalken } from "@/data/Zeitbalken";
 import type { InjectionKey } from "vue";
 import {
@@ -8,15 +9,18 @@ import {
   createLogger,
 } from "vuex";
 import { localStoragePlugin, type IUnReDoState } from "./localStoragePlugin";
+import { sessionModule, type SessionState } from "./sessionModule";
+import { settingsModule } from "./settingsModule";
 import { zeitbalkenModule } from "./zeitbalkenModule";
 
 export interface IStoreState {
   data: Zeitbalken;
-  // settings: ZBSettings;
+  settings: ZBSettings;
+  session: SessionState;
   unredo: IUnReDoState;
 }
 
-const plugins = import.meta.env.PROD
+const plugins = import.meta.env.DEV
   ? [createLogger(), localStoragePlugin]
   : [localStoragePlugin];
 
@@ -24,7 +28,8 @@ export const store = createStore<IStoreState>({
   strict: import.meta.env.DEV,
   modules: {
     data: zeitbalkenModule,
-    // view: viewOptionsModule,
+    settings: settingsModule,
+    session: sessionModule,
   },
   // getters,
   // mutations,

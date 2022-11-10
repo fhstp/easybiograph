@@ -4,12 +4,15 @@ adapted from <https://github.com/fhstp/easynwk-web/blob/56a7d996527cbe71cf333893
 undo/redo inspired by <https://github.com/factorial-io/undo-redo-vuex>
 and <https://github.com/anthonygore/vuex-undo-redo> */
 
+import { initSettingsAsJSON, loadSettings } from "@/data/ZBSettings";
 import { initZeitbalkenAsJSON } from "@/data/Zeitbalken";
 import type { MutationPayload, Store } from "vuex";
 import type { IStoreState } from ".";
+import { initSessionState } from "./sessionModule";
 // import { initViewOptionsState } from "./viewOptionsModule";
 
-const STORAGE_KEY = "eb_zeitbalken";
+const STORAGE_DATA = "eb_zeitbalken";
+const STORAGE_STNG = "eb_settings";
 const UNREDO_MODULE = "unredo";
 
 export interface IUnReDoState {
@@ -17,8 +20,8 @@ export interface IUnReDoState {
   redoCount: number;
 }
 
-export function loadStateFromStore(): string {
-  const storedZeitbalken = localStorage.getItem(STORAGE_KEY);
+export function loadZeitbalkenFromStore(): string {
+  const storedZeitbalken = localStorage.getItem(STORAGE_DATA);
   if (storedZeitbalken != null && storedZeitbalken != "undefined") {
     return storedZeitbalken;
   } else {
@@ -26,12 +29,20 @@ export function loadStateFromStore(): string {
   }
 }
 
+export function loadSettingsFromStore(): string {
+  const storedSettings = localStorage.getItem(STORAGE_STNG);
+  if (storedSettings != null && storedSettings != "undefined") {
+    return storedSettings;
+  } else {
+    return initSettingsAsJSON();
+  }
+}
+
 export const localStoragePlugin = (store: Store<IStoreState>): void => {
   // keep track of undo history as local (non-reactive) vars
   const history = {
-    // TODO: rename state to zeitbalken to distinguish from settings
-    initialState: loadStateFromStore(),
-    // TODO: save initial state of settings
+    initialData: loadZeitbalkenFromStore(),
+    initialSettings: loadSettingsFromStore(),
     done: [] as Array<MutationPayload>,
     undone: [] as Array<MutationPayload>,
     replaying: false,
@@ -57,13 +68,18 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
 
         // make subscribers aware that we are replaying
         history.replaying = true;
+
         // reset to initial state
-        store.commit("data/loadZeitbalken", history.initialState);
-        // store.state.view = initViewOptionsState();
+        store.commit("data/loadZeitbalken", history.initialData);
+        loadSettings(store.state.settings, history.initialSettings);
+        store.state.session = initSessionState();
+
         // replay all mutations (but last)
         for (const c of history.done) {
           store.commit(c.type, c.payload);
         }
+
+        // replaying finished (now the undo is a normal mutation)
         history.replaying = false;
 
         // console.log("ok,   done length is " + history.done.length);
@@ -112,10 +128,11 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
       !(
         history.replaying ||
         mutation.type === UNREDO_MODULE + "/usermutation" ||
-        mutation.type.startsWith("view/")
+        mutation.type.startsWith("session/")
       )
     ) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(stateAfter.data));
+      localStorage.setItem(STORAGE_DATA, JSON.stringify(stateAfter.data));
+      localStorage.setItem(STORAGE_STNG, JSON.stringify(stateAfter.settings));
     }
   });
 };
