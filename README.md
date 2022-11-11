@@ -1,6 +1,16 @@
-# easybiograph
+# easyBiograph
 
-This template should help get you started developing with Vue 3 in Vite.
+This project aims to provide a modern web-based version of the easyBiograph.
+The easyBiograph is a diagnostical visualization tool for social workers and
+healthcare professionals based on the book
+[Soziale Diagnostik](https://www.vandenhoeck-ruprecht-verlage.com/themen-entdecken/paedagogik-soziale-arbeit/soziale-arbeit/26908/soziale-diagnostik)
+by Peter Pantuček-Eisenbacher.
+This tool supports the collection, reflection, and analysis of biographical events
+for social support.
+
+This projects is a follow-up to:
+* [easyBiograph 1.0](http://www.easybiograph.com/) developed in Java 6 by Nikolaus Kelis
+* [master thesis](https://www.linkedin.com/in/michaela-buschberger-158477183/) by Michaela Buschberger
 
 ## Recommended IDE Setup
 
@@ -44,3 +54,9 @@ npm run build
 ```sh
 npm run lint
 ```
+
+## Acknowledgments
+
+<img align="right" src="https://ec.europa.eu/info/sites/default/files/ec-logo-horiz-web_en.jpg" alt="logo of the European Commission">
+
+This work was partly funded by the Erasmus+ project [TransSoDia](https://research.fhstp.ac.at/en/projects/transsodia-transnational-and-digital-learning-and-teaching-in-cooperative-social-diagnostics) cofunded by the European Union.
