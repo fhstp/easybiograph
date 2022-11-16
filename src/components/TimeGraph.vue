@@ -13,7 +13,7 @@
     </div>
   </nav>
   <br>
-  <div class="box position" style="height: 93vh; width: 40vw; z-index: 2" v-show="showDialogue">
+  <div class="box position" style="height: 93vh; width: 40vw; right: -53vw; z-index: 2" v-show="showDialogue">
     <button class="button is-light is-small" style="right: -33vw" v-on:click="showDialogue = false">X</button>
 
     <h1 class="title block">Eintrag erstellen</h1>
@@ -26,11 +26,11 @@
         <div class="field is-narrow">
           <div class="control">
             <label class="radio">
-              <input type="radio" name="member" checked>
+              <input type="radio" name="member" v-model="newEventIsPeriod" value="period" checked>
               Zeitraum
             </label>
             <label class="radio">
-              <input type="radio" name="member">
+              <input type="radio" name="member" v-model="newEventIsPeriod" value="point">
               Zeitpunkt
             </label>
           </div>
@@ -43,6 +43,7 @@
       </div>
       <div class="field-body">
         <input type="month">
+        <input type="month" v-show="newEventIsPeriod == 'period'">
       </div>
     </div>
     <div class="field is-horizontal">
@@ -96,7 +97,7 @@
     </div>
     <br>
     <button class="button is-white" style="margin-right: 1vw; right: -20vw" v-on:click="showDialogue = false">Abbrechen</button>
-    <button class="button is-link is-light" style="right: -20vw">Fertig</button>
+    <button class="button is-link is-light" style="right: -20vw" v-on:click="addEvent">Fertig</button>
   </div>
 <table>
   <thead>
@@ -199,6 +200,7 @@
 import { ref } from "vue";
 import { useStore } from "vuex";
 import EventDialogue from "@/components/EventDialogue.vue";
+import { ZBEvent, initEvent } from "@/data/ZBEvent.ts";
 
 const store = useStore();
 
@@ -208,14 +210,21 @@ export default {
   data(){
     return {
       years: [2000, 2001, 2002, 2003, 2004, 2005],
-      showDialogue: false
+      showDialogue: false,
+      newEventIsPeriod: 'period',
     }
   },
   methods: {
     showDiv() {
-      //document.getElementById('dialogue').style.display = "block";
       this.showDialogue = true;
-      console.log("Bin da");
+    },
+    addEvent(){
+      let newEvent = initEvent();
+      newEvent.dimensionId = 0;
+      newEvent.description = '';
+      newEvent.notes = '';
+      newEvent.isInterval = this.newEventIsPeriod == 'period' ? true : false;
+      store.commit("data/addEvent", newEvent)
     }
   }
 }
