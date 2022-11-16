@@ -93,6 +93,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+*{
+  overflow-x: auto;
+  display: flex;
+}
 .position{
   right: -47vw;
 }

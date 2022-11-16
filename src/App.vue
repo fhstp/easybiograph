@@ -28,7 +28,7 @@ import EventDialogue from "@/components/EventDialogue.vue";
   -->
 
   <TimeGraph />
-  <!-- <EventDialogue /> -->
+   <!-- <EventDialogue /> style="z-index: 5; position: fixed; top: 0; left: 0" -->
   <!--<RouterView /> -->
 </template>
 

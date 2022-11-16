@@ -13,8 +13,90 @@
     </div>
   </nav>
   <br>
-  <div id="dialogue" style="display:none" class="event_dialogue"> <!--  -->
-    Hier
+  <div class="box position" style="height: 93vh; width: 40vw; z-index: 2" v-show="showDialogue">
+    <button class="button is-light is-small" style="right: -33vw" v-on:click="showDialogue = false">X</button>
+
+    <h1 class="title block">Eintrag erstellen</h1>
+    <br>
+    <div class="field is-horizontal">
+      <div class="field-label">
+        <label class="label" style="text-align: left">Typ</label>
+      </div>
+      <div class="field-body">
+        <div class="field is-narrow">
+          <div class="control">
+            <label class="radio">
+              <input type="radio" name="member" checked>
+              Zeitraum
+            </label>
+            <label class="radio">
+              <input type="radio" name="member">
+              Zeitpunkt
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label" style="text-align: left">Datum</label>
+      </div>
+      <div class="field-body">
+        <input type="month">
+      </div>
+    </div>
+    <div class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label" style="text-align: left">Dimension</label>
+      </div>
+      <div class="field-body">
+        <div class="field is-narrow">
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select>
+                <option>Familie</option>
+                <option>Wohnen</option>
+                <option>Bildung</option>
+                <option>Arbeit</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label" style="text-align: left">Titel</label>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <div class="control">
+            <input class="input" type="text" placeholder="Anzeigename des Events"> <!-- class: is danger -->
+          </div>
+          <!--
+          <p class="help is-danger">
+            Bitte beschreibe das Event
+          </p>
+          -->
+        </div>
+      </div>
+    </div>
+
+    <div class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label" style="text-align: left">Notizen</label>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <div class="control">
+            <textarea class="textarea" placeholder="Notizen zum Event"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <button class="button is-white" style="margin-right: 1vw; right: -20vw" v-on:click="showDialogue = false">Abbrechen</button>
+    <button class="button is-link is-light" style="right: -20vw">Fertig</button>
   </div>
 <table>
   <thead>
@@ -125,16 +207,15 @@ export default {
   name: "TimeGraph",
   data(){
     return {
-      years: [2000, 2001, 2002, 2003, 2004, 2005]
+      years: [2000, 2001, 2002, 2003, 2004, 2005],
+      showDialogue: false
     }
   },
-  setup(){
-    function showDiv() {
-      document.getElementById('dialogue').style.display = "block";
+  methods: {
+    showDiv() {
+      //document.getElementById('dialogue').style.display = "block";
+      this.showDialogue = true;
       console.log("Bin da");
-    }
-    return{
-      showDiv
     }
   }
 }
@@ -148,7 +229,7 @@ table {
   height: 93vh;
   display: table;
   margin-top: 1vh;
-  margin-left: -10vh;
+  margin-left: -8vh;
 }
 
 td {
@@ -199,12 +280,22 @@ thead > tr{background-color: white !important;}
   color: darkgrey;
 }
 .event_dialogue{
+  background-color: white;
   z-index: 2;
+  width: 500px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .bar{
   background-color: #181818;
   width: 100vw;
   height: 5.25vh;
   left: -3vw;
+  top: -0.5vh;
 }
 </style>
