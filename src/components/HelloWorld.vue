@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useStore } from "vuex";
 
 const store = useStore();
-const increment = () => store.commit("increment");
+const addEvent = () => store.commit("data/addEvent");
+const eventsCount = computed(() => store.state.data.events.length);
 
 const localCount = ref(0);
 
@@ -35,14 +36,14 @@ defineProps<{
     </p>
     <p>Value from component state: {{ localCount }}</p>
     <p class="buttons">
-      <button class="button is-primary" @click="increment">
+      <button class="button is-primary" @click="addEvent">
         <span class="icon">
           <font-awesome-icon icon="arrows-alt" />
         </span>
-        <span>Bulma Button: Increment Stored Value</span>
+        <span>Bulma Button: Add event to Zeitbalken</span>
       </button>
     </p>
-    <p>Value from vuex store: {{ store.state.count }}</p>
+    <p>Value from vuex store: {{ eventsCount }}</p>
   </div>
 </template>
 
