@@ -6,7 +6,7 @@ import EventDialogue from "@/components/EventDialogue.vue";
 </script>
 
 <template>
-  <!--
+<!--
   <header>
     <img
       alt="Vue logo"

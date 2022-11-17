@@ -13,7 +13,7 @@
     </div>
   </nav>
   <br>
-  <div class="box position" style="height: 93vh; width: 40vw; right: -53vw; z-index: 2" v-show="showDialogue">
+  <div class="box position" style="height: 93vh; width: 40vw; right: -38vw; z-index: 2" v-show="showDialogue">
     <button class="button is-light is-small" style="right: -33vw" v-on:click="showDialogue = false">X</button>
 
     <h1 class="title block">Eintrag erstellen</h1>
@@ -54,11 +54,10 @@
         <div class="field is-narrow">
           <div class="control">
             <div class="select is-fullwidth">
-              <select>
-                <option>Familie</option>
-                <option>Wohnen</option>
-                <option>Bildung</option>
-                <option>Arbeit</option>
+              <select >
+                <option v-for="value in dimensionOptions" :key="value">
+                  {{ value }}
+                </option>
               </select>
             </div>
           </div>
@@ -72,7 +71,12 @@
       <div class="field-body">
         <div class="field">
           <div class="control">
-            <input class="input" type="text" placeholder="Anzeigename des Events"> <!-- class: is danger -->
+            <input
+                class="input"
+                type="text"
+                placeholder="Anzeigename des Events"
+                id="eventNameId">
+                <!-- v-model="eventTitle">class: is danger -->
           </div>
           <!--
           <p class="help is-danger">
@@ -90,13 +94,13 @@
       <div class="field-body">
         <div class="field">
           <div class="control">
-            <textarea class="textarea" placeholder="Notizen zum Event"></textarea>
+            <textarea class="textarea" placeholder="Notizen zum Event" id="noteId"></textarea>
           </div>
         </div>
       </div>
     </div>
     <br>
-    <button class="button is-white" style="margin-right: 1vw; right: -20vw" v-on:click="showDialogue = false">Abbrechen</button>
+    <button class="button is-white" style="margin-right: 1vw; right: -20vw" v-on:click="showDialogue = false; test">Abbrechen</button>
     <button class="button is-link is-light" style="right: -20vw" v-on:click="addEvent">Fertig</button>
   </div>
 <table>
@@ -122,8 +126,37 @@
     </td>
   </tr>
   </thead>
-  <tbody>
-    <tr>
+  <tbody >
+  <tr v-for="value in dimensionOptions" :key="value">
+    <td class="content">
+      <div>
+        <font-awesome-icon icon="family" />
+        {{ value }}
+      </div>
+    </td>
+    <td>
+      <div>
+        <div v-if="value == 'Familie'" class="period" style="margin-left: 135px">
+          <p>
+            Scheidung der Eltern
+          </p>
+          <p class="subcontent">
+            Mutter hat Sorgerecht
+          </p>
+        </div>
+        <div v-if="value == 'Gesundheit'" class="event" style="margin-left: 335px">
+          <p>
+            Mandel-OP
+          </p>
+          <p class="subcontent">
+            Dez 2001
+          </p>
+        </div>
+      </div>
+    </td>
+  </tr>
+  <!--
+  <tr>
       <td class="content">
         <div>
           <font-awesome-icon icon="family" />
@@ -192,21 +225,36 @@
         </div>
       </td>
     </tr>
+    -->
   </tbody>
 </table>
 </template>
 
-<script>
-import { ref } from "vue";
+<script lang="ts">
+import {computed, ref} from "vue";
 import { useStore } from "vuex";
-import EventDialogue from "@/components/EventDialogue.vue";
-import { ZBEvent, initEvent } from "@/data/ZBEvent.ts";
+import { initEvent } from "@/data/ZBEvent";
+import { Dimension } from "@/data/Dimension";
 
 const store = useStore();
 
-
 export default {
   name: "TimeGraph",
+  props: {
+    event: {
+      type: Object,
+      required: true,
+    }
+  },
+  setup() {
+    const dimensionOptions = ref(Dimension);
+    //const eventTitle = ref(store.state.data.events.description);
+
+    return {
+      dimensionOptions,
+      //eventTitle,
+    }
+  },
   data(){
     return {
       years: [2000, 2001, 2002, 2003, 2004, 2005],
@@ -216,15 +264,16 @@ export default {
   },
   methods: {
     showDiv() {
-      this.showDialogue = true;
+      this.showDialogue = true; //Code works - how to fix error?
     },
     addEvent(){
       let newEvent = initEvent();
       newEvent.dimensionId = 0;
       newEvent.description = '';
       newEvent.notes = '';
-      newEvent.isInterval = this.newEventIsPeriod == 'period' ? true : false;
+      newEvent.isInterval = true; //this.newEventIsPeriod == 'period' ? true : false;
       store.commit("data/addEvent", newEvent)
+      console.log(newEvent.dimensionId, newEvent.description, newEvent.notes, newEvent.isInterval)
     }
   }
 }
@@ -238,7 +287,7 @@ table {
   height: 93vh;
   display: table;
   margin-top: 1vh;
-  margin-left: -8vh;
+  margin-left: -6vh;
 }
 
 td {
@@ -272,7 +321,7 @@ thead > tr{background-color: white !important;}
   display: block;
   background-color: $eventgrey;
   border-left: 3px solid $eventgreen;
-  width: 15%;
+  width: 10%;
   margin: 5px 0;
   border-radius: 3px;
 }
