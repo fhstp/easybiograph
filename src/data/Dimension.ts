@@ -8,4 +8,4 @@ export const Dimension = [
     "Sonstiges", //6
 ];
 
-export const defaultDimesion = Dimension[4];
+export const defaultDimesion = Dimension[6];

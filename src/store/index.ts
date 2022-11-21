@@ -20,6 +20,12 @@ export interface IStoreState {
   unredo: IUnReDoState;
 }
 
+const getters = {
+  getEvents(state: IStoreState): any {
+    return state.data.events
+  }
+}
+
 const plugins = import.meta.env.DEV
   ? [createLogger(), localStoragePlugin]
   : [localStoragePlugin];
@@ -31,7 +37,7 @@ export const store = createStore<IStoreState>({
     settings: settingsModule,
     session: sessionModule,
   },
-  // getters,
+  getters,
   // mutations,
   plugins,
 });

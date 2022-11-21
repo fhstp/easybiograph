@@ -5,6 +5,7 @@ import type { Zeitbalken } from "@/data/Zeitbalken";
 import { initZeitbalkenAsJSON, loadZeitbalken } from "@/data/Zeitbalken";
 
 import { loadZeitbalkenFromStore } from "./localStoragePlugin";
+import type {IStoreState} from "@/store/index";
 
 // module state object.
 // each Vuex instance is just a single state tree.
@@ -95,10 +96,19 @@ const mutations = {
     // based on vuex\examples\composition\todomvc\store\mutations.js
     state.events.splice(eventIndex, 1);
   },
-};
+}
+    /*
+    getters: {
+      // @ts-ignore
+      getEvents(state, getters) {
+        //@ts-ignore
+        return state.events
+      },
+    }; */
 
 export const zeitbalkenModule = {
   namespaced: true,
   state,
   mutations,
+  //getters,
 };

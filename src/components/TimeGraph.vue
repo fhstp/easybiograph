@@ -54,7 +54,7 @@
         <div class="field is-narrow">
           <div class="control">
             <div class="select is-fullwidth">
-              <select >
+              <select v-model="eventDimension">
                 <option v-for="value in dimensionOptions" :key="value">
                   {{ value }}
                 </option>
@@ -73,6 +73,7 @@
           <div class="control">
             <input
                 class="input"
+                :value="$store.state.data.events.description"
                 type="text"
                 placeholder="Anzeigename des Events"
                 id="eventNameId">
@@ -94,7 +95,11 @@
       <div class="field-body">
         <div class="field">
           <div class="control">
-            <textarea class="textarea" placeholder="Notizen zum Event" id="noteId"></textarea>
+            <textarea
+                class="textarea"
+                :value="$store.state.data.events.notes"
+                placeholder="Notizen zum Event"
+                id="noteId"></textarea>
           </div>
         </div>
       </div>
@@ -130,13 +135,12 @@
   <tr v-for="value in dimensionOptions" :key="value">
     <td class="content">
       <div>
-        <font-awesome-icon icon="family" />
         {{ value }}
       </div>
     </td>
     <td>
       <div>
-        <div v-if="value == 'Familie'" class="period" style="margin-left: 135px">
+        <div v-if="value == 'Familie'" :class="[true ? 'period' : 'event']" style="margin-left: 135px">
           <p>
             Scheidung der Eltern
           </p>
@@ -248,11 +252,9 @@ export default {
   },
   setup() {
     const dimensionOptions = ref(Dimension);
-    //const eventTitle = ref(store.state.data.events.description);
 
     return {
       dimensionOptions,
-      //eventTitle,
     }
   },
   data(){
@@ -264,6 +266,7 @@ export default {
   },
   methods: {
     showDiv() {
+      //@ts-ignore
       this.showDialogue = true; //Code works - how to fix error?
     },
     addEvent(){
@@ -273,7 +276,11 @@ export default {
       newEvent.notes = '';
       newEvent.isInterval = true; //this.newEventIsPeriod == 'period' ? true : false;
       store.commit("data/addEvent", newEvent)
-      console.log(newEvent.dimensionId, newEvent.description, newEvent.notes, newEvent.isInterval)
+      /*store.commit({
+        type: "data/addEvent",
+        initialValues: newEvent
+      })*/
+      console.log(store.getters.getEvents)
     }
   }
 }
