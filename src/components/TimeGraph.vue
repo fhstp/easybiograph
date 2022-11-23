@@ -275,12 +275,14 @@ export default {
       newEvent.description = '';
       newEvent.notes = '';
       newEvent.isInterval = true; //this.newEventIsPeriod == 'period' ? true : false;
+      console.log(newEvent)
       store.commit("data/addEvent", newEvent)
       /*store.commit({
         type: "data/addEvent",
         initialValues: newEvent
       })*/
-      console.log(store.getters.getEvents)
+
+      //console.log(store.getters.getEvents)
     }
   }
 }
