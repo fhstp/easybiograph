@@ -1,4 +1,4 @@
-export const Dimension = [
+/*export const Dimension = [
     "Familie", // 0
     "Wohnen", // 1
     "Bildung", // 2
@@ -6,6 +6,14 @@ export const Dimension = [
     "Gesundheit", //4
     "Behandlung/Hilfe", //5
     "Sonstiges", //6
-];
+];*/
 
-export const defaultDimesion = Dimension[6];
+export enum Dimension{
+    Familie,
+    Wohnen,
+    Bildung,
+    Arbeit,
+    Gesundheit,
+    "Behandlung/Hilfe",
+    Sonstiges
+}

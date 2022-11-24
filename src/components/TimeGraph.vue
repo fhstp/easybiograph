@@ -26,11 +26,11 @@
         <div class="field is-narrow">
           <div class="control">
             <label class="radio">
-              <input type="radio" name="member" v-model="newEventIsPeriod" value="period" checked>
+              <input type="radio" name="member" v-model="newEventDetails.newEventIsPeriod" value="period" checked>
               Zeitraum
             </label>
             <label class="radio">
-              <input type="radio" name="member" v-model="newEventIsPeriod" value="point">
+              <input type="radio" name="member" v-model="newEventDetails.newEventIsPeriod" value="point">
               Zeitpunkt
             </label>
           </div>
@@ -43,7 +43,7 @@
       </div>
       <div class="field-body">
         <input type="month">
-        <input type="month" v-show="newEventIsPeriod == 'period'">
+        <input type="month" v-show="newEventDetails.newEventIsPeriod == 'period'">
       </div>
     </div>
     <div class="field is-horizontal">
@@ -54,7 +54,7 @@
         <div class="field is-narrow">
           <div class="control">
             <div class="select is-fullwidth">
-              <select v-model="eventDimension">
+              <select v-model="newEventDetails.dimension">
                 <option v-for="value in dimensionOptions" :key="value">
                   {{ value }}
                 </option>
@@ -73,7 +73,7 @@
           <div class="control">
             <input
                 class="input"
-                :value="$store.state.data.events.description"
+                v-model="newEventDetails.description"
                 type="text"
                 placeholder="Anzeigename des Events"
                 id="eventNameId">
@@ -97,7 +97,7 @@
           <div class="control">
             <textarea
                 class="textarea"
-                :value="$store.state.data.events.notes"
+                v-model="newEventDetails.note"
                 placeholder="Notizen zum Event"
                 id="noteId"></textarea>
           </div>
@@ -105,8 +105,8 @@
       </div>
     </div>
     <br>
-    <button class="button is-white" style="margin-right: 1vw; right: -20vw" v-on:click="showDialogue = false; test">Abbrechen</button>
-    <button class="button is-link is-light" style="right: -20vw" v-on:click="addEvent">Fertig</button>
+    <button class="button is-white" style="margin-right: 1vw; right: -20vw" v-on:click="showDialogue = false;">Abbrechen</button>
+    <button class="button is-link is-light" style="right: -20vw" v-on:click="addEvent" v-on:mouseup="showDialogue = false">Fertig</button>
   </div>
 <table>
   <thead>
@@ -235,12 +235,11 @@
 </template>
 
 <script lang="ts">
-import {computed, ref} from "vue";
-import { useStore } from "vuex";
-import { initEvent } from "@/data/ZBEvent";
-import { Dimension } from "@/data/Dimension";
+import {useStore} from "vuex";
+import {initEvent} from "@/data/ZBEvent";
+import {Dimension} from "@/data/Dimension";
+import {store} from "@/store";
 
-const store = useStore();
 
 export default {
   name: "TimeGraph",
@@ -251,8 +250,11 @@ export default {
     }
   },
   setup() {
-    const dimensionOptions = ref(Dimension);
+    const store = useStore();
 
+    //const dimensionOptions = ref(Dimension);
+
+    const dimensionOptions = Object.keys(Dimension).filter((v) => isNaN(Number(v)));
     return {
       dimensionOptions,
     }
@@ -261,7 +263,12 @@ export default {
     return {
       years: [2000, 2001, 2002, 2003, 2004, 2005],
       showDialogue: false,
-      newEventIsPeriod: 'period',
+      newEventDetails: {
+        newEventIsPeriod: 'period',
+        description: '',
+        note: '',
+        dimension: Dimension.Familie,
+      }
     }
   },
   methods: {
@@ -270,19 +277,18 @@ export default {
       this.showDialogue = true; //Code works - how to fix error?
     },
     addEvent(){
-      let newEvent = initEvent();
-      newEvent.dimensionId = 0;
-      newEvent.description = '';
-      newEvent.notes = '';
-      newEvent.isInterval = true; //this.newEventIsPeriod == 'period' ? true : false;
-      console.log(newEvent)
+      const newEvent = initEvent();
+      //@ts-ignore
+      newEvent.dimensionId = Dimension[this.newEventDetails.dimension];
+      //@ts-ignore
+      newEvent.description = this.newEventDetails.description;
+      //@ts-ignore
+      newEvent.notes = this.newEventDetails.note;
+      //@ts-ignore
+      newEvent.isInterval = this.newEventDetails.newEventIsPeriod == 'period' ? true : false;
+      console.log(newEvent.dimensionId)
       store.commit("data/addEvent", newEvent)
-      /*store.commit({
-        type: "data/addEvent",
-        initialValues: newEvent
-      })*/
-
-      //console.log(store.getters.getEvents)
+      console.log(store.getters.getEvents)
     }
   }
 }
