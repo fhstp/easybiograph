@@ -138,25 +138,9 @@
         {{ value }}
       </div>
     </td>
-    <td>
-      <div>
-        <div v-if="value == 'Familie'" :class="[true ? 'period' : 'event']" style="margin-left: 135px">
-          <p>
-            Scheidung der Eltern
-          </p>
-          <p class="subcontent">
-            Mutter hat Sorgerecht
-          </p>
-        </div>
-        <div v-if="value == 'Gesundheit'" class="event" style="margin-left: 335px">
-          <p>
-            Mandel-OP
-          </p>
-          <p class="subcontent">
-            Dez 2001
-          </p>
-        </div>
-      </div>
+    <!-- Insert Event v-if="event.dimension == Dimension[value]" -->
+    <td v-for="event in filterEvents(value)" >
+      <TimeEvent :event="event" />
     </td>
   </tr>
   <!--
@@ -239,10 +223,13 @@ import {useStore} from "vuex";
 import {initEvent} from "@/data/ZBEvent";
 import {Dimension} from "@/data/Dimension";
 import {store} from "@/store";
+import TimeEvent from "@/components/TimeEvent.vue";
 
 
 export default {
   name: "TimeGraph",
+  components: {TimeEvent},
+
   props: {
     event: {
       type: Object,
@@ -268,7 +255,8 @@ export default {
         description: '',
         note: '',
         dimension: Dimension.Familie,
-      }
+      },
+      events: store.getters.getEvents,
     }
   },
   methods: {
@@ -289,6 +277,18 @@ export default {
       console.log(newEvent.dimensionId)
       store.commit("data/addEvent", newEvent)
       console.log(store.getters.getEvents)
+    },
+    getEvents(){
+      return store.getters.getEvents;
+    },
+    filterEvents(dimension: String): any{
+      //@ts-ignore
+      return this.events.filter(function (el)
+          {
+            //@ts-ignore
+            return el.dimensionId == Dimension[dimension];
+          }
+      );
     }
   }
 }
