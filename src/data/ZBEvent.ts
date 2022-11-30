@@ -4,6 +4,8 @@ export interface ZBEvent {
   description: string;
   notes: string;
   isInterval: boolean;
+  startDate: string;
+  endDate: string;
 }
 
 export function initEvent(): ZBEvent {
@@ -13,5 +15,7 @@ export function initEvent(): ZBEvent {
     description: "",
     notes: "",
     isInterval: true,
+    startDate: "",
+    endDate: "",
   };
 }

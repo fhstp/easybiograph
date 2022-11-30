@@ -13,8 +13,9 @@
     </div>
   </nav>
   <br>
-  <div class="box position" style="height: 93vh; width: 40vw; right: -38vw; z-index: 2" v-show="showDialogue">
+  <div class="box position" id="box" style="height: 93vh; width: 40vw; right: -38vw; z-index: 2" v-show="showDialogue">
     <button class="button is-light is-small" style="right: -33vw" v-on:click="showDialogue = false">X</button>
+    <button class="button is-light is-small" style="right: -33vw" v-on:click="removeEvent">Delete</button>
 
     <h1 class="title block">Eintrag erstellen</h1>
     <br>
@@ -42,8 +43,10 @@
         <label class="label" style="text-align: left">Datum</label>
       </div>
       <div class="field-body">
-        <input type="month">
-        <input type="month" v-show="newEventDetails.newEventIsPeriod == 'period'">
+        <input type="month" v-model="newEventDetails.startDate">
+        <input type="month"
+               v-show="newEventDetails.newEventIsPeriod == 'period'"
+               v-model="newEventDetails.endDate">
       </div>
     </div>
     <div class="field is-horizontal">
@@ -77,7 +80,6 @@
                 type="text"
                 placeholder="Anzeigename des Events"
                 id="eventNameId">
-                <!-- v-model="eventTitle">class: is danger -->
           </div>
           <!--
           <p class="help is-danger">
@@ -139,8 +141,10 @@
       </div>
     </td>
     <!-- Insert Event v-if="event.dimension == Dimension[value]" -->
-    <td v-for="event in filterEvents(value)" >
+    <td>
+    <div v-for="event in filterEvents(value)">
       <TimeEvent :event="event" />
+    </div>
     </td>
   </tr>
   <!--
@@ -239,7 +243,7 @@ export default {
   setup() {
     const store = useStore();
 
-    //const dimensionOptions = ref(Dimension);
+    console.log(store.getters.getEvents)
 
     const dimensionOptions = Object.keys(Dimension).filter((v) => isNaN(Number(v)));
     return {
@@ -255,6 +259,8 @@ export default {
         description: '',
         note: '',
         dimension: Dimension.Familie,
+        startDate: '',
+        endDate: '',
       },
       events: store.getters.getEvents,
     }
@@ -262,7 +268,7 @@ export default {
   methods: {
     showDiv() {
       //@ts-ignore
-      this.showDialogue = true; //Code works - how to fix error?
+      this.showDialogue = true;
     },
     addEvent(){
       const newEvent = initEvent();
@@ -274,12 +280,16 @@ export default {
       newEvent.notes = this.newEventDetails.note;
       //@ts-ignore
       newEvent.isInterval = this.newEventDetails.newEventIsPeriod == 'period' ? true : false;
-      console.log(newEvent.dimensionId)
+      //@ts-ignore
+      newEvent.startDate = this.newEventDetails.startDate;
+      //@ts-ignore
+      newEvent.endDate = this.newEventDetails.endDate;
       store.commit("data/addEvent", newEvent)
       console.log(store.getters.getEvents)
     },
-    getEvents(){
-      return store.getters.getEvents;
+    removeEvent(){
+      store.commit("data/removeEvent", 0)
+      console.log(store.getters.getEvents)
     },
     filterEvents(dimension: String): any{
       //@ts-ignore
@@ -296,13 +306,12 @@ export default {
 
 <style scoped lang="scss">
 table {
-  //border-collapse: collapse;
   border-spacing: 0;
   width: 100vw;
   height: 93vh;
   display: table;
   margin-top: 1vh;
-  margin-left: -6vh;
+  margin-left: -1vh;
 }
 
 td {
@@ -368,7 +377,7 @@ thead > tr{background-color: white !important;}
   background-color: #181818;
   width: 100vw;
   height: 5.25vh;
-  left: -3vw;
+  left: -2vw;
   top: -0.5vh;
 }
 </style>
