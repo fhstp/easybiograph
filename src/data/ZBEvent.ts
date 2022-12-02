@@ -1,21 +1,21 @@
 export interface ZBEvent {
-  eventId: number;
-  dimensionId: number;
-  description: string;
-  notes: string;
-  isInterval: boolean;
-  startDate: string;
-  endDate: string;
+    eventId: number;
+    dimensionId: number;
+    description: string;
+    notes: string;
+    isInterval: boolean;
+    startDate: string;
+    endDate: string;
 }
 
 export function initEvent(): ZBEvent {
-  return {
-    eventId: -1,
-    dimensionId: -1,
-    description: "",
-    notes: "",
-    isInterval: true,
-    startDate: "",
-    endDate: "",
-  };
+    return {
+        eventId: -1,
+        dimensionId: -1,
+        description: "",
+        notes: "",
+        isInterval: true,
+        startDate: "",
+        endDate: "",
+    };
 }

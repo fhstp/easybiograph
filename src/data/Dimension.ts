@@ -8,12 +8,12 @@
     "Sonstiges", //6
 ];*/
 
-export enum Dimension{
-    Familie,
-    Wohnen,
-    Bildung,
-    Arbeit,
-    Gesundheit,
-    "Behandlung/Hilfe",
-    Sonstiges
+export enum Dimension {
+  Familie,
+  Wohnen,
+  Bildung,
+  Arbeit,
+  Gesundheit,
+  "Behandlung/Hilfe",
+  Sonstiges,
 }

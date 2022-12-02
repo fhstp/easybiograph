@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
+//import { RouterLink, RouterView } from "vue-router";
+//import HelloWorld from "./components/HelloWorld.vue";
 import TimeGraph from "@/components/TimeGraph.vue";
-import EventDialogue from "@/components/EventDialogue.vue";
+import PersonDialogue from "@/components/PersonDialogue.vue";
+//import EventDialogue from "@/components/EventDialogue.vue";
 </script>
 
 <template>
-<!--
+  <!--
   <header>
     <img
       alt="Vue logo"
@@ -26,9 +27,9 @@ import EventDialogue from "@/components/EventDialogue.vue";
     </div>
   </header>
   -->
+  <TimeGraph/>
 
-  <TimeGraph />
-   <!-- <EventDialogue /> style="z-index: 5; position: fixed; top: 0; left: 0" -->
+  <!-- <PersonDialogue /> -->
   <!--<RouterView /> -->
 </template>
 
@@ -36,10 +37,10 @@ import EventDialogue from "@/components/EventDialogue.vue";
 * {
   margin: 0;
   padding: 0;
-
 }
 
-html, body{
+html,
+body {
   height: 100vh;
   width: 100vw;
   overflow: hidden;

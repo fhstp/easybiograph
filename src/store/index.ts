@@ -22,9 +22,9 @@ export interface IStoreState {
 
 const getters = {
   getEvents(state: IStoreState): any {
-    return state.data.events
-  }
-}
+    return state.data.events;
+  },
+};
 
 const plugins = import.meta.env.DEV
   ? [createLogger(), localStoragePlugin]

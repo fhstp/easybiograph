@@ -4,7 +4,11 @@
       <div class="navbar-start">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-dark is-small" @click="showDiv()" style="left: 10vw">
+            <a
+                class="button is-dark is-small"
+                @click="showDiv()"
+                style="left: 10vw"
+            >
               <strong>+</strong>
             </a>
           </div>
@@ -12,13 +16,30 @@
       </div>
     </div>
   </nav>
-  <br>
-  <div class="box position" id="box" style="height: 93vh; width: 40vw; right: -38vw; z-index: 2" v-show="showDialogue">
-    <button class="button is-light is-small" style="right: -33vw" v-on:click="showDialogue = false">X</button>
-    <button class="button is-light is-small" style="right: -33vw" v-on:click="removeEvent">Delete</button>
+  <br/>
+  <div
+      class="box position"
+      id="box"
+      style="height: 93vh; width: 40vw; right: -38vw; z-index: 2"
+      v-show="showDialogue"
+  >
+    <button
+        class="button is-light is-small"
+        style="right: -33vw"
+        v-on:click="showDialogue = false"
+    >
+      X
+    </button>
+    <button
+        class="button is-light is-small"
+        style="right: -33vw"
+        v-on:click="removeEvent"
+    >
+      Delete
+    </button>
 
     <h1 class="title block">Eintrag erstellen</h1>
-    <br>
+    <br/>
     <div class="field is-horizontal">
       <div class="field-label">
         <label class="label" style="text-align: left">Typ</label>
@@ -27,11 +48,22 @@
         <div class="field is-narrow">
           <div class="control">
             <label class="radio">
-              <input type="radio" name="member" v-model="newEventDetails.newEventIsPeriod" value="period" checked>
+              <input
+                  type="radio"
+                  name="member"
+                  v-model="newEventDetails.newEventIsPeriod"
+                  value="period"
+                  checked
+              />
               Zeitraum
             </label>
             <label class="radio">
-              <input type="radio" name="member" v-model="newEventDetails.newEventIsPeriod" value="point">
+              <input
+                  type="radio"
+                  name="member"
+                  v-model="newEventDetails.newEventIsPeriod"
+                  value="point"
+              />
               Zeitpunkt
             </label>
           </div>
@@ -43,10 +75,12 @@
         <label class="label" style="text-align: left">Datum</label>
       </div>
       <div class="field-body">
-        <input type="month" v-model="newEventDetails.startDate">
-        <input type="month"
-               v-show="newEventDetails.newEventIsPeriod == 'period'"
-               v-model="newEventDetails.endDate">
+        <input type="month" v-model="newEventDetails.startDate"/>
+        <input
+            type="month"
+            v-show="newEventDetails.newEventIsPeriod == 'period'"
+            v-model="newEventDetails.endDate"
+        />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -79,7 +113,8 @@
                 v-model="newEventDetails.description"
                 type="text"
                 placeholder="Anzeigename des Events"
-                id="eventNameId">
+                id="eventNameId"
+            />
           </div>
           <!--
           <p class="help is-danger">
@@ -101,125 +136,64 @@
                 class="textarea"
                 v-model="newEventDetails.note"
                 placeholder="Notizen zum Event"
-                id="noteId"></textarea>
+                id="noteId"
+            ></textarea>
           </div>
         </div>
       </div>
     </div>
-    <br>
-    <button class="button is-white" style="margin-right: 1vw; right: -20vw" v-on:click="showDialogue = false;">Abbrechen</button>
-    <button class="button is-link is-light" style="right: -20vw" v-on:click="addEvent" v-on:mouseup="showDialogue = false">Fertig</button>
+    <br/>
+    <button
+        class="button is-white"
+        style="margin-right: 1vw; right: -20vw"
+        v-on:click="showDialogue = false"
+    >
+      Abbrechen
+    </button>
+    <button
+        class="button is-link is-light"
+        style="right: -20vw"
+        v-on:click="addEvent"
+        v-on:mouseup="showDialogue = false"
+    >
+      Fertig
+    </button>
   </div>
-<table>
-  <thead>
-  <tr class="year_age">
-    <td class="content">
-      <p>
-        Jahr
-      </p>
-      <p class="subcontent">
-        Alter
-      </p>
-    </td>
-    <td class="year-wrap">
-      <div v-for="(year, index) in years" class="year">
-        <p>
-          {{year}}
-        </p>
-        <p class="subcontent">
-          {{index}}
-        </p>
-      </div>
-    </td>
-  </tr>
-  </thead>
-  <tbody >
-  <tr v-for="value in dimensionOptions" :key="value">
-    <td class="content">
-      <div>
-        {{ value }}
-      </div>
-    </td>
-    <!-- Insert Event v-if="event.dimension == Dimension[value]" -->
-    <td>
-    <div v-for="event in filterEvents(value)">
-      <TimeEvent :event="event" />
-    </div>
-    </td>
-  </tr>
-  <!--
-  <tr>
+  <table>
+    <thead>
+    <tr class="year_age">
       <td class="content">
-        <div>
-          <font-awesome-icon icon="family" />
-        Familie
-        </div>
+        <p>Jahr</p>
+        <p class="subcontent">Alter</p>
       </td>
-      <td>
-        <div>
-          <div>
-            Blubb
-          </div>
-          <div>
-            Hi
-          </div>
+      <td class="year-wrap" id="year-wrap" ref="yearwrapper">
+        <div v-for="(year, index) in years" class="year">
+          <p>
+            {{ year }}
+          </p>
+          <p class="subcontent">
+            {{ index }}
+          </p>
         </div>
       </td>
     </tr>
-    <tr>
+    </thead>
+    <tbody>
+    <tr v-for="value in dimensionOptions" :key="value">
       <td class="content">
         <div>
-        Wohnen
+          {{ value }}
         </div>
       </td>
-      <td>
-        <div>
-          <div class="event">
-            <p>
-              Delogierung
-            </p>
-            <p class="subcontent">
-              Jänner 2000
-            </p>
-          </div>
-          <div class="period" style="margin-left: 135px">
-            <p>
-              Wohnung der Mutter
-            </p>
-            <p class="subcontent">
-              Zweimal
-            </p>
-          </div>
+      <td class="eventWrap">
+        <!-- -->
+        <div v-for="event in filterEvents(value)" id="tdContent">
+          <TimeEvent :event="event" :style="calcPos(event)"/>
         </div>
       </td>
     </tr>
-    <tr>
-      <td class="content">
-        <div>
-        Bildung
-        </div>
-      </td>
-      <td>
-        <div>
-          Blubb
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td class="content">
-        <div>
-          Arbeit
-        </div>
-      </td>
-      <td>
-        <div>
-          Blubb
-        </div>
-      </td>
-    </tr>
-    -->
-  </tbody>
-</table>
+    </tbody>
+  </table>
 </template>
 
 <script lang="ts">
@@ -229,7 +203,6 @@ import {Dimension} from "@/data/Dimension";
 import {store} from "@/store";
 import TimeEvent from "@/components/TimeEvent.vue";
 
-
 export default {
   name: "TimeGraph",
   components: {TimeEvent},
@@ -238,39 +211,41 @@ export default {
     event: {
       type: Object,
       required: true,
-    }
+    },
   },
   setup() {
     const store = useStore();
 
-    console.log(store.getters.getEvents)
+    console.log(store.getters.getEvents);
 
-    const dimensionOptions = Object.keys(Dimension).filter((v) => isNaN(Number(v)));
+    const dimensionOptions = Object.keys(Dimension).filter((v) =>
+        isNaN(Number(v))
+    );
     return {
       dimensionOptions,
-    }
+    };
   },
-  data(){
+  data() {
     return {
       years: [2000, 2001, 2002, 2003, 2004, 2005],
       showDialogue: false,
       newEventDetails: {
-        newEventIsPeriod: 'period',
-        description: '',
-        note: '',
+        newEventIsPeriod: "period",
+        description: "",
+        note: "",
         dimension: Dimension.Familie,
-        startDate: '',
-        endDate: '',
+        startDate: "",
+        endDate: "",
       },
       events: store.getters.getEvents,
-    }
+    };
   },
   methods: {
     showDiv() {
       //@ts-ignore
       this.showDialogue = true;
     },
-    addEvent(){
+    addEvent() {
       const newEvent = initEvent();
       //@ts-ignore
       newEvent.dimensionId = Dimension[this.newEventDetails.dimension];
@@ -279,29 +254,68 @@ export default {
       //@ts-ignore
       newEvent.notes = this.newEventDetails.note;
       //@ts-ignore
-      newEvent.isInterval = this.newEventDetails.newEventIsPeriod == 'period' ? true : false;
+      newEvent.isInterval = this.newEventDetails.newEventIsPeriod == "period" ? true : false;
       //@ts-ignore
       newEvent.startDate = this.newEventDetails.startDate;
       //@ts-ignore
       newEvent.endDate = this.newEventDetails.endDate;
-      store.commit("data/addEvent", newEvent)
-      console.log(store.getters.getEvents)
-    },
-    removeEvent(){
-      store.commit("data/removeEvent", 0)
-      console.log(store.getters.getEvents)
-    },
-    filterEvents(dimension: String): any{
       //@ts-ignore
-      return this.events.filter(function (el)
-          {
-            //@ts-ignore
-            return el.dimensionId == Dimension[dimension];
-          }
-      );
-    }
+      console.log() //finding index of year of event
+      //@ts-ignore
+      console.log(this.years.length * 12) //total months in td - here e.g. 72
+      store.commit("data/addEvent", newEvent);
+      console.log(store.getters.getEvents);
+    },
+    removeEvent() {
+      store.commit("data/removeEvent", 0);
+      console.log(store.getters.getEvents);
+    },
+    editEvent(){
+      store.commit("data/editEvent", 0)
+    },
+    filterEvents(dimension: String): any {
+      //@ts-ignore
+      return this.events.filter(function (el) {
+        //@ts-ignore
+        return el.dimensionId == Dimension[dimension];
+      });
+    },
+    calcPos(event: any){
+      let totalYearWidth = 100;
+      //@ts-ignore
+      let months = this.years.length * 12;
+      //@ts-ignore
+      let startYear = +event.startDate.substring(0, 4)
+      //@ts-ignore
+      let endYear = +event.endDate.substring(0, 4)
+      //@ts-ignore
+      let startMonth = parseInt(event.startDate.substring(5, 7), 10)
+      //@ts-ignore
+      let endMonth = parseInt(event.endDate.substring(5, 7), 10)
+      let eventMonths = this.calcEventMonths(startYear, endYear, startMonth, endMonth)
+      //@ts-ignore
+      let yearsTilBegin: number = this.years.indexOf(startYear) * 12
+      let monthsTilBegin: number =  yearsTilBegin + startMonth;
+
+      let margin: number = totalYearWidth / months * monthsTilBegin;
+      console.log(startMonth)
+
+      let width: number = totalYearWidth / months * eventMonths;
+      let styleObject = {
+        marginLeft: margin + '%',
+        width: width + '%'
+      }
+      let eventObject = {
+        marginLeft: margin + '%',
+        width: '13%'
+      }
+      return event.isInterval ? styleObject : eventObject
+    },
+    calcEventMonths(sy: number, ey: number, sm: number, em: number){
+      return(em - sm + 12 * (ey - sy))
+    },
   }
-}
+};
 </script>
 
 <style scoped lang="scss">
@@ -311,37 +325,51 @@ table {
   height: 93vh;
   display: table;
   margin-top: 1vh;
-  margin-left: -1vh;
+  margin-left: -5vh;
 }
 
 td {
   text-align: center;
+}
+
+td:not(.eventWrap, .year-wrap){
   padding: 8px;
 }
 
-tr:nth-child(odd){background-color: $gridgrey}
-thead > tr{background-color: white !important;}
+tr:nth-child(odd) {
+  background-color: $gridgrey;
+}
 
-.year{
+thead > tr {
+  background-color: white !important;
+}
+
+.year {
   padding: 0 10px;
 }
-.year:nth-child(1){padding-left: 0px}
 
-.year-wrap{
+.year:nth-child(1) {
+  padding-left: 0px;
+}
+
+.year-wrap {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   text-align: center;
 }
-.year_age{
+
+.year_age {
   border-bottom: 0.5px solid lightgrey;
 }
-.content{
+
+.content {
   border-right: 0.5px solid lightgrey;
   width: 10%;
   text-align: center;
 }
-.event{
+
+.event {
   display: block;
   background-color: $eventgrey;
   border-left: 3px solid $eventgreen;
@@ -349,7 +377,8 @@ thead > tr{background-color: white !important;}
   margin: 5px 0;
   border-radius: 3px;
 }
-.period{
+
+.period {
   display: block;
   background-color: $periodblue;
   border: 2px solid $periodborderblue;
@@ -358,10 +387,12 @@ thead > tr{background-color: white !important;}
   margin: 5px 0;
   border-radius: 3px;
 }
-.subcontent{
+
+.subcontent {
   color: darkgrey;
 }
-.event_dialogue{
+
+.event_dialogue {
   background-color: white;
   z-index: 2;
   width: 500px;
@@ -373,11 +404,12 @@ thead > tr{background-color: white !important;}
   justify-content: center;
   align-items: center;
 }
-.bar{
+
+.bar {
   background-color: #181818;
   width: 100vw;
   height: 5.25vh;
-  left: -2vw;
+  left: -3vw;
   top: -0.5vh;
 }
 </style>
