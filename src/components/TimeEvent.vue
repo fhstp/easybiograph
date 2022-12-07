@@ -1,21 +1,19 @@
 <template>
   <div>
-    <div
-        :class="[event.isInterval ? 'period' : 'event']"
-        id="contentEvent" >
-        <!--style="margin-left: 235px"-->
+    <div :class="[event.isInterval ? 'period' : 'event']" id="contentEvent">
+      <!--style="margin-left: 235px"-->
       <p>
         {{ event.description }}
       </p>
       <p class="subcontent">
         {{
           event.notes
-              ? event.notes
-              : event.isInterval
-                  ? event.startDate.substring(0, 4) +
-                  " - " +
-                  event.endDate.substring(0, 4)
-                  : event.startDate
+            ? event.notes
+            : event.isInterval
+            ? event.startDate.substring(0, 4) +
+              " - " +
+              event.endDate.substring(0, 4)
+            : event.startDate
         }}
       </p>
     </div>

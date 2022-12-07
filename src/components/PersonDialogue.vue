@@ -11,11 +11,7 @@
       <div class="field-body">
         <div class="field">
           <div class="control">
-            <input
-                class="input"
-                type="text"
-                placeholder="Name"
-            />
+            <input class="input" type="text" placeholder="Name" />
           </div>
         </div>
       </div>
@@ -44,9 +40,9 @@
         <div class="field">
           <div class="control">
             <input
-                class="input"
-                type="text"
-                placeholder="Geburtsort der Person"
+              class="input"
+              type="text"
+              placeholder="Geburtsort der Person"
             />
           </div>
         </div>
@@ -61,9 +57,9 @@
         <div class="field">
           <div class="control">
             <input
-                class="input"
-                type="text"
-                placeholder="Name des Erstellers"
+              class="input"
+              type="text"
+              placeholder="Name des Erstellers"
             />
           </div>
         </div>
@@ -79,10 +75,8 @@
 
 <script>
 export default {
-  name: "PersonDialogue"
-}
+  name: "PersonDialogue",
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
