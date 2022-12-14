@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :class="[event.isInterval ? 'period' : 'event']" id="contentEvent">
+    <div :class="[event.isInterval ? 'period' : 'event']" id="contentEvent" >
       <!--style="margin-left: 235px"-->
       <p>
         {{ event.description }}
@@ -27,6 +27,17 @@ export default {
   name: "TimeEvent",
   props: {
     event: Object,
+  },
+  data(){
+    return {
+      showEditDialogue: false,
+    }
+  },
+  methods:{
+    editDiv(event) {
+      this.showEditDialogue = true;
+      console.log(event.eventId);
+    },
   },
 };
 </script>

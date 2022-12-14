@@ -24,6 +24,9 @@ const getters = {
   getEvents(state: IStoreState): any {
     return state.data.events;
   },
+  getEventById: (state: IStoreState) => (id: number) => {
+    return state.data.events.find((x) => x.eventId === id);
+  },
 };
 
 const plugins = import.meta.env.DEV

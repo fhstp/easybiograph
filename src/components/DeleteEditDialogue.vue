@@ -17,12 +17,47 @@
     <br />
     <br />
     <div class="field is-horizontal">
+      <div class="field-label">
+        <label class="label" style="text-align: left">Typ</label>
+      </div>
+      <div class="field-body">
+        <div class="field is-narrow">
+          <div class="control">
+            <label class="radio">
+              <input
+                  type="radio"
+                  name="member"
+                  v-model="currentEvent.isInterval"
+                  value="period"
+                  :checked="currentEvent.isInterval"
+              />
+              Zeitraum
+            </label>
+            <label class="radio">
+              <input
+                  type="radio"
+                  name="member"
+                  v-model="currentEvent.isInterval"
+                  value="point"
+                  :checked="currentEvent.isInterval == false"
+              />
+              Zeitpunkt
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="field is-horizontal">
       <div class="field-label is-normal">
         <label class="label" style="text-align: left">Datum</label>
       </div>
       <div class="field-body">
-        <input type="month" />
-        <input type="month" />
+        <input type="month" v-model="currentEvent.startDate" />
+        <input
+            type="month"
+            v-show="currentEvent.isInterval == true"
+            v-model="currentEvent.endDate"
+        />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -33,11 +68,10 @@
         <div class="field is-narrow">
           <div class="control">
             <div class="select is-fullwidth">
-              <select>
-                <option>Familie</option>
-                <option>Wohnen</option>
-                <option>Bildung</option>
-                <option>Arbeit</option>
+              <select v-model="selectedDimension">
+                <option v-for="value in dimensionOptions" :key="value">
+                  {{ value }}
+                </option>
               </select>
             </div>
           </div>
@@ -54,7 +88,8 @@
             <input
               class="input"
               type="text"
-              placeholder="Anzeigename des Events"
+              :value="currentEvent.description"
+              v-on:change="updateEvent($event.target.value)"
             />
             <!-- class: is danger -->
           </div>
@@ -76,7 +111,8 @@
           <div class="control">
             <textarea
               class="textarea"
-              placeholder="Notizen zum Event"
+              placeholder="Dieses Event hat noch keine Notiz"
+              v-model="currentEvent.notes"
             ></textarea>
           </div>
         </div>
@@ -98,22 +134,71 @@
 
 <script>
 import { store } from "@/store";
+import {Dimension} from "@/data/Dimension";
+import { initEvent } from "@/data/ZBEvent";
+import {mapMutations} from "vuex";
 
 export default {
   name: "DeleteEditDialogue",
+  setup() {
+    const dimensionOptions = Object.keys(Dimension).filter((v) =>
+        isNaN(Number(v))
+    );
+    return {
+      dimensionOptions,
+    };
+  },
+  props:{
+    selectedEvent: {},
+  },
+  data() {
+    return {
+      currentEvent: {},
+      selectedDimension: Dimension.Familie
+    }
+  },
   methods: {
+    init(){
+      this.currentEvent = this.selectedEvent
+      this.selectedDimension = Dimension[this.selectedEvent.dimensionId]
+
+      console.table(this.currentEvent)
+    },
+    updateEvent(event){
+      this.currentEvent.description = event
+    },
     removeEvent() {
-      console.log("Insert delete function :)");
-      store.commit("data/removeEvent");
+      store.commit("data/removeEvent", this.selectedEvent.eventId);
+      this.$emit("close")
     },
     editEvent() {
-      console.log("Insert edit function");
-      //store.commit("data/editEvent", 0);
+      const payload = initEvent()
+      payload.eventId = this.selectedEvent.eventId
+      payload.dimensionId = Dimension[this.selectedDimension];
+      //@ts-ignore
+      payload.description = this.currentEvent.description;
+      //@ts-ignore
+      payload.notes = this.currentEvent.notes;
+      payload.isInterval =
+          //@ts-ignore
+          this.currentEvent.isInterval ? true : false;
+      payload.startDate = this.currentEvent.startDate;
+      payload.endDate = this.currentEvent.endDate;
+      console.table(payload)
+      store.commit("data/editEvents", payload);
+      this.$emit("reload")
+      this.$emit("close")
     },
     close() {
-      console.log("Insert close function");
+      this.$emit("close")
     },
   },
+  watch:{
+    selectedEvent: function(new_value) {
+      this.currentEvent = this.selectedEvent
+      this.selectedDimension = Dimension[this.selectedEvent.dimensionId]
+    }
+  }
 };
 </script>
 

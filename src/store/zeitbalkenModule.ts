@@ -74,6 +74,22 @@ const mutations = {
     }
   },
 
+  editEvents(state: Zeitbalken, payload: ZBEvent) {
+    const eventIndex = state.events.findIndex(
+      (x) => x.eventId === payload.eventId
+    );
+    const newArray = state.events.map((obj, i) => {
+      if (i === eventIndex) {
+        return {
+          ...obj,
+          ...payload,
+        };
+      }
+      return obj;
+    });
+    state.events = newArray;
+  },
+
   editEventById(
     state: Zeitbalken,
     payload: { id: number; changes: Partial<ZBEvent> }
@@ -94,7 +110,10 @@ const mutations = {
 
   removeEvent(state: Zeitbalken, eventIndex: number): void {
     // based on vuex\examples\composition\todomvc\store\mutations.js
-    state.events.splice(eventIndex, 1);
+    const eventDelete = state.events.findIndex((e) => {
+      return e.eventId === eventIndex;
+    });
+    state.events.splice(eventDelete, 1);
   },
 };
 /*

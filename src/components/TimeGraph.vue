@@ -18,7 +18,7 @@
   </nav>
   <br />
 
-  <DeleteEditDialogue v-show="showEditDialogue" />
+  <DeleteEditDialogue v-show="showEditDialogue" @close="closeEditDiv" :selectedEvent="clickedEvent" @reload="loadEvents"/>
   <div
     class="box position"
     id="box"
@@ -192,10 +192,8 @@
           <div
             v-for="event in filterEvents(value)"
             id="tdContent"
-            @click="editDiv(event)"
-            style="cursor: pointer"
           >
-            <TimeEvent :event="event" :style="calcPos(event)" />
+            <TimeEvent :event="event" :style="calcPos(event)" @click="editDiv(event)" style="cursor: pointer !important;" />
           </div>
         </td>
       </tr>
@@ -238,6 +236,7 @@ export default {
       years: [2000, 2001, 2002, 2003, 2004, 2005],
       showDialogue: false,
       showEditDialogue: false,
+      clickedEvent: {},
       newEventDetails: {
         newEventIsPeriod: "period",
         description: "",
@@ -250,6 +249,12 @@ export default {
     };
   },
   methods: {
+    loadEvents(){
+      //@ts-ignore
+      this.events = store.getters.getEvents;
+      //@ts-ignore
+      console.table(this.events)
+    },
     showDiv() {
       //@ts-ignore
       this.showDialogue = true;
@@ -259,9 +264,16 @@ export default {
     },
     editDiv(event: any) {
       //@ts-ignore
-      this.showEditDialogue = true;
+      this.clickedEvent = store.getters.getEventById(event.eventId)
       //@ts-ignore
-      console.log(event.eventId);
+      console.table(this.clickedEvent)
+      //@ts-ignore
+      this.showEditDialogue = true;
+      //console.log(event.eventId);
+    },
+    closeEditDiv(){
+      //@ts-ignore
+      this.showEditDialogue = false;
     },
     addEvent() {
       const newEvent = initEvent();
@@ -425,4 +437,5 @@ thead > tr {
   left: -3vw;
   top: -0.5vh;
 }
+
 </style>
