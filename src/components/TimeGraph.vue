@@ -1,5 +1,6 @@
 <template>
-  <nav class="navbar is-fixed-top">
+  <PersonDialogue v-show="showCreateBiograph" @close="closePerson" />
+  <nav class="navbar is-fixed-top" v-show="!showCreateBiograph">
     <div id="navbarBasicExample" class="navbar-menu bar">
       <div class="navbar-start">
         <div class="navbar-item">
@@ -15,14 +16,14 @@
         </div>
       </div>
     </div>
-  </nav>
+  </nav >
   <br />
 
   <DeleteEditDialogue v-show="showEditDialogue" @close="closeEditDiv" :selectedEvent="clickedEvent" @reload="loadEvents"/>
   <div
     class="box position"
     id="box"
-    style="height: 93vh; width: 40vw; right: -38vw; z-index: 2"
+    style="height: 93vh; width: 40vw; z-index: 2"
     v-show="showDialogue"
   >
     <button
@@ -31,13 +32,6 @@
       v-on:click="showDialogue = false"
     >
       X
-    </button>
-    <button
-      class="button is-light is-small"
-      style="right: -33vw"
-      v-on:click="removeEvent"
-    >
-      Delete
     </button>
 
     <h1 class="title block">Eintrag erstellen</h1>
@@ -120,7 +114,7 @@
           </div>
           <!--
           <p class="help is-danger">
-            Bitte beschreibe das Event
+            Bitte gib dem Event einen Titel
           </p>
           -->
         </div>
@@ -169,7 +163,7 @@
           <p class="subcontent">Alter</p>
         </td>
         <td class="year-wrap" id="year-wrap" ref="yearwrapper">
-          <div v-for="(year, index) in years" class="year">
+          <div v-for="(year, index) in personYears" class="year">
             <p>
               {{ year }}
             </p>
@@ -208,10 +202,11 @@ import { Dimension } from "@/data/Dimension";
 import { store } from "@/store";
 import TimeEvent from "@/components/TimeEvent.vue";
 import DeleteEditDialogue from "@/components/DeleteEditDialogue.vue";
+import PersonDialogue from "@/components/PersonDialogue.vue";
 
 export default {
   name: "TimeGraph",
-  components: { TimeEvent, DeleteEditDialogue },
+  components: { TimeEvent, DeleteEditDialogue, PersonDialogue },
 
   props: {
     event: {
@@ -233,9 +228,10 @@ export default {
   },
   data() {
     return {
-      years: [2000, 2001, 2002, 2003, 2004, 2005],
+      personYears: [2000, 2001, 2002, 2003, 2004, 2005],
       showDialogue: false,
       showEditDialogue: false,
+      showCreateBiograph: true,
       clickedEvent: {},
       newEventDetails: {
         newEventIsPeriod: "period",
@@ -263,6 +259,7 @@ export default {
       store.commit("data/removeEvent", 0);
     },
     editDiv(event: any) {
+      console.log(PersonDialogue.data().personYears)
       //@ts-ignore
       this.clickedEvent = store.getters.getEventById(event.eventId)
       //@ts-ignore
@@ -274,6 +271,10 @@ export default {
     closeEditDiv(){
       //@ts-ignore
       this.showEditDialogue = false;
+    },
+    closePerson(){
+      //@ts-ignore
+      this.showCreateBiograph = false;
     },
     addEvent() {
       const newEvent = initEvent();
@@ -303,7 +304,7 @@ export default {
     calcPos(event: any) {
       let totalYearWidth = 100;
       //@ts-ignore
-      let months = this.years.length * 12;
+      let months = this.personYears.length * 12;
       //@ts-ignore
       let startYear = +event.startDate.substring(0, 4);
       //@ts-ignore
@@ -319,7 +320,7 @@ export default {
         endMonth
       );
       //@ts-ignore
-      let yearsTilBegin: number = this.years.indexOf(startYear) * 12;
+      let yearsTilBegin: number = this.personYears.indexOf(startYear) * 12;
       let monthsTilBegin: number = yearsTilBegin + startMonth;
 
       let margin: number = (totalYearWidth / months) * monthsTilBegin;

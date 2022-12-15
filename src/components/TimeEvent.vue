@@ -8,7 +8,7 @@
       <p class="subcontent">
         {{
           event.notes
-            ? event.notes
+            ? event.notes.substring(0, 15) + "..."
             : event.isInterval
             ? event.startDate.substring(0, 4) +
               " - " +

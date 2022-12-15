@@ -1,5 +1,5 @@
 <template>
-  <div class="box position" style="height: 96vh; width: 40vw">
+  <div class="box position" style="height: 92vh; width: 40vw">
     <button
       class="button is-light is-small"
       style="right: -33vw"
@@ -9,12 +9,6 @@
     </button>
 
     <h1 class="title block">Eintrag bearbeiten</h1>
-    <br />
-    <button class="button is-danger is-light" @click="removeEvent">
-      Eintrag löschen
-    </button>
-    <br />
-    <br />
     <br />
     <div class="field is-horizontal">
       <div class="field-label">
@@ -91,13 +85,7 @@
               :value="currentEvent.description"
               v-on:change="updateEvent($event.target.value)"
             />
-            <!-- class: is danger -->
           </div>
-          <!--
-          <p class="help is-danger">
-            Bitte beschreibe das Event
-          </p>
-          -->
         </div>
       </div>
     </div>
@@ -119,15 +107,18 @@
       </div>
     </div>
     <br />
-    <button class="button is-white" style="margin-right: 1vw; right: -15vw">
+    <button class="button is-danger is-light" @click="removeEvent" style="margin-right: 1vw; right: 0vw">
+      Löschen
+    </button>
+    <button class="button is-white" style="margin-right: 1vw; right: -11vw" @click="close">
       Abbrechen
     </button>
     <button
       class="button is-link is-light"
-      style="right: -15vw"
+      style="right: -11vw"
       @click="editEvent"
     >
-      Änderungen speichern
+      Speichern
     </button>
   </div>
 </template>
@@ -136,7 +127,6 @@
 import { store } from "@/store";
 import {Dimension} from "@/data/Dimension";
 import { initEvent } from "@/data/ZBEvent";
-import {mapMutations} from "vuex";
 
 export default {
   name: "DeleteEditDialogue",
