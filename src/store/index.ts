@@ -27,6 +27,9 @@ const getters = {
   getEventById: (state: IStoreState) => (id: number) => {
     return state.data.events.find((x) => x.eventId === id);
   },
+  getTimeline(state: IStoreState): Array<any> {
+    return state.data.timeline;
+  },
 };
 
 const plugins = import.meta.env.DEV

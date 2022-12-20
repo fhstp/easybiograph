@@ -1,5 +1,5 @@
 <script setup lang="ts">
-//import { RouterLink, RouterView } from "vue-router";
+import { RouterLink, RouterView } from "vue-router";
 //import HelloWorld from "./components/HelloWorld.vue";
 import TimeGraph from "@/components/TimeGraph.vue";
 //import PersonDialogue from "@/components/PersonDialogue.vue";
@@ -27,11 +27,7 @@ import TimeGraph from "@/components/TimeGraph.vue";
     </div>
   </header>
   -->
-
-  <TimeGraph />
-  <!-- <PersonDialogue />
-   <DeleteEditDialogue />
-  <RouterView /> -->
+  <RouterView />
 </template>
 
 <style scoped>

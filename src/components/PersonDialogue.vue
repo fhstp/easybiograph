@@ -94,7 +94,7 @@ export default {
     return {
       startYear: "",
       endYear: "",
-      personYears: [],
+      personYears: [] as number[],
       showBiograph: false,
       newPersonDetails: {
         name: "",
@@ -106,7 +106,6 @@ export default {
   },
   methods: {
     addPerson(){
-      this.chooseYear()
       const newPerson = initPerson();
       //@ts-ignore
       newPerson.name = this.newPersonDetails.name;
@@ -117,9 +116,9 @@ export default {
       //@ts-ignore
       newPerson.notes = this.newPersonDetails.notes;
 
-      console.log(newPerson.name)
-      //@ts-ignore
-      console.log(this.personYears)
+      store.commit("data/addPerson", newPerson)
+      this.close()
+
 
     },
     chooseYear(){
@@ -128,7 +127,7 @@ export default {
       //@ts-ignore
       let endValue = +this.endYear.substring(0, 4)
 
-      //let list = [];
+
       for (let i = startValue; i <= endValue; i++) {
         //@ts-ignore
         this.personYears.push(i);
@@ -137,9 +136,34 @@ export default {
     close() {
       this.chooseYear()
       //@ts-ignore
-      console.log(this.personYears)
+      store.commit("data/addTimeline", this.displayPersonYears())
       //@ts-ignore
-      this.$emit("close")
+      //this.$emit("close")
+    },
+    displayPersonYears(): Array<number> {
+      let displayedArray: number[] = []
+      //@ts-ignore
+      let years: number[] = this.personYears
+      console.log(years)
+
+      const displayMaximum: number = 20
+
+      if(years.length <= displayMaximum) return years
+
+      let gap = years.length / displayMaximum
+      let leftOver = years.length % displayMaximum
+      const firstYear: number = years.shift() || 0
+      const lastYear: number = years.pop() || 0
+
+      console.log(gap)
+      displayedArray.push(firstYear)
+      for(let i = gap; i < years.length; i += gap + 1){
+        displayedArray.push(years[i])
+      }
+      displayedArray.push(lastYear)
+
+      console.log(displayedArray)
+      return displayedArray
     },
   },
 };

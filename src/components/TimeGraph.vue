@@ -228,7 +228,7 @@ export default {
   },
   data() {
     return {
-      personYears: [2000, 2001, 2002, 2003, 2004, 2005],
+      personYears: store.getters.getTimeline,
       showDialogue: false,
       showEditDialogue: false,
       showCreateBiograph: true,
@@ -273,6 +273,8 @@ export default {
       this.showEditDialogue = false;
     },
     closePerson(){
+      //@ts-ignore
+      this.personYears = store.getters.getTimeline;
       //@ts-ignore
       this.showCreateBiograph = false;
     },
@@ -339,6 +341,30 @@ export default {
     calcEventMonths(sy: number, ey: number, sm: number, em: number) {
       return em - sm + 12 * (ey - sy);
     },
+    displayPersonYears(): Array<number> {
+      let displayedArray: number[] = []
+      //@ts-ignore
+      let years: number[] = this.personYears
+      console.log(years)
+
+      const displayMaximum: number = 20
+
+      if(years.length <= displayMaximum) return years
+
+      let gap = years.length / displayMaximum
+      let leftOver = years.length % displayMaximum
+      const firstYear: number = years.shift() || 0
+      const lastYear: number = years.pop() || 0
+
+      displayedArray.push(firstYear)
+      for(let i = gap; i < years.length; i += gap + 1){
+        displayedArray.push(years[i])
+      }
+      displayedArray.push(lastYear)
+
+      console.log(displayedArray)
+      return displayedArray
+    },
   },
 };
 </script>
@@ -383,6 +409,7 @@ thead > tr {
   flex-direction: row;
   justify-content: space-around;
   text-align: center;
+  font-size: small;
 }
 
 .year_age {

@@ -3,6 +3,7 @@ import { initEvent } from "@/data/ZBEvent";
 import type { ZBPerson } from "@/data/ZBPerson";
 import type { Zeitbalken } from "@/data/Zeitbalken";
 import { initZeitbalkenAsJSON, loadZeitbalken } from "@/data/Zeitbalken";
+import { initPerson } from "@/data/ZBPerson";
 
 import { loadZeitbalkenFromStore } from "./localStoragePlugin";
 //import type { IStoreState } from "@/store/index";
@@ -47,6 +48,19 @@ const mutations = {
 
     // new alter is always added on top of list
     state.events.unshift(newEvent);
+  },
+
+  addTimeline(state: Zeitbalken, timeline: Array<number>): void {
+    state.timeline = timeline;
+  },
+
+  addPerson(state: Zeitbalken, initialValues: Partial<ZBPerson> = {}): void {
+    const newPerson = {
+      ...initPerson(),
+      ...initialValues,
+    };
+    state.person = newPerson;
+    console.log(state.person);
   },
 
   editEvent(

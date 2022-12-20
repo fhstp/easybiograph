@@ -2,7 +2,7 @@
   <div>
     <div :class="[event.isInterval ? 'period' : 'event']" id="contentEvent" >
       <!--style="margin-left: 235px"-->
-      <p>
+      <p class="eventText">
         {{ event.description }}
       </p>
       <p class="subcontent">
@@ -66,7 +66,12 @@ export default {
   border-radius: 3px;
 }
 
+.eventText {
+  font-size: smaller;
+}
+
 .subcontent {
   color: darkgrey;
+  font-size: smaller;
 }
 </style>
