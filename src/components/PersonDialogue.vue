@@ -136,9 +136,9 @@ export default {
     close() {
       this.chooseYear()
       //@ts-ignore
-      store.commit("data/addTimeline", this.displayPersonYears())
+      store.commit("data/addTimeline", this.personYears)
       //@ts-ignore
-      //this.$emit("close")
+      this.$emit("close")
     },
     displayPersonYears(): Array<number> {
       let displayedArray: number[] = []

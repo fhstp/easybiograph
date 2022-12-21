@@ -163,7 +163,7 @@
           <p class="subcontent">Alter</p>
         </td>
         <td class="year-wrap" id="year-wrap" ref="yearwrapper">
-          <div v-for="(year, index) in personYears" class="year">
+          <div v-for="(year, index) in displayYears" :key = "index" class="year">
             <p>
               {{ year }}
             </p>
@@ -229,6 +229,7 @@ export default {
   data() {
     return {
       personYears: store.getters.getTimeline,
+      displayYears: {},
       showDialogue: false,
       showEditDialogue: false,
       showCreateBiograph: true,
@@ -243,6 +244,14 @@ export default {
       },
       events: store.getters.getEvents,
     };
+  },
+  watch:{
+    displayYears: {
+      handler(newValue: Array<number>){
+        console.log(typeof newValue)
+      },
+      deep: true
+    }
   },
   methods: {
     loadEvents(){
@@ -277,6 +286,12 @@ export default {
       this.personYears = store.getters.getTimeline;
       //@ts-ignore
       this.showCreateBiograph = false;
+
+
+      //@ts-ignore
+      this.displayYears = this.displayPersonYears()
+      //@ts-ignore
+      this.$forceUpdate()
     },
     addEvent() {
       const newEvent = initEvent();
@@ -341,29 +356,41 @@ export default {
     calcEventMonths(sy: number, ey: number, sm: number, em: number) {
       return em - sm + 12 * (ey - sy);
     },
-    displayPersonYears(): Array<number> {
+    displayPersonYears(): object {
       let displayedArray: number[] = []
       //@ts-ignore
-      let years: number[] = this.personYears
-      console.log(years)
+      let years: number[] = Object.values(this.personYears)
 
-      const displayMaximum: number = 20
+      const displayMaximum: number = 18
 
-      if(years.length <= displayMaximum) return years
+      //@ts-ignore
+      if(years.length <= displayMaximum) return this.personYears
 
-      let gap = years.length / displayMaximum
-      let leftOver = years.length % displayMaximum
-      const firstYear: number = years.shift() || 0
-      const lastYear: number = years.pop() || 0
+      displayedArray = [years[0]]
+      let gap = Math.round(years.length / displayMaximum)
+      console.log(gap)
 
-      displayedArray.push(firstYear)
-      for(let i = gap; i < years.length; i += gap + 1){
-        displayedArray.push(years[i])
+      for(let i = 1; i < years.length -1; i++){
+        if(i % gap === 0){
+          displayedArray.push(years[i])
+        }
       }
-      displayedArray.push(lastYear)
 
-      console.log(displayedArray)
-      return displayedArray
+
+      //displayedArray.unshift(firstYear)
+      const gapYear = displayedArray[2] - displayedArray[1]
+      displayedArray.push(gapYear + displayedArray[displayedArray.length-1])
+      //displayedArray.push(years[years.length - 1])
+      const born = years[0]
+
+      var displayObj = {}
+      displayedArray.forEach((year, index) => {
+          //@ts-ignore
+          displayObj[year - born] = year
+      })
+
+      console.log(displayObj)
+      return displayObj
     },
   },
 };
