@@ -19,6 +19,20 @@
   </nav >
   <br />
 
+<!--
+  <div id="modal-js-example" class="modal">
+    <div class="modal-background"></div>
+
+    <div class="modal-content">
+      <div class="box">
+        <EventDisplay />
+      </div>
+    </div>
+
+    <button class="modal-close is-large" aria-label="close"></button>
+  </div>
+-->
+
   <DeleteEditDialogue v-show="showEditDialogue" @close="closeEditDiv" :selectedEvent="clickedEvent" @reload="loadEvents"/>
   <div
     class="box position"
@@ -155,7 +169,7 @@
       Fertig
     </button>
   </div>
-  <table>
+  <table v-show="!showCreateBiograph">
     <thead>
       <tr class="year_age">
         <td class="content">
@@ -203,10 +217,11 @@ import { store } from "@/store";
 import TimeEvent from "@/components/TimeEvent.vue";
 import DeleteEditDialogue from "@/components/DeleteEditDialogue.vue";
 import PersonDialogue from "@/components/PersonDialogue.vue";
+import EventDisplay from "@/components/EventDisplay.vue";
 
 export default {
   name: "TimeGraph",
-  components: { TimeEvent, DeleteEditDialogue, PersonDialogue },
+  components: { TimeEvent, DeleteEditDialogue, PersonDialogue, EventDisplay },
 
   props: {
     event: {
@@ -257,8 +272,6 @@ export default {
     loadEvents(){
       //@ts-ignore
       this.events = store.getters.getEvents;
-      //@ts-ignore
-      console.table(this.events)
     },
     showDiv() {
       //@ts-ignore
@@ -268,14 +281,10 @@ export default {
       store.commit("data/removeEvent", 0);
     },
     editDiv(event: any) {
-      console.log(PersonDialogue.data().personYears)
       //@ts-ignore
       this.clickedEvent = store.getters.getEventById(event.eventId)
       //@ts-ignore
-      console.table(this.clickedEvent)
-      //@ts-ignore
       this.showEditDialogue = true;
-      //console.log(event.eventId);
     },
     closeEditDiv(){
       //@ts-ignore
@@ -320,8 +329,25 @@ export default {
     },
     calcPos(event: any) {
       let totalYearWidth = 100;
+
+      //@ts-ignore
+      let dYears: number[] = Object.values(this.displayYears)
+
       //@ts-ignore
       let months = this.personYears.length * 12;
+
+      //@ts-ignore
+      if(this.personYears[this.personYears.length -1] == dYears[dYears.length - 1]){
+        //@ts-ignore
+        months = this.personYears.length * 12
+      }else{
+        //@ts-ignore
+        let extra = (dYears[dYears.length - 1] - this.personYears[this.personYears.length -1]) * 12
+        //@ts-ignore
+        months = (this.personYears.length * 12) + extra
+      }
+
+
       //@ts-ignore
       let startYear = +event.startDate.substring(0, 4);
       //@ts-ignore
@@ -339,9 +365,7 @@ export default {
       //@ts-ignore
       let yearsTilBegin: number = this.personYears.indexOf(startYear) * 12;
       let monthsTilBegin: number = yearsTilBegin + startMonth;
-
-      let margin: number = (totalYearWidth / months) * monthsTilBegin;
-
+      let margin: number = (totalYearWidth / months) * monthsTilBegin
       let width: number = (totalYearWidth / months) * eventMonths;
       let styleObject = {
         marginLeft: margin + "%",
@@ -361,21 +385,19 @@ export default {
       //@ts-ignore
       let years: number[] = Object.values(this.personYears)
 
-      const displayMaximum: number = 18
+      const displayMaximum: number = 15
 
       //@ts-ignore
       if(years.length <= displayMaximum) return this.personYears
 
       displayedArray = [years[0]]
       let gap = Math.round(years.length / displayMaximum)
-      console.log(gap)
 
       for(let i = 1; i < years.length -1; i++){
         if(i % gap === 0){
           displayedArray.push(years[i])
         }
       }
-
 
       //displayedArray.unshift(firstYear)
       const gapYear = displayedArray[2] - displayedArray[1]
@@ -389,7 +411,6 @@ export default {
           displayObj[year - born] = year
       })
 
-      console.log(displayObj)
       return displayObj
     },
   },
@@ -403,7 +424,7 @@ table {
   height: 93vh;
   display: table;
   margin-top: 1vh;
-  margin-left: -5vh;
+  margin-left: -5.2vh;
   table-layout: fixed;
 }
 

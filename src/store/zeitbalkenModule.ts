@@ -60,7 +60,6 @@ const mutations = {
       ...initialValues,
     };
     state.person = newPerson;
-    console.log(state.person);
   },
 
   editEvent(

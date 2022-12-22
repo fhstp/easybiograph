@@ -14,6 +14,6 @@ export enum Dimension {
   Bildung,
   Arbeit,
   Gesundheit,
-  "Behandlung/Hilfe",
+  Behandlung,
   Sonstiges,
 }

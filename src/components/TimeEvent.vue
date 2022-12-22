@@ -1,7 +1,15 @@
 <template>
-  <div>
+  <div class="tooltip">
+    <span class="tooltiptext">{{ event.description }}
+        <br>
+          {{ event.isInterval ?
+              event.startDate.substring(0, 4) +
+              " - " +
+              event.endDate.substring(0, 4)
+              : event.startDate }}
+      </span>
     <div :class="[event.isInterval ? 'period' : 'event']" id="contentEvent" >
-      <!--style="margin-left: 235px"-->
+
       <p class="eventText">
         {{ event.description }}
       </p>
@@ -36,7 +44,6 @@ export default {
   methods:{
     editDiv(event) {
       this.showEditDialogue = true;
-      console.log(event.eventId);
     },
   },
 };
@@ -73,5 +80,42 @@ export default {
 .subcontent {
   color: darkgrey;
   font-size: smaller;
+}
+
+
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  top: -9vh;
+  visibility: hidden;
+  width: 120px;
+  background-color: darkgrey;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  font-size: smaller;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+.tooltip .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 100%; /* At the bottom of the tooltip */
+  left: 15%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: darkgrey transparent transparent transparent;
 }
 </style>
