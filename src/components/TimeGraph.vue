@@ -19,19 +19,18 @@
   </nav >
   <br />
 
-<!--
-  <div id="modal-js-example" class="modal">
-    <div class="modal-background"></div>
+
+  <div id="modal-event" class="modal">
+    <div class="modal-background" @click="closeModal"></div>
 
     <div class="modal-content">
       <div class="box">
-        <EventDisplay />
+        <EventDisplay :event="clickedEvent" @open-edit="editDiv"/>
       </div>
     </div>
 
-    <button class="modal-close is-large" aria-label="close"></button>
+    <button class="modal-close is-large" aria-label="close" @click="closeModal"></button>
   </div>
--->
 
   <DeleteEditDialogue v-show="showEditDialogue" @close="closeEditDiv" :selectedEvent="clickedEvent" @reload="loadEvents"/>
   <div
@@ -201,7 +200,7 @@
             v-for="event in filterEvents(value)"
             id="tdContent"
           >
-            <TimeEvent :event="event" :style="calcPos(event)" @click="editDiv(event)" style="cursor: pointer !important;" />
+            <TimeEvent :event="event" :style="calcPos(event)" @click="openEventDisplay(event)" style="cursor: pointer !important;" />
           </div>
         </td>
       </tr>
@@ -247,6 +246,7 @@ export default {
       displayYears: {},
       showDialogue: false,
       showEditDialogue: false,
+      showEventDisplay: false,
       showCreateBiograph: true,
       clickedEvent: {},
       newEventDetails: {
@@ -280,15 +280,28 @@ export default {
     removeEvent() {
       store.commit("data/removeEvent", 0);
     },
-    editDiv(event: any) {
+    editDiv() {
+      this.closeModal()
+      //@ts-ignore
+      //this.clickedEvent = store.getters.getEventById(event.eventId)
+      //@ts-ignore
+      this.showEditDialogue = true;
+    },
+    openEventDisplay(event: any) {
       //@ts-ignore
       this.clickedEvent = store.getters.getEventById(event.eventId)
       //@ts-ignore
-      this.showEditDialogue = true;
+      //this.showEventDisplay = true;
+      const modal = document.querySelector("#modal-event")
+      if (modal) modal.classList.add("is-active")
     },
     closeEditDiv(){
       //@ts-ignore
       this.showEditDialogue = false;
+    },
+    closeModal() {
+      const modal = document.querySelector("#modal-event")
+      if (modal) modal.classList.remove("is-active")
     },
     closePerson(){
       //@ts-ignore

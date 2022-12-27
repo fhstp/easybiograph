@@ -6,6 +6,7 @@
           <p class="title is-4">{{ event.description }}</p>
           <p class="subtitle is-6">{{ event.isInterval ? "Zeitraum" : "Zeitpunkt" }}</p>
         </div>
+        <button @click="$emit('open-edit')">Bearbeiten</button>
       </div>
 
       <div class="content">
