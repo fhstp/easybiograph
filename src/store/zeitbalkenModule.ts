@@ -48,6 +48,11 @@ const mutations = {
 
     // new alter is always added on top of list
     state.events.unshift(newEvent);
+    state.events.sort((a, b) => {
+      const eventA = new Date(a.startDate);
+      const eventB = new Date(b.startDate);
+      return eventA.getTime() - eventB.getTime();
+    });
   },
 
   addTimeline(state: Zeitbalken, timeline: Array<number>): void {
@@ -101,6 +106,11 @@ const mutations = {
       return obj;
     });
     state.events = newArray;
+    state.events.sort((a, b) => {
+      const eventA = new Date(a.startDate);
+      const eventB = new Date(b.startDate);
+      return eventA.getTime() - eventB.getTime();
+    });
   },
 
   editEventById(

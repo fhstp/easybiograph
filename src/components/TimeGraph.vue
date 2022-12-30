@@ -200,7 +200,7 @@
             v-for="event in filterEvents(value)"
             id="tdContent"
           >
-            <TimeEvent :event="event" :style="calcPos(event)" @click="openEventDisplay(event)" style="cursor: pointer !important;" />
+            <TimeEvent :event="event" :show-notes="isOnlyEventAtPos(event)" :style="calcPos(event)" @click="openEventDisplay(event)" style="cursor: pointer !important;" />
           </div>
         </td>
       </tr>
@@ -286,6 +286,36 @@ export default {
       //this.clickedEvent = store.getters.getEventById(event.eventId)
       //@ts-ignore
       this.showEditDialogue = true;
+    },
+    isOnlyEventAtPos(event: any): Boolean {
+      const eventYears = [] as number[]
+      const startYear = new Date(event.startDate).getFullYear()
+      if(event.isInterval){
+        const endYear = new Date(event.endDate).getFullYear()
+        for(let year = startYear; year <= endYear; year++){
+          eventYears.push(year)
+        }
+      } else {
+        eventYears.push(startYear)
+      }
+      let years = [] as number[]
+      //@ts-ignore
+      let events = store.getters.getEvents.filter(a => a.dimensionId == event.dimensionId)
+      for(let i = 0; i<events.length; i++){
+        if(events[i].eventId == event.eventId) continue
+        if(events[i].isInterval){
+          const sy = new Date(events[i].startDate).getFullYear()
+          const ey = new Date(events[i].endDate).getFullYear()
+          for(let year = sy; year <= ey; year++){
+            years.push(year)
+          }
+        } else {
+          years.push(new Date(events[i].startDate).getFullYear())
+        }
+      }
+      let isOnly = !eventYears.some(element => years.includes(element))
+
+      return isOnly
     },
     openEventDisplay(event: any) {
       //@ts-ignore
@@ -381,13 +411,14 @@ export default {
       let margin: number = (totalYearWidth / months) * monthsTilBegin
       let width: number = (totalYearWidth / months) * eventMonths;
       let styleObject = {
-        marginLeft: margin + "%",
+        left: margin + "%",
         width: width + "%",
       };
       let eventObject = {
-        marginLeft: margin + "%",
+        left: margin + "%",
         width: "11%",
       };
+
       return event.isInterval ? styleObject : eventObject;
     },
     calcEventMonths(sy: number, ey: number, sm: number, em: number) {
@@ -453,6 +484,13 @@ tr:nth-child(odd) {
   background-color: $gridgrey;
 }
 
+.eventWrap {
+}
+
+#tdContent {
+  display: block;
+}
+
 thead > tr {
   background-color: white !important;
 }
@@ -481,25 +519,6 @@ thead > tr {
   border-right: 0.5px solid lightgrey;
   width: 10%;
   text-align: center;
-}
-
-.event {
-  display: block;
-  background-color: $eventgrey;
-  border-left: 3px solid $eventgreen;
-  width: 10%;
-  margin: 5px 0;
-  border-radius: 3px;
-}
-
-.period {
-  display: block;
-  background-color: $periodblue;
-  border: 2px solid $periodborderblue;
-  width: 15%;
-  box-shadow: #2c3e50;
-  margin: 5px 0;
-  border-radius: 3px;
 }
 
 .subcontent {

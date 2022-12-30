@@ -13,10 +13,10 @@
       <p class="eventText">
         {{ event.description }}
       </p>
-      <p class="subcontent">
+      <p class="subcontent" v-show="showNotes">
         {{
           event.notes
-            ? event.notes.substring(0, 15) + "..."
+            ? event.notes.substring(0, 15)
             : event.isInterval
             ? event.startDate.substring(0, 4) +
               " - " +
@@ -35,6 +35,7 @@ export default {
   name: "TimeEvent",
   props: {
     event: Object,
+    showNotes: Boolean,
   },
   data(){
     return {
@@ -62,6 +63,7 @@ export default {
   border-left: 3px solid $eventgreen;
   margin: 5px 0;
   border-radius: 3px;
+  z-index: 1;
 }
 
 .period {
@@ -71,15 +73,22 @@ export default {
   box-shadow: #2c3e50;
   margin: 5px 0;
   border-radius: 3px;
+  z-index: 1;
 }
 
 .eventText {
   font-size: smaller;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .subcontent {
   color: darkgrey;
   font-size: smaller;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 
