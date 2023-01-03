@@ -30,6 +30,9 @@ const getters = {
   getTimeline(state: IStoreState): Array<any> {
     return state.data.timeline;
   },
+  getPersonCreated(state: IStoreState): boolean {
+    return typeof state.data.person != "undefined";
+  },
 };
 
 const plugins = import.meta.env.DEV

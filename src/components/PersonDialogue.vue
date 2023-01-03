@@ -1,6 +1,6 @@
 <template>
   <div class="box position" style="height: 96vh; width: 40vw">
-    <button class="button is-light is-small" style="right: -33vw" @click="close">X</button>
+    <button class="button is-light is-small" style="right: -33vw" @click="abort">X</button>
 
     <h1 class="title block">Neuen Zeitbalken erstellen</h1>
     <br />
@@ -75,7 +75,7 @@
       </div>
     </div>
     <br />
-    <button class="button is-white" style="margin-right: 1vw; right: -20vw" @click="close">
+    <button class="button is-white" style="margin-right: 1vw; right: -20vw" @click="abort">
       Abbrechen
     </button>
     <button class="button is-link is-light" style="right: -20vw" @click="addPerson">
@@ -139,6 +139,10 @@ export default {
       store.commit("data/addTimeline", this.personYears)
       //@ts-ignore
       this.$emit("close")
+    },
+    abort() {
+      //@ts-ignore
+      this.$emit("abort")
     },
     displayPersonYears(): Array<number> {
       let displayedArray: number[] = []

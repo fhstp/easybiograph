@@ -1,5 +1,5 @@
 <template>
-  <PersonDialogue v-show="showCreateBiograph" @close="closePerson" />
+  <PersonDialogue v-show="showCreateBiograph" @close="closePerson" @abort="showCreateBiograph = false" />
   <nav class="navbar is-fixed-top" v-show="!showCreateBiograph">
     <div id="navbarBasicExample" class="navbar-menu bar">
       <div class="navbar-start">
@@ -11,6 +11,13 @@
               style="left: 10vw"
             >
               <strong>+</strong>
+            </a>
+            <a
+                class="button is-dark is-small"
+                @click="showCreateBiograph = true"
+                style="left: 15vw"
+            >
+              <strong>#</strong>
             </a>
           </div>
         </div>
@@ -240,6 +247,14 @@ export default {
       dimensionOptions,
     };
   },
+  created() {
+    if(store.getters.getPersonCreated){
+      //@ts-ignore
+      this.personYears = store.getters.getTimeline
+      //@ts-ignore
+      this.displayYears = this.displayPersonYears()
+    }
+  },
   data() {
     return {
       personYears: store.getters.getTimeline,
@@ -247,7 +262,7 @@ export default {
       showDialogue: false,
       showEditDialogue: false,
       showEventDisplay: false,
-      showCreateBiograph: true,
+      showCreateBiograph: !store.getters.getPersonCreated,
       clickedEvent: {},
       newEventDetails: {
         newEventIsPeriod: "period",
@@ -270,6 +285,9 @@ export default {
   },
   methods: {
     loadEvents(){
+      //@ts-ignore
+      this.personYears = store.getters.getTimeline;
+      console.log(store.getters.getTimeline)
       //@ts-ignore
       this.events = store.getters.getEvents;
     },
@@ -339,7 +357,6 @@ export default {
       //@ts-ignore
       this.showCreateBiograph = false;
 
-
       //@ts-ignore
       this.displayYears = this.displayPersonYears()
       //@ts-ignore
@@ -361,6 +378,9 @@ export default {
       //@ts-ignore
       newEvent.endDate = this.newEventDetails.endDate;
       store.commit("data/addEvent", newEvent);
+
+      //@ts-ignore
+      this.newEventDetails = {}
       //console.log(store.getters.getEvents);
     },
     filterEvents(dimension: String): any {
