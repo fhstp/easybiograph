@@ -1,5 +1,9 @@
 <template>
-  <PersonDialogue v-show="showCreateBiograph" @close="closePerson" @abort="showCreateBiograph = false" />
+  <PersonDialogue
+    v-show="showCreateBiograph"
+    @close="closePerson"
+    @abort="showCreateBiograph = false"
+  />
   <nav class="navbar is-fixed-top" v-show="!showCreateBiograph">
     <div id="navbarBasicExample" class="navbar-menu bar">
       <div class="navbar-start">
@@ -13,33 +17,48 @@
               <strong>+</strong>
             </a>
             <a
-                class="button is-dark is-small"
-                @click="showCreateBiograph = true"
-                style="left: 15vw"
+              class="button is-dark is-small"
+              @click="showCreateBiograph = true"
+              style="left: 15vw"
             >
               <strong>#</strong>
+            </a>
+            <a
+              class="button is-dark is-small"
+              @click="downloadData"
+              style="left: 20vw"
+            >
+              <strong>Export</strong>
             </a>
           </div>
         </div>
       </div>
     </div>
-  </nav >
+  </nav>
   <br />
-
 
   <div id="modal-event" class="modal">
     <div class="modal-background" @click="closeModal"></div>
 
     <div class="modal-content">
       <div class="box">
-        <EventDisplay :event="clickedEvent" @open-edit="editDiv"/>
+        <EventDisplay :event="clickedEvent" @open-edit="editDiv" />
       </div>
     </div>
 
-    <button class="modal-close is-large" aria-label="close" @click="closeModal"></button>
+    <button
+      class="modal-close is-large"
+      aria-label="close"
+      @click="closeModal"
+    ></button>
   </div>
 
-  <DeleteEditDialogue v-show="showEditDialogue" @close="closeEditDiv" :selectedEvent="clickedEvent" @reload="loadEvents"/>
+  <DeleteEditDialogue
+    v-show="showEditDialogue"
+    @close="closeEditDiv"
+    :selectedEvent="clickedEvent"
+    @reload="loadEvents"
+  />
   <div
     class="box position"
     id="box"
@@ -183,7 +202,7 @@
           <p class="subcontent">Alter</p>
         </td>
         <td class="year-wrap" id="year-wrap" ref="yearwrapper">
-          <div v-for="(year, index) in displayYears" :key = "index" class="year">
+          <div v-for="(year, index) in displayYears" :key="index" class="year">
             <p>
               {{ year }}
             </p>
@@ -205,9 +224,16 @@
           <!-- -->
           <div
             v-for="event in filterEvents(value)"
+            :key="event.eventId"
             id="tdContent"
           >
-            <TimeEvent :event="event" :show-notes="isOnlyEventAtPos(event)" :style="calcPos(event)" @click="openEventDisplay(event)" style="cursor: pointer !important;" />
+            <TimeEvent
+              :event="event"
+              :show-notes="isOnlyEventAtPos(event)"
+              :style="calcPos(event)"
+              @click="openEventDisplay(event)"
+              style="cursor: pointer !important"
+            />
           </div>
         </td>
       </tr>
@@ -216,7 +242,6 @@
 </template>
 
 <script lang="ts">
-import { useStore } from "vuex";
 import { initEvent } from "@/data/ZBEvent";
 import { Dimension } from "@/data/Dimension";
 import { store } from "@/store";
@@ -236,7 +261,7 @@ export default {
     },
   },
   setup() {
-    const store = useStore();
+    //const store = useStore();
 
     //console.log(store.getters.getEvents);
 
@@ -248,11 +273,11 @@ export default {
     };
   },
   created() {
-    if(store.getters.getPersonCreated){
+    if (store.getters.getPersonCreated) {
       //@ts-ignore
-      this.personYears = store.getters.getTimeline
+      this.personYears = store.getters.getTimeline;
       //@ts-ignore
-      this.displayYears = this.displayPersonYears()
+      this.displayYears = this.displayPersonYears();
     }
   },
   data() {
@@ -275,19 +300,19 @@ export default {
       events: store.getters.getEvents,
     };
   },
-  watch:{
+  watch: {
     displayYears: {
-      handler(newValue: Array<number>){
-        console.log(typeof newValue)
+      handler(newValue: Array<number>) {
+        console.log(typeof newValue);
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   methods: {
-    loadEvents(){
+    loadEvents() {
       //@ts-ignore
       this.personYears = store.getters.getTimeline;
-      console.log(store.getters.getTimeline)
+      console.log(store.getters.getTimeline);
       //@ts-ignore
       this.events = store.getters.getEvents;
     },
@@ -299,68 +324,70 @@ export default {
       store.commit("data/removeEvent", 0);
     },
     editDiv() {
-      this.closeModal()
+      this.closeModal();
       //@ts-ignore
       //this.clickedEvent = store.getters.getEventById(event.eventId)
       //@ts-ignore
       this.showEditDialogue = true;
     },
     isOnlyEventAtPos(event: any): Boolean {
-      const eventYears = [] as number[]
-      const startYear = new Date(event.startDate).getFullYear()
-      if(event.isInterval){
-        const endYear = new Date(event.endDate).getFullYear()
-        for(let year = startYear; year <= endYear; year++){
-          eventYears.push(year)
+      const eventYears = [] as number[];
+      const startYear = new Date(event.startDate).getFullYear();
+      if (event.isInterval) {
+        const endYear = new Date(event.endDate).getFullYear();
+        for (let year = startYear; year <= endYear; year++) {
+          eventYears.push(year);
         }
       } else {
-        eventYears.push(startYear)
+        eventYears.push(startYear);
       }
-      let years = [] as number[]
+      let years = [] as number[];
       //@ts-ignore
-      let events = store.getters.getEvents.filter(a => a.dimensionId == event.dimensionId)
-      for(let i = 0; i<events.length; i++){
-        if(events[i].eventId == event.eventId) continue
-        if(events[i].isInterval){
-          const sy = new Date(events[i].startDate).getFullYear()
-          const ey = new Date(events[i].endDate).getFullYear()
-          for(let year = sy; year <= ey; year++){
-            years.push(year)
+      let events = store.getters.getEvents.filter(
+        (a) => a.dimensionId == event.dimensionId
+      );
+      for (let i = 0; i < events.length; i++) {
+        if (events[i].eventId == event.eventId) continue;
+        if (events[i].isInterval) {
+          const sy = new Date(events[i].startDate).getFullYear();
+          const ey = new Date(events[i].endDate).getFullYear();
+          for (let year = sy; year <= ey; year++) {
+            years.push(year);
           }
         } else {
-          years.push(new Date(events[i].startDate).getFullYear())
+          years.push(new Date(events[i].startDate).getFullYear());
         }
       }
-      let isOnly = !eventYears.some(element => years.includes(element))
+      let isOnly = !eventYears.some((element) => years.includes(element));
 
-      return isOnly
+      return isOnly;
     },
     openEventDisplay(event: any) {
       //@ts-ignore
-      this.clickedEvent = store.getters.getEventById(event.eventId)
+      this.clickedEvent = store.getters.getEventById(event.eventId);
       //@ts-ignore
       //this.showEventDisplay = true;
-      const modal = document.querySelector("#modal-event")
-      if (modal) modal.classList.add("is-active")
+      const modal = document.querySelector("#modal-event");
+      if (modal) modal.classList.add("is-active");
     },
-    closeEditDiv(){
+    closeEditDiv() {
       //@ts-ignore
       this.showEditDialogue = false;
     },
     closeModal() {
-      const modal = document.querySelector("#modal-event")
-      if (modal) modal.classList.remove("is-active")
+      const modal = document.querySelector("#modal-event");
+      if (modal) modal.classList.remove("is-active");
     },
-    closePerson(){
+    closePerson() {
       //@ts-ignore
       this.personYears = store.getters.getTimeline;
       //@ts-ignore
       this.showCreateBiograph = false;
 
       //@ts-ignore
-      this.displayYears = this.displayPersonYears()
+      this.displayYears = this.displayPersonYears();
       //@ts-ignore
-      this.$forceUpdate()
+      this.$forceUpdate();
     },
     addEvent() {
       const newEvent = initEvent();
@@ -380,7 +407,7 @@ export default {
       store.commit("data/addEvent", newEvent);
 
       //@ts-ignore
-      this.newEventDetails = {}
+      this.newEventDetails = {};
       //console.log(store.getters.getEvents);
     },
     filterEvents(dimension: String): any {
@@ -394,22 +421,27 @@ export default {
       let totalYearWidth = 100;
 
       //@ts-ignore
-      let dYears: number[] = Object.values(this.displayYears)
+      let dYears: number[] = Object.values(this.displayYears);
 
       //@ts-ignore
       let months = this.personYears.length * 12;
 
       //@ts-ignore
-      if(this.personYears[this.personYears.length -1] == dYears[dYears.length - 1]){
+      if (
+        this.personYears[this.personYears.length - 1] ==
+        dYears[dYears.length - 1]
+      ) {
         //@ts-ignore
-        months = this.personYears.length * 12
-      }else{
+        months = this.personYears.length * 12;
+      } else {
         //@ts-ignore
-        let extra = (dYears[dYears.length - 1] - this.personYears[this.personYears.length -1]) * 12
+        let extra =
+          (dYears[dYears.length - 1] -
+            this.personYears[this.personYears.length - 1]) *
+          12;
         //@ts-ignore
-        months = (this.personYears.length * 12) + extra
+        months = this.personYears.length * 12 + extra;
       }
-
 
       //@ts-ignore
       let startYear = +event.startDate.substring(0, 4);
@@ -428,7 +460,7 @@ export default {
       //@ts-ignore
       let yearsTilBegin: number = this.personYears.indexOf(startYear) * 12;
       let monthsTilBegin: number = yearsTilBegin + startMonth;
-      let margin: number = (totalYearWidth / months) * monthsTilBegin
+      let margin: number = (totalYearWidth / months) * monthsTilBegin;
       let width: number = (totalYearWidth / months) * eventMonths;
       let styleObject = {
         left: margin + "%",
@@ -445,37 +477,50 @@ export default {
       return em - sm + 12 * (ey - sy);
     },
     displayPersonYears(): object {
-      let displayedArray: number[] = []
+      let displayedArray: number[] = [];
       //@ts-ignore
-      let years: number[] = Object.values(this.personYears)
+      let years: number[] = Object.values(this.personYears);
 
-      const displayMaximum: number = 15
+      const displayMaximum: number = 15;
 
       //@ts-ignore
-      if(years.length <= displayMaximum) return this.personYears
+      if (years.length <= displayMaximum) return this.personYears;
 
-      displayedArray = [years[0]]
-      let gap = Math.round(years.length / displayMaximum)
+      displayedArray = [years[0]];
+      let gap = Math.round(years.length / displayMaximum);
 
-      for(let i = 1; i < years.length -1; i++){
-        if(i % gap === 0){
-          displayedArray.push(years[i])
+      for (let i = 1; i < years.length - 1; i++) {
+        if (i % gap === 0) {
+          displayedArray.push(years[i]);
         }
       }
 
       //displayedArray.unshift(firstYear)
-      const gapYear = displayedArray[2] - displayedArray[1]
-      displayedArray.push(gapYear + displayedArray[displayedArray.length-1])
+      const gapYear = displayedArray[2] - displayedArray[1];
+      displayedArray.push(gapYear + displayedArray[displayedArray.length - 1]);
       //displayedArray.push(years[years.length - 1])
-      const born = years[0]
+      const born = years[0];
 
-      var displayObj = {}
-      displayedArray.forEach((year, index) => {
-          //@ts-ignore
-          displayObj[year - born] = year
-      })
+      var displayObj = {};
+      displayedArray.forEach((year) => {
+        //@ts-ignore
+        displayObj[year - born] = year;
+      });
 
-      return displayObj
+      return displayObj;
+    },
+    downloadData() {
+      const dataObject = store.getters.getDownloadData;
+      var dataStr =
+        "data:text/json;charset=utf-8," +
+        encodeURIComponent(JSON.stringify(dataObject));
+      var dlAnchorElem = document.createElement("a");
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", "easybiograph.json");
+      dlAnchorElem.style.display = "none";
+      document.body.appendChild(dlAnchorElem);
+      dlAnchorElem.click();
+      document.body.removeChild(dlAnchorElem);
     },
   },
 };
@@ -565,5 +610,4 @@ thead > tr {
   left: -3vw;
   top: -0.5vh;
 }
-
 </style>

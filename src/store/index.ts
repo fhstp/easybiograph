@@ -33,12 +33,21 @@ const getters = {
   getPersonCreated(state: IStoreState): boolean {
     return typeof state.data.person != "undefined";
   },
+  getDownloadData(state: IStoreState): Object {
+    const downloadObject = {
+      person: state.data.person,
+      timeline: state.data.timeline,
+      events: state.data.events,
+    };
+    return downloadObject;
+  },
 };
 
 const plugins = import.meta.env.DEV
   ? [createLogger(), localStoragePlugin]
   : [localStoragePlugin];
 
+// @ts-ignore
 export const store = createStore<IStoreState>({
   strict: import.meta.env.DEV,
   modules: {
@@ -47,7 +56,6 @@ export const store = createStore<IStoreState>({
     session: sessionModule,
   },
   getters,
-  // mutations,
   plugins,
 });
 

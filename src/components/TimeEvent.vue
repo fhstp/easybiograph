@@ -1,15 +1,17 @@
 <template>
   <div class="tooltip">
-    <span class="tooltiptext">{{ event.description }}
-        <br>
-          {{ event.isInterval ?
-              event.startDate.substring(0, 4) +
-              " - " +
-              event.endDate.substring(0, 4)
-              : event.startDate }}
-      </span>
-    <div :class="[event.isInterval ? 'period' : 'event']" id="contentEvent" >
-
+    <span class="tooltiptext"
+      >{{ event.description }}
+      <br />
+      {{
+        event.isInterval
+          ? event.startDate.substring(0, 4) +
+            " - " +
+            event.endDate.substring(0, 4)
+          : event.startDate
+      }}
+    </span>
+    <div :class="[event.isInterval ? 'period' : 'event']" id="contentEvent">
       <p class="eventText">
         {{ event.description }}
       </p>
@@ -37,13 +39,13 @@ export default {
     event: Object,
     showNotes: Boolean,
   },
-  data(){
+  data() {
     return {
       showEditDialogue: false,
-    }
+    };
   },
-  methods:{
-    editDiv(event) {
+  methods: {
+    editDiv() {
       this.showEditDialogue = true;
     },
   },
@@ -90,8 +92,6 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-
 
 .tooltip {
   position: relative;

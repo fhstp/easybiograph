@@ -19,21 +19,21 @@
           <div class="control">
             <label class="radio">
               <input
-                  type="radio"
-                  name="member"
-                  v-model="currentEvent.isInterval"
-                  value="period"
-                  :checked="currentEvent.isInterval"
+                type="radio"
+                name="member"
+                v-model="currentEvent.isInterval"
+                value="period"
+                :checked="currentEvent.isInterval"
               />
               Zeitraum
             </label>
             <label class="radio">
               <input
-                  type="radio"
-                  name="member"
-                  v-model="currentEvent.isInterval"
-                  value="point"
-                  :checked="currentEvent.isInterval == false"
+                type="radio"
+                name="member"
+                v-model="currentEvent.isInterval"
+                value="point"
+                :checked="currentEvent.isInterval == false"
               />
               Zeitpunkt
             </label>
@@ -48,9 +48,9 @@
       <div class="field-body">
         <input type="month" v-model="currentEvent.startDate" />
         <input
-            type="month"
-            v-show="currentEvent.isInterval == true"
-            v-model="currentEvent.endDate"
+          type="month"
+          v-show="currentEvent.isInterval == true"
+          v-model="currentEvent.endDate"
         />
       </div>
     </div>
@@ -107,10 +107,18 @@
       </div>
     </div>
     <br />
-    <button class="button is-danger is-light" @click="removeEvent" style="margin-right: 1vw; right: 0vw">
+    <button
+      class="button is-danger is-light"
+      @click="removeEvent"
+      style="margin-right: 1vw; right: 0vw"
+    >
       Löschen
     </button>
-    <button class="button is-white" style="margin-right: 1vw; right: -11vw" @click="close">
+    <button
+      class="button is-white"
+      style="margin-right: 1vw; right: -11vw"
+      @click="close"
+    >
       Abbrechen
     </button>
     <button
@@ -125,70 +133,70 @@
 
 <script>
 import { store } from "@/store";
-import {Dimension} from "@/data/Dimension";
+import { Dimension } from "@/data/Dimension";
 import { initEvent } from "@/data/ZBEvent";
 
 export default {
   name: "DeleteEditDialogue",
   setup() {
     const dimensionOptions = Object.keys(Dimension).filter((v) =>
-        isNaN(Number(v))
+      isNaN(Number(v))
     );
     return {
       dimensionOptions,
     };
   },
-  props:{
+  props: {
     selectedEvent: {},
   },
   data() {
     return {
       currentEvent: {},
-      selectedDimension: Dimension.Familie
-    }
+      selectedDimension: Dimension.Familie,
+    };
   },
   methods: {
-    init(){
-      this.currentEvent = this.selectedEvent
-      this.selectedDimension = Dimension[this.selectedEvent.dimensionId]
+    init() {
+      this.currentEvent = this.selectedEvent;
+      this.selectedDimension = Dimension[this.selectedEvent.dimensionId];
 
-      console.table(this.currentEvent)
+      console.table(this.currentEvent);
     },
-    updateEvent(event){
-      this.currentEvent.description = event
+    updateEvent(event) {
+      this.currentEvent.description = event;
     },
     removeEvent() {
       store.commit("data/removeEvent", this.selectedEvent.eventId);
-      this.$emit("close")
+      this.$emit("close");
     },
     editEvent() {
-      const payload = initEvent()
-      payload.eventId = this.selectedEvent.eventId
+      const payload = initEvent();
+      payload.eventId = this.selectedEvent.eventId;
       payload.dimensionId = Dimension[this.selectedDimension];
       //@ts-ignore
       payload.description = this.currentEvent.description;
       //@ts-ignore
       payload.notes = this.currentEvent.notes;
       payload.isInterval =
-          //@ts-ignore
-          this.currentEvent.isInterval ? true : false;
+        //@ts-ignore
+        this.currentEvent.isInterval ? true : false;
       payload.startDate = this.currentEvent.startDate;
       payload.endDate = this.currentEvent.endDate;
-      console.table(payload)
+      console.table(payload);
       store.commit("data/editEvents", payload);
-      this.$emit("reload")
-      this.$emit("close")
+      this.$emit("reload");
+      this.$emit("close");
     },
     close() {
-      this.$emit("close")
+      this.$emit("close");
     },
   },
-  watch:{
-    selectedEvent: function(new_value) {
-      this.currentEvent = this.selectedEvent
-      this.selectedDimension = Dimension[this.selectedEvent.dimensionId]
-    }
-  }
+  watch: {
+    selectedEvent: function () {
+      this.currentEvent = this.selectedEvent;
+      this.selectedDimension = Dimension[this.selectedEvent.dimensionId];
+    },
+  },
 };
 </script>
 

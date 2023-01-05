@@ -3,12 +3,21 @@
     <div class="card-content">
       <div class="media">
         <div class="media-content">
-          <p class="title is-4">{{ event.description }}</p>
-          <p class="subtitle is-6">{{ event.isInterval ? "Zeitraum" : "Zeitpunkt" }}</p>
-        </div>
-        <button @click="$emit('open-edit')">Bearbeiten</button>
-      </div>
+          <p class="title is-4">
+            {{ event.description }}
+            <button @click="$emit('open-edit')" class="button is-small">
+              <span class="icon is-small">
+                <font-awesome-icon icon="pencil-alt" />
+              </span>
+            </button>
+          </p>
 
+          <p class="subtitle is-6">
+            {{ event.isInterval ? "Zeitraum" : "Zeitpunkt" }}
+          </p>
+        </div>
+      </div>
+      <br />
       <div class="content">
         <div class="field is-horizontal">
           <div class="field-label is-normal">
@@ -16,9 +25,11 @@
           </div>
           <div class="field-body">
             <div class="field">
-              {{ event.isInterval
-                ? event.startDate + " bis " + event.endDate
-                : event.startDate }}
+              {{
+                event.isInterval
+                  ? event.startDate + " bis " + event.endDate
+                  : event.startDate
+              }}
             </div>
           </div>
         </div>
@@ -44,9 +55,7 @@ export default {
   props: {
     event: Object,
   },
-}
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
