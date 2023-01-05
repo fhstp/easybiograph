@@ -20,10 +20,34 @@ export interface IStoreState {
   unredo: IUnReDoState;
 }
 
+const getters = {
+  getEvents(state: IStoreState): any {
+    return state.data.events;
+  },
+  getEventById: (state: IStoreState) => (id: number) => {
+    return state.data.events.find((x) => x.eventId === id);
+  },
+  getTimeline(state: IStoreState): Array<any> {
+    return state.data.timeline;
+  },
+  getPersonCreated(state: IStoreState): boolean {
+    return typeof state.data.person != "undefined";
+  },
+  getDownloadData(state: IStoreState): Object {
+    const downloadObject = {
+      person: state.data.person,
+      timeline: state.data.timeline,
+      events: state.data.events,
+    };
+    return downloadObject;
+  },
+};
+
 const plugins = import.meta.env.DEV
   ? [createLogger(), localStoragePlugin]
   : [localStoragePlugin];
 
+// @ts-ignore
 export const store = createStore<IStoreState>({
   strict: import.meta.env.DEV,
   modules: {
@@ -31,8 +55,7 @@ export const store = createStore<IStoreState>({
     settings: settingsModule,
     session: sessionModule,
   },
-  // getters,
-  // mutations,
+  getters,
   plugins,
 });
 

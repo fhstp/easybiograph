@@ -3,8 +3,10 @@ import { initEvent } from "@/data/ZBEvent";
 import type { ZBPerson } from "@/data/ZBPerson";
 import type { Zeitbalken } from "@/data/Zeitbalken";
 import { initZeitbalkenAsJSON, loadZeitbalken } from "@/data/Zeitbalken";
+import { initPerson } from "@/data/ZBPerson";
 
 import { loadZeitbalkenFromStore } from "./localStoragePlugin";
+//import type { IStoreState } from "@/store/index";
 
 // module state object.
 // each Vuex instance is just a single state tree.
@@ -46,6 +48,23 @@ const mutations = {
 
     // new alter is always added on top of list
     state.events.unshift(newEvent);
+    state.events.sort((a, b) => {
+      const eventA = new Date(a.startDate);
+      const eventB = new Date(b.startDate);
+      return eventA.getTime() - eventB.getTime();
+    });
+  },
+
+  addTimeline(state: Zeitbalken, timeline: Array<number>): void {
+    state.timeline = timeline;
+  },
+
+  addPerson(state: Zeitbalken, initialValues: Partial<ZBPerson> = {}): void {
+    const newPerson = {
+      ...initPerson(),
+      ...initialValues,
+    };
+    state.person = newPerson;
   },
 
   editEvent(
@@ -73,6 +92,27 @@ const mutations = {
     }
   },
 
+  editEvents(state: Zeitbalken, payload: ZBEvent) {
+    const eventIndex = state.events.findIndex(
+      (x) => x.eventId === payload.eventId
+    );
+    const newArray = state.events.map((obj, i) => {
+      if (i === eventIndex) {
+        return {
+          ...obj,
+          ...payload,
+        };
+      }
+      return obj;
+    });
+    state.events = newArray;
+    state.events.sort((a, b) => {
+      const eventA = new Date(a.startDate);
+      const eventB = new Date(b.startDate);
+      return eventA.getTime() - eventB.getTime();
+    });
+  },
+
   editEventById(
     state: Zeitbalken,
     payload: { id: number; changes: Partial<ZBEvent> }
@@ -93,12 +133,24 @@ const mutations = {
 
   removeEvent(state: Zeitbalken, eventIndex: number): void {
     // based on vuex\examples\composition\todomvc\store\mutations.js
-    state.events.splice(eventIndex, 1);
+    const eventDelete = state.events.findIndex((e) => {
+      return e.eventId === eventIndex;
+    });
+    state.events.splice(eventDelete, 1);
   },
 };
+/*
+    getters: {
+      // @ts-ignore
+      getEvents(state, getters) {
+        //@ts-ignore
+        return state.events
+      },
+    }; */
 
 export const zeitbalkenModule = {
   namespaced: true,
   state,
   mutations,
+  //getters,
 };

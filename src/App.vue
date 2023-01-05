@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
+import { RouterView } from "vue-router";
 </script>
 
 <template>
+  <!--
   <header>
     <img
       alt="Vue logo"
@@ -22,11 +22,23 @@ import HelloWorld from "./components/HelloWorld.vue";
       </nav>
     </div>
   </header>
-
+  -->
   <RouterView />
 </template>
 
 <style scoped>
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
 header {
   line-height: 1.5;
   max-height: 100vh;
