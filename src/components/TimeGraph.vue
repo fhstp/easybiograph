@@ -24,6 +24,13 @@
               <strong>#</strong>
             </a>
             <a
+                class="button is-dark is-small"
+                style="left: 40vw"
+
+            >
+            <input class="file-input" type="file" @change="importData" />
+            </a>
+            <a
               class="button is-dark is-small"
               @click="downloadData"
               style="left: 20vw"
@@ -252,7 +259,7 @@ import EventDisplay from "@/components/EventDisplay.vue";
 
 export default {
   name: "TimeGraph",
-  components: { TimeEvent, DeleteEditDialogue, PersonDialogue, EventDisplay },
+  components: {TimeEvent, DeleteEditDialogue, PersonDialogue, EventDisplay},
 
   props: {
     event: {
@@ -266,7 +273,7 @@ export default {
     //console.log(store.getters.getEvents);
 
     const dimensionOptions = Object.keys(Dimension).filter((v) =>
-      isNaN(Number(v))
+        isNaN(Number(v))
     );
     return {
       dimensionOptions,
@@ -312,7 +319,7 @@ export default {
     loadEvents() {
       //@ts-ignore
       this.personYears = store.getters.getTimeline;
-      console.log(store.getters.getTimeline);
+      this.displayPersonYears()
       //@ts-ignore
       this.events = store.getters.getEvents;
     },
@@ -344,7 +351,7 @@ export default {
       let years = [] as number[];
       //@ts-ignore
       let events = store.getters.getEvents.filter(
-        (a) => a.dimensionId == event.dimensionId
+          (a) => a.dimensionId == event.dimensionId
       );
       for (let i = 0; i < events.length; i++) {
         if (events[i].eventId == event.eventId) continue;
@@ -398,8 +405,8 @@ export default {
       //@ts-ignore
       newEvent.notes = this.newEventDetails.note;
       newEvent.isInterval =
-        //@ts-ignore
-        this.newEventDetails.newEventIsPeriod == "period" ? true : false;
+          //@ts-ignore
+          this.newEventDetails.newEventIsPeriod == "period" ? true : false;
       //@ts-ignore
       newEvent.startDate = this.newEventDetails.startDate;
       //@ts-ignore
@@ -419,49 +426,68 @@ export default {
     },
     calcPos(event: any) {
       let totalYearWidth = 100;
-
       //@ts-ignore
       let dYears: number[] = Object.values(this.displayYears);
 
       //@ts-ignore
       let months = this.personYears.length * 12;
 
-      //@ts-ignore
+
       if (
-        this.personYears[this.personYears.length - 1] ==
-        dYears[dYears.length - 1]
+          //@ts-ignore
+          this.personYears[this.personYears.length - 1] ==
+          dYears[dYears.length - 1]
       ) {
         //@ts-ignore
         months = this.personYears.length * 12;
       } else {
-        //@ts-ignore
+
         let extra =
-          (dYears[dYears.length - 1] -
-            this.personYears[this.personYears.length - 1]) *
-          12;
+            (dYears[dYears.length - 1] -
+                //@ts-ignore
+                this.personYears[this.personYears.length - 1]) *
+            12;
         //@ts-ignore
         months = this.personYears.length * 12 + extra;
       }
 
+
       //@ts-ignore
       let startYear = +event.startDate.substring(0, 4);
-      //@ts-ignore
-      let endYear = +event.endDate.substring(0, 4);
+
+
       //@ts-ignore
       let startMonth = parseInt(event.startDate.substring(5, 7), 10);
+
       //@ts-ignore
-      let endMonth = parseInt(event.endDate.substring(5, 7), 10);
-      let eventMonths = this.calcEventMonths(
-        startYear,
-        endYear,
-        startMonth,
-        endMonth
-      );
+
+      let eventMonths = 0
+
+      if (event.isInterval) {
+        //@ts-ignore
+        let endYear = +event.endDate.substring(0, 4);
+
+
+        let endMonth = parseInt(event.endDate.substring(5, 7), 10);
+
+
+        eventMonths = this.calcEventMonths(
+            startYear,
+            endYear,
+            startMonth,
+            endMonth
+        );
+      }
       //@ts-ignore
       let yearsTilBegin: number = this.personYears.indexOf(startYear) * 12;
+
       let monthsTilBegin: number = yearsTilBegin + startMonth;
+
       let margin: number = (totalYearWidth / months) * monthsTilBegin;
-      let width: number = (totalYearWidth / months) * eventMonths;
+
+      //@ts-ignore
+      let width: number = event.isInterval ? (totalYearWidth / months) * eventMonths : 5;
+
       let styleObject = {
         left: margin + "%",
         width: width + "%",
@@ -502,7 +528,7 @@ export default {
       const born = years[0];
 
       var displayObj = {};
-      displayedArray.forEach((year) => {
+      displayedArray.forEach((year, index) => {
         //@ts-ignore
         displayObj[year - born] = year;
       });
@@ -512,8 +538,8 @@ export default {
     downloadData() {
       const dataObject = store.getters.getDownloadData;
       var dataStr =
-        "data:text/json;charset=utf-8," +
-        encodeURIComponent(JSON.stringify(dataObject));
+          "data:text/json;charset=utf-8," +
+          encodeURIComponent(JSON.stringify(dataObject));
       var dlAnchorElem = document.createElement("a");
       dlAnchorElem.setAttribute("href", dataStr);
       dlAnchorElem.setAttribute("download", "easybiograph.json");
@@ -522,8 +548,31 @@ export default {
       dlAnchorElem.click();
       document.body.removeChild(dlAnchorElem);
     },
-  },
-};
+    importData(event: any) {
+      // based on https://stackoverflow.com/a/36198572/1140589
+      const files = event.target.files;
+
+      if (files.length <= 0) {
+        return false;
+      }
+
+      const fr = new FileReader();
+      // eslint-disable-next-line
+      fr.onload = (e: any) => {
+        const readData = e.target.result;
+        // TODO format checks & error messages
+        // if (savedNWK.alteri && savedNWK.alteri instanceof Array) {
+        // if (savedNWK.ego && isEgo(savedNWK.ego)) {
+        store.commit("data/loadZeitbalken", readData);
+        //@ts-ignore
+        this.loadEvents()
+        //@ts-ignore
+        this.$router.go(0);
+      };
+      fr.readAsText(files.item(0));
+    },
+  }
+}
 </script>
 
 <style scoped lang="scss">

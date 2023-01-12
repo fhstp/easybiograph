@@ -45,7 +45,7 @@ export default {
     };
   },
   methods: {
-    editDiv() {
+    editDiv(event) {
       this.showEditDialogue = true;
     },
   },
