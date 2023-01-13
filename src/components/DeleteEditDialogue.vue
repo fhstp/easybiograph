@@ -192,7 +192,7 @@ export default {
     },
   },
   watch: {
-    selectedEvent: function (new_value) {
+    selectedEvent: function () {
       this.currentEvent = this.selectedEvent;
       this.selectedDimension = Dimension[this.selectedEvent.dimensionId];
     },

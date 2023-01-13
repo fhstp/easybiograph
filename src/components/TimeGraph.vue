@@ -14,28 +14,35 @@
               @click="showDiv()"
               style="left: 10vw"
             >
-              <strong>+</strong>
+              <strong>Event erstellen</strong>
             </a>
             <a
               class="button is-dark is-small"
               @click="showCreateBiograph = true"
-              style="left: 15vw"
+              style="left: 11vw"
             >
-              <strong>#</strong>
+              <strong>
+                <span class="icon is-small">
+                  <font-awesome-icon icon="pencil-alt" />
+                </span>
+              </strong>
             </a>
-            <a
-                class="button is-dark is-small"
-                style="left: 40vw"
 
-            >
-            <input class="file-input" type="file" @change="importData" />
-            </a>
             <a
               class="button is-dark is-small"
               @click="downloadData"
-              style="left: 20vw"
+              style="left: 12vw"
             >
-              <strong>Export</strong>
+              <strong
+                ><span class="icon is-small">
+                  <font-awesome-icon icon="save" /> </span
+              ></strong>
+            </a>
+            <a class="button is-dark is-small" style="left: 13vw">
+              <input class="file-input" type="file" @change="importData" />
+              <span class="icon is-small">
+                <font-awesome-icon icon="folder-open" />
+              </span>
             </a>
           </div>
         </div>
@@ -259,7 +266,7 @@ import EventDisplay from "@/components/EventDisplay.vue";
 
 export default {
   name: "TimeGraph",
-  components: {TimeEvent, DeleteEditDialogue, PersonDialogue, EventDisplay},
+  components: { TimeEvent, DeleteEditDialogue, PersonDialogue, EventDisplay },
 
   props: {
     event: {
@@ -273,7 +280,7 @@ export default {
     //console.log(store.getters.getEvents);
 
     const dimensionOptions = Object.keys(Dimension).filter((v) =>
-        isNaN(Number(v))
+      isNaN(Number(v))
     );
     return {
       dimensionOptions,
@@ -319,7 +326,7 @@ export default {
     loadEvents() {
       //@ts-ignore
       this.personYears = store.getters.getTimeline;
-      this.displayPersonYears()
+      this.displayPersonYears();
       //@ts-ignore
       this.events = store.getters.getEvents;
     },
@@ -332,8 +339,6 @@ export default {
     },
     editDiv() {
       this.closeModal();
-      //@ts-ignore
-      //this.clickedEvent = store.getters.getEventById(event.eventId)
       //@ts-ignore
       this.showEditDialogue = true;
     },
@@ -349,9 +354,10 @@ export default {
         eventYears.push(startYear);
       }
       let years = [] as number[];
-      //@ts-ignore
+
       let events = store.getters.getEvents.filter(
-          (a) => a.dimensionId == event.dimensionId
+        //@ts-ignore
+        (a) => a.dimensionId == event.dimensionId
       );
       for (let i = 0; i < events.length; i++) {
         if (events[i].eventId == event.eventId) continue;
@@ -372,8 +378,6 @@ export default {
     openEventDisplay(event: any) {
       //@ts-ignore
       this.clickedEvent = store.getters.getEventById(event.eventId);
-      //@ts-ignore
-      //this.showEventDisplay = true;
       const modal = document.querySelector("#modal-event");
       if (modal) modal.classList.add("is-active");
     },
@@ -405,8 +409,8 @@ export default {
       //@ts-ignore
       newEvent.notes = this.newEventDetails.note;
       newEvent.isInterval =
-          //@ts-ignore
-          this.newEventDetails.newEventIsPeriod == "period" ? true : false;
+        //@ts-ignore
+        this.newEventDetails.newEventIsPeriod == "period" ? true : false;
       //@ts-ignore
       newEvent.startDate = this.newEventDetails.startDate;
       //@ts-ignore
@@ -432,50 +436,44 @@ export default {
       //@ts-ignore
       let months = this.personYears.length * 12;
 
-
       if (
-          //@ts-ignore
-          this.personYears[this.personYears.length - 1] ==
-          dYears[dYears.length - 1]
+        //@ts-ignore
+        this.personYears[this.personYears.length - 1] ==
+        dYears[dYears.length - 1]
       ) {
         //@ts-ignore
         months = this.personYears.length * 12;
       } else {
-
         let extra =
-            (dYears[dYears.length - 1] -
-                //@ts-ignore
-                this.personYears[this.personYears.length - 1]) *
-            12;
+          (dYears[dYears.length - 1] -
+            //@ts-ignore
+            this.personYears[this.personYears.length - 1]) *
+          12;
         //@ts-ignore
         months = this.personYears.length * 12 + extra;
       }
 
-
       //@ts-ignore
       let startYear = +event.startDate.substring(0, 4);
-
 
       //@ts-ignore
       let startMonth = parseInt(event.startDate.substring(5, 7), 10);
 
       //@ts-ignore
 
-      let eventMonths = 0
+      let eventMonths = 0;
 
       if (event.isInterval) {
         //@ts-ignore
         let endYear = +event.endDate.substring(0, 4);
 
-
         let endMonth = parseInt(event.endDate.substring(5, 7), 10);
 
-
         eventMonths = this.calcEventMonths(
-            startYear,
-            endYear,
-            startMonth,
-            endMonth
+          startYear,
+          endYear,
+          startMonth,
+          endMonth
         );
       }
       //@ts-ignore
@@ -485,8 +483,12 @@ export default {
 
       let margin: number = (totalYearWidth / months) * monthsTilBegin;
 
+      let marginPoint: number = totalYearWidth / dYears.length;
+
       //@ts-ignore
-      let width: number = event.isInterval ? (totalYearWidth / months) * eventMonths : 5;
+      let width: number = event.isInterval
+        ? (totalYearWidth / months) * eventMonths
+        : 5;
 
       let styleObject = {
         left: margin + "%",
@@ -494,7 +496,7 @@ export default {
       };
       let eventObject = {
         left: margin + "%",
-        width: "11%",
+        width: marginPoint + "%",
       };
 
       return event.isInterval ? styleObject : eventObject;
@@ -528,7 +530,7 @@ export default {
       const born = years[0];
 
       var displayObj = {};
-      displayedArray.forEach((year, index) => {
+      displayedArray.forEach((year) => {
         //@ts-ignore
         displayObj[year - born] = year;
       });
@@ -538,8 +540,8 @@ export default {
     downloadData() {
       const dataObject = store.getters.getDownloadData;
       var dataStr =
-          "data:text/json;charset=utf-8," +
-          encodeURIComponent(JSON.stringify(dataObject));
+        "data:text/json;charset=utf-8," +
+        encodeURIComponent(JSON.stringify(dataObject));
       var dlAnchorElem = document.createElement("a");
       dlAnchorElem.setAttribute("href", dataStr);
       dlAnchorElem.setAttribute("download", "easybiograph.json");
@@ -565,14 +567,14 @@ export default {
         // if (savedNWK.ego && isEgo(savedNWK.ego)) {
         store.commit("data/loadZeitbalken", readData);
         //@ts-ignore
-        this.loadEvents()
+        this.loadEvents();
         //@ts-ignore
         this.$router.go(0);
       };
       fr.readAsText(files.item(0));
     },
-  }
-}
+  },
+};
 </script>
 
 <style scoped lang="scss">
