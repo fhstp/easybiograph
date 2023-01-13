@@ -14,21 +14,35 @@
               @click="showDiv()"
               style="left: 10vw"
             >
-              <strong>+</strong>
+              <strong>Event erstellen</strong>
             </a>
             <a
               class="button is-dark is-small"
               @click="showCreateBiograph = true"
-              style="left: 15vw"
+              style="left: 11vw"
             >
-              <strong>#</strong>
+              <strong>
+                <span class="icon is-small">
+                  <font-awesome-icon icon="pencil-alt" />
+                </span>
+              </strong>
             </a>
+
             <a
               class="button is-dark is-small"
               @click="downloadData"
-              style="left: 20vw"
+              style="left: 12vw"
             >
-              <strong>Export</strong>
+              <strong
+                ><span class="icon is-small">
+                  <font-awesome-icon icon="save" /> </span
+              ></strong>
+            </a>
+            <a class="button is-dark is-small" style="left: 13vw">
+              <input class="file-input" type="file" @change="importData" />
+              <span class="icon is-small">
+                <font-awesome-icon icon="folder-open" />
+              </span>
             </a>
           </div>
         </div>
@@ -312,7 +326,7 @@ export default {
     loadEvents() {
       //@ts-ignore
       this.personYears = store.getters.getTimeline;
-      console.log(store.getters.getTimeline);
+      this.displayPersonYears();
       //@ts-ignore
       this.events = store.getters.getEvents;
     },
@@ -325,8 +339,6 @@ export default {
     },
     editDiv() {
       this.closeModal();
-      //@ts-ignore
-      //this.clickedEvent = store.getters.getEventById(event.eventId)
       //@ts-ignore
       this.showEditDialogue = true;
     },
@@ -342,8 +354,9 @@ export default {
         eventYears.push(startYear);
       }
       let years = [] as number[];
-      //@ts-ignore
+
       let events = store.getters.getEvents.filter(
+        //@ts-ignore
         (a) => a.dimensionId == event.dimensionId
       );
       for (let i = 0; i < events.length; i++) {
@@ -365,8 +378,6 @@ export default {
     openEventDisplay(event: any) {
       //@ts-ignore
       this.clickedEvent = store.getters.getEventById(event.eventId);
-      //@ts-ignore
-      //this.showEventDisplay = true;
       const modal = document.querySelector("#modal-event");
       if (modal) modal.classList.add("is-active");
     },
@@ -419,24 +430,23 @@ export default {
     },
     calcPos(event: any) {
       let totalYearWidth = 100;
-
       //@ts-ignore
       let dYears: number[] = Object.values(this.displayYears);
 
       //@ts-ignore
       let months = this.personYears.length * 12;
 
-      //@ts-ignore
       if (
+        //@ts-ignore
         this.personYears[this.personYears.length - 1] ==
         dYears[dYears.length - 1]
       ) {
         //@ts-ignore
         months = this.personYears.length * 12;
       } else {
-        //@ts-ignore
         let extra =
           (dYears[dYears.length - 1] -
+            //@ts-ignore
             this.personYears[this.personYears.length - 1]) *
           12;
         //@ts-ignore
@@ -445,30 +455,48 @@ export default {
 
       //@ts-ignore
       let startYear = +event.startDate.substring(0, 4);
-      //@ts-ignore
-      let endYear = +event.endDate.substring(0, 4);
+
       //@ts-ignore
       let startMonth = parseInt(event.startDate.substring(5, 7), 10);
+
       //@ts-ignore
-      let endMonth = parseInt(event.endDate.substring(5, 7), 10);
-      let eventMonths = this.calcEventMonths(
-        startYear,
-        endYear,
-        startMonth,
-        endMonth
-      );
+
+      let eventMonths = 0;
+
+      if (event.isInterval) {
+        //@ts-ignore
+        let endYear = +event.endDate.substring(0, 4);
+
+        let endMonth = parseInt(event.endDate.substring(5, 7), 10);
+
+        eventMonths = this.calcEventMonths(
+          startYear,
+          endYear,
+          startMonth,
+          endMonth
+        );
+      }
       //@ts-ignore
       let yearsTilBegin: number = this.personYears.indexOf(startYear) * 12;
+
       let monthsTilBegin: number = yearsTilBegin + startMonth;
+
       let margin: number = (totalYearWidth / months) * monthsTilBegin;
-      let width: number = (totalYearWidth / months) * eventMonths;
+
+      let marginPoint: number = totalYearWidth / dYears.length;
+
+      //@ts-ignore
+      let width: number = event.isInterval
+        ? (totalYearWidth / months) * eventMonths
+        : 5;
+
       let styleObject = {
         left: margin + "%",
         width: width + "%",
       };
       let eventObject = {
         left: margin + "%",
-        width: "11%",
+        width: marginPoint + "%",
       };
 
       return event.isInterval ? styleObject : eventObject;
@@ -521,6 +549,29 @@ export default {
       document.body.appendChild(dlAnchorElem);
       dlAnchorElem.click();
       document.body.removeChild(dlAnchorElem);
+    },
+    importData(event: any) {
+      // based on https://stackoverflow.com/a/36198572/1140589
+      const files = event.target.files;
+
+      if (files.length <= 0) {
+        return false;
+      }
+
+      const fr = new FileReader();
+      // eslint-disable-next-line
+      fr.onload = (e: any) => {
+        const readData = e.target.result;
+        // TODO format checks & error messages
+        // if (savedNWK.alteri && savedNWK.alteri instanceof Array) {
+        // if (savedNWK.ego && isEgo(savedNWK.ego)) {
+        store.commit("data/loadZeitbalken", readData);
+        //@ts-ignore
+        this.loadEvents();
+        //@ts-ignore
+        this.$router.go(0);
+      };
+      fr.readAsText(files.item(0));
     },
   },
 };

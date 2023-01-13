@@ -101,7 +101,7 @@ export default {
 .tooltip .tooltiptext {
   top: -9vh;
   visibility: hidden;
-  width: 120px;
+  width: 140px;
   background-color: darkgrey;
   color: #fff;
   text-align: center;
