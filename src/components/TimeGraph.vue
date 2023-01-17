@@ -38,11 +38,17 @@
                   <font-awesome-icon icon="save" /> </span
               ></strong>
             </a>
-            <a class="button is-dark is-small" style="left: 13vw">
-              <input class="file-input" type="file" @change="importData" />
-              <span class="icon is-small">
-                <font-awesome-icon icon="folder-open" />
-              </span>
+
+            <a class="file is-dark is-small" style="left: 13vw">
+              <label class="file-label">
+                <input class="file-input" type="file" @change="importData" />
+                <span class="file-cta">
+                  <span class="file-icon icon is-small">
+                    <font-awesome-icon icon="folder-open" />
+                  </span>
+                  <!-- <span class="file-label"> Öffnen </span> -->
+                </span>
+              </label>
             </a>
           </div>
         </div>
