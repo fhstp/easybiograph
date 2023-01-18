@@ -498,7 +498,7 @@ export default {
       return event.isInterval ? styleObject : eventObject;
     },
     calcEventMonths(sy: number, ey: number, sm: number, em: number) {
-      return em - sm + 12 * (ey - sy);
+      return em - sm + 12 * (ey - sy) + 1;
     },
     displayPersonYears(): object {
       let displayedArray: number[] = [];

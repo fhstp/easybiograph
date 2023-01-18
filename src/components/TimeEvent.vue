@@ -76,6 +76,7 @@ export default {
   margin: 5px 0;
   border-radius: 3px;
   z-index: 1;
+  margin-right: 1px;
 }
 
 .eventText {
