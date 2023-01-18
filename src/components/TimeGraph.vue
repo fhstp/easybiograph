@@ -124,7 +124,14 @@
         <label class="label" style="text-align: left">Datum</label>
       </div>
       <div class="field-body">
-        <input type="month" v-model="newEventDetails.startDate" />
+        <input
+          class="month"
+          type="month"
+          pattern="[0-9]{4}-[0-9]{2}"
+          min="2001-03"
+          max="2023-02"
+          v-model="newEventDetails.startDate"
+        />
         <input
           type="month"
           v-show="newEventDetails.newEventIsPeriod == 'period'"
@@ -578,6 +585,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "bulma/sass/utilities/_all.sass";
+
 table {
   border-spacing: 0;
   width: 100vw;
@@ -660,5 +669,9 @@ thead > tr {
   height: 5.25vh;
   left: -3vw;
   top: -0.5vh;
+}
+
+input.month:invalid {
+  border-color: $danger;
 }
 </style>
