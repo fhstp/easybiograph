@@ -94,7 +94,7 @@ export default {
 }
 
 .tooltip {
-  position: relative;
+  position: absolute;
   display: inline-block;
 }
 

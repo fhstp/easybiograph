@@ -236,19 +236,15 @@
         </td>
         <td class="eventWrap">
           <!-- -->
-          <div
+          <TimeEvent
             v-for="event in filterEvents(value)"
             :key="event.eventId"
-            id="tdContent"
-          >
-            <TimeEvent
-              :event="event"
-              :show-notes="isOnlyEventAtPos(event)"
-              :style="calcPos(event)"
-              @click="openEventDisplay(event)"
-              style="cursor: pointer !important"
-            />
-          </div>
+            :event="event"
+            :show-notes="isOnlyEventAtPos(event)"
+            :style="calcPos(event)"
+            @click="openEventDisplay(event)"
+            style="cursor: pointer !important"
+          />
         </td>
       </tr>
     </tbody>
@@ -601,10 +597,6 @@ tr:nth-child(odd) {
 }
 
 .eventWrap {
-}
-
-#tdContent {
-  display: block;
 }
 
 thead > tr {
