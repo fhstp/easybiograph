@@ -1,6 +1,7 @@
 <template>
   <PersonDialogue
     v-show="showCreateBiograph"
+    :newPersonDetails="temporaryPerson"
     @close="closePerson"
     @abort="showCreateBiograph = false"
   />
@@ -12,8 +13,7 @@
       <div class="navbar-start">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-dark">
-              <!-- TODO call newZeitbalken mutation -->
+            <a class="button is-dark" @click="newData">
               <span class="icon is-small">
                 <font-awesome-icon icon="file" />
               </span>
@@ -43,7 +43,7 @@
 
         <div class="navbar-item">
           <!-- TODO fill from stored ZBPerson -->
-          <span class="client">Anna-Maria Huber</span>
+          <span class="client">{{ $store.state.data.person.name }}</span>
           <a class="button is-dark" @click="showCreateBiograph = true">
             <!-- TODO edit instead of new -->
             <span class="icon">
@@ -89,10 +89,11 @@
     :selectedEvent="clickedEvent"
     @reload="loadEvents"
   />
+  <!-- begin add event dialog -->
   <div
     class="box position"
     id="box"
-    style="height: 93vh; width: 40vw; z-index: 2"
+    style="position: absolute; top: 3vh; height: 93vh; left: 10vw; width: 40vw; z-index: 2"
     v-show="showDialogue"
   >
     <button
@@ -224,6 +225,7 @@
       Fertig
     </button>
   </div>
+  <!-- end of add event dialog -->
   <table v-show="!showCreateBiograph">
     <thead>
       <tr class="year_age">
@@ -312,6 +314,7 @@ export default {
   },
   data() {
     return {
+      temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       personYears: store.getters.getTimeline,
       displayYears: {},
       showDialogue: false,
@@ -347,7 +350,7 @@ export default {
       this.events = store.getters.getEvents;
     },
     showDiv() {
-      // TODO: use self-explaining function name
+      // TODO: use self-explaining function name, which <div>? add event dialog
       //@ts-ignore
       this.showDialogue = true;
     },
@@ -395,7 +398,7 @@ export default {
     openEventDisplay(event: any) {
       //@ts-ignore
       this.clickedEvent = store.getters.getEventById(event.eventId);
-      const modal = document.querySelector("#modal-event");
+      const modal = document.querySelector("#modal-event"); // TODO: https://vuejs.org/guide/essentials/class-and-style.html#binding-html-classes
       if (modal) modal.classList.add("is-active");
     },
     closeEditDiv() {
@@ -554,6 +557,11 @@ export default {
 
       return displayObj;
     },
+    newData() {
+      store.commit("data/newZeitbalken");
+      this.temporaryPerson = Object.assign({}, store.state.data.person); // shallow clone (ok for ZBPerson)
+      this.showCreateBiograph = true;
+    },
     downloadData() {
       const dataObject = store.getters.getDownloadData;
       var dataStr =
@@ -659,6 +667,7 @@ thead > tr {
 }
 
 .event_dialogue {
+  // TODO: unused
   background-color: white;
   z-index: 2;
   width: 500px;

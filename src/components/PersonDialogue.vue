@@ -21,7 +21,6 @@
               class="input"
               type="text"
               placeholder="Name"
-              style="right: -2.5vw; width: 27vw"
               v-model="newPersonDetails.name"
             />
           </div>
@@ -33,7 +32,7 @@
         <label class="label" style="text-align: left">Geburtsdatum</label>
       </div>
       <div class="field-body">
-        <input type="month" v-model="startYear" />
+        <input type="month" v-model="newPersonDetails.birthMonth" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -41,7 +40,7 @@
         <label class="label" style="text-align: left">Bis</label>
       </div>
       <div class="field-body">
-        <input type="month" v-model="endYear" style="right: -2.6vw" />
+        <input type="month" v-model="newPersonDetails.interviewMonth"/>
       </div>
     </div>
     <div class="field is-horizontal">
@@ -54,7 +53,6 @@
             <input
               class="input"
               type="text"
-              style="right: -2vw; width: 27vw"
               v-model="newPersonDetails.birthplace"
               placeholder="Geburtsort der Person"
             />
@@ -74,7 +72,6 @@
               class="input"
               type="text"
               placeholder="Name des Erstellers"
-              style="right: -2.5vw; width: 27.1vw"
               v-model="newPersonDetails.interviewers"
             />
           </div>
@@ -92,7 +89,7 @@
     <button
       class="button is-link is-light"
       style="right: -20vw"
-      @click="addPerson"
+      @click="savePerson"
     >
       Fertig
     </button>
@@ -100,38 +97,47 @@
 </template>
 
 <script lang="ts">
-import { initPerson } from "../data/ZBPerson";
+// import { initPerson } from "../data/ZBPerson";
 import { store } from "@/store";
 
 export default {
   name: "PersonDialogue",
+  props: {
+    newPersonDetails: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       startYear: "",
       endYear: "",
       personYears: [] as number[],
       showBiograph: false,
-      newPersonDetails: {
-        name: "",
-        birthplace: "",
-        interviewers: "",
-        notes: "",
-      },
+      // newPersonDetails: {},
     };
   },
+  // beforeUpdate() {
+  //   console.log(`the component is now beforeUpdate.`);
+  //   this.newPersonDetails = Object.assign({}, store.state.data.person); // shallow clone (ok for ZBPerson)
+  // },
   methods: {
-    addPerson() {
-      const newPerson = initPerson();
-      //@ts-ignore
-      newPerson.name = this.newPersonDetails.name;
-      //@ts-ignore
-      newPerson.birthplace = this.newPersonDetails.birthplace;
-      //@ts-ignore
-      newPerson.interviewers = this.newPersonDetails.interviewers;
-      //@ts-ignore
-      newPerson.notes = this.newPersonDetails.notes;
+    savePerson() {
+      // const newPerson = initPerson();
+      // //@ts-ignore
+      // newPerson.name = this.newPersonDetails.name;
+      // //@ts-ignore
+      // newPerson.birthplace = this.newPersonDetails.birthplace;
+      // //@ts-ignore
+      // newPerson.interviewers = this.newPersonDetails.interviewers;
+      // //@ts-ignore
+      // newPerson.notes = this.newPersonDetails.notes;
 
-      store.commit("data/addPerson", newPerson);
+      // TODO: for backwards compatibility
+      this.startYear = this.newPersonDetails.birthMonth;
+      this.endYear = this.newPersonDetails.interviewMonth;
+
+      store.commit("data/addPerson", this.newPersonDetails);
       this.close();
     },
     chooseYear() {
@@ -184,4 +190,10 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+@media screen and (min-width: 769px), print {
+  .field-body {
+    flex-grow: 3;
+  }
+}
+</style>
