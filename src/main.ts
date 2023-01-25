@@ -26,7 +26,7 @@ import {
   // faExclamationTriangle,
   // faTimes,
   faFolderOpen,
-  // faFile,
+  faFile,
   faSave,
   // faFileImage,
   // faFileCsv,
@@ -48,6 +48,7 @@ import {
   // faInfo,
   // faLink,
   // faUnlink,
+  faPlus,
   faArrowsAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -63,7 +64,7 @@ library.add(
   // faExclamationTriangle,
   // faTimes,
   faFolderOpen,
-  // faFile,
+  faFile,
   faSave,
   // faFileImage,
   // faFileCsv,
@@ -85,6 +86,7 @@ library.add(
   // faInfo,
   // faLink,
   // faUnlink,
+  faPlus,
   faArrowsAlt
 );
 

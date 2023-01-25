@@ -60,6 +60,7 @@ const mutations = {
   },
 
   addPerson(state: Zeitbalken, initialValues: Partial<ZBPerson> = {}): void {
+    // TODO: practically the same as "editPerson" because "newZeitbalken" should come first
     const newPerson = {
       ...initPerson(),
       ...initialValues,

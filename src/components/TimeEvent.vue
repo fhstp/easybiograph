@@ -41,12 +41,12 @@ export default {
   },
   data() {
     return {
-      showEditDialogue: false,
+      showEditDialogue: false,  // TODO: unused
     };
   },
   methods: {
     editDiv() {
-      this.showEditDialogue = true;
+      this.showEditDialogue = true; // TODO: unused
     },
   },
 };

@@ -1,48 +1,64 @@
 <template>
   <PersonDialogue
     v-show="showCreateBiograph"
+    :newPersonDetails="temporaryPerson"
     @close="closePerson"
     @abort="showCreateBiograph = false"
   />
-  <nav class="navbar is-fixed-top" v-show="!showCreateBiograph">
+  <nav class="navbar is-fixed-top is-black" v-show="!showCreateBiograph">
+    <div class="navbar-brand">
+      <div class="navbar-item">easyBiograph</div>
+    </div>
     <div id="navbarBasicExample" class="navbar-menu bar">
       <div class="navbar-start">
         <div class="navbar-item">
           <div class="buttons">
-            <a
-              class="button is-dark is-small"
-              @click="showDiv()"
-              style="left: 10vw"
-            >
-              <strong>Event erstellen</strong>
-            </a>
-            <a
-              class="button is-dark is-small"
-              @click="showCreateBiograph = true"
-              style="left: 11vw"
-            >
-              <strong>
-                <span class="icon is-small">
-                  <font-awesome-icon icon="pencil-alt" />
-                </span>
-              </strong>
+            <a class="button is-dark" @click="newData">
+              <span class="icon is-small">
+                <font-awesome-icon icon="file" />
+              </span>
+              <span>Neu</span>
             </a>
 
-            <a
-              class="button is-dark is-small"
-              @click="downloadData"
-              style="left: 12vw"
-            >
-              <strong
-                ><span class="icon is-small">
-                  <font-awesome-icon icon="save" /> </span
-              ></strong>
+            <a class="file is-dark">
+              <label class="file-label">
+                <input class="file-input" type="file" @change="importData" />
+                <span class="file-cta">
+                  <span class="file-icon icon is-small">
+                    <font-awesome-icon icon="folder-open" />
+                  </span>
+                  <span class="file-label">Öffnen</span>
+                </span>
+              </label>
             </a>
-            <a class="button is-dark is-small" style="left: 13vw">
-              <input class="file-input" type="file" @change="importData" />
+
+            <a class="button is-dark" @click="downloadData">
               <span class="icon is-small">
-                <font-awesome-icon icon="folder-open" />
+                <font-awesome-icon icon="save" />
               </span>
+              <span>Speichern</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="navbar-item">
+          <!-- TODO fill from stored ZBPerson -->
+          <span class="client">{{ $store.state.data.person.name }}</span>
+          <a class="button is-dark" @click="showCreateBiograph = true">
+            <!-- TODO edit instead of new -->
+            <span class="icon">
+              <font-awesome-icon icon="pencil-alt" />
+            </span>
+          </a>
+        </div>
+
+        <div class="navbar-item">
+          <div class="buttons">
+            <a class="button is-dark" @click="showDiv()">
+              <span class="icon">
+                <font-awesome-icon icon="plus" />
+              </span>
+              <span>Event erstellen</span>
             </a>
           </div>
         </div>
@@ -73,10 +89,11 @@
     :selectedEvent="clickedEvent"
     @reload="loadEvents"
   />
+  <!-- begin add event dialog -->
   <div
     class="box position"
     id="box"
-    style="height: 93vh; width: 40vw; z-index: 2"
+    style="position: absolute; top: 3vh; height: 93vh; left: 10vw; width: 40vw; z-index: 2"
     v-show="showDialogue"
   >
     <button
@@ -208,6 +225,7 @@
       Fertig
     </button>
   </div>
+  <!-- end of add event dialog -->
   <table v-show="!showCreateBiograph">
     <thead>
       <tr class="year_age">
@@ -292,6 +310,7 @@ export default {
   },
   data() {
     return {
+      temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       personYears: store.getters.getTimeline,
       displayYears: {},
       showDialogue: false,
@@ -327,6 +346,7 @@ export default {
       this.events = store.getters.getEvents;
     },
     showDiv() {
+      // TODO: use self-explaining function name, which <div>? add event dialog
       //@ts-ignore
       this.showDialogue = true;
     },
@@ -374,7 +394,7 @@ export default {
     openEventDisplay(event: any) {
       //@ts-ignore
       this.clickedEvent = store.getters.getEventById(event.eventId);
-      const modal = document.querySelector("#modal-event");
+      const modal = document.querySelector("#modal-event"); // TODO: https://vuejs.org/guide/essentials/class-and-style.html#binding-html-classes
       if (modal) modal.classList.add("is-active");
     },
     closeEditDiv() {
@@ -533,6 +553,11 @@ export default {
 
       return displayObj;
     },
+    newData() {
+      store.commit("data/newZeitbalken");
+      this.temporaryPerson = Object.assign({}, store.state.data.person); // shallow clone (ok for ZBPerson)
+      this.showCreateBiograph = true;
+    },
     downloadData() {
       const dataObject = store.getters.getDownloadData;
       var dataStr =
@@ -634,6 +659,7 @@ thead > tr {
 }
 
 .event_dialogue {
+  // TODO: unused
   background-color: white;
   z-index: 2;
   width: 500px;
@@ -646,11 +672,25 @@ thead > tr {
   align-items: center;
 }
 
-.bar {
-  background-color: #181818;
-  width: 100vw;
-  height: 5.25vh;
-  left: -3vw;
-  top: -0.5vh;
+// .bar {
+//   background-color: #181818;
+//   width: 100vw;
+//   height: 5.25vh;
+//   left: -3vw;
+//   top: -0.5vh;
+// }
+
+.navbar-brand > div {
+  font-weight: bold;
+}
+
+.buttons > .file {
+  // ensure that File>Open Button is vertically aligned with the other buttons
+  margin-bottom: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.client {
+  margin-right: 0.5rem;
 }
 </style>
