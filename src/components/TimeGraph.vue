@@ -602,10 +602,10 @@ export default {
 table {
   border-spacing: 0;
   width: 100vw;
-  height: 93vh;
+  height: 90vh;
   display: table;
-  margin-top: 1vh;
-  margin-left: -5.2vh;
+  margin-top: 7vh;
+  margin-left: -2.2vh;
   table-layout: fixed;
 }
 
