@@ -5,6 +5,13 @@
     @close="closePerson"
     @abort="showCreateBiograph = false"
   />
+
+  <DeleteEditDialogue
+      v-show="showEditDialogue"
+      @close="closeEditDiv"
+      :selectedEvent="clickedEvent"
+      @reload="loadEvents"
+  />
   <nav class="navbar is-fixed-top is-black" v-show="!showCreateBiograph">
     <div class="navbar-brand">
       <div class="navbar-item">easyBiograph</div>
@@ -83,12 +90,7 @@
     ></button>
   </div>
 
-  <DeleteEditDialogue
-    v-show="showEditDialogue"
-    @close="closeEditDiv"
-    :selectedEvent="clickedEvent"
-    @reload="loadEvents"
-  />
+
   <!-- begin add event dialog -->
   <div
     class="box position"
@@ -357,6 +359,7 @@ export default {
       this.closeModal();
       //@ts-ignore
       this.showEditDialogue = true;
+      console.log("I am open")
     },
     isOnlyEventAtPos(event: any): Boolean {
       const eventYears = [] as number[];
@@ -431,6 +434,7 @@ export default {
       newEvent.startDate = this.newEventDetails.startDate;
       //@ts-ignore
       newEvent.endDate = this.newEventDetails.endDate;
+      console.log("Function addEvent" + newEvent.eventId);
       store.commit("data/addEvent", newEvent);
 
       //@ts-ignore

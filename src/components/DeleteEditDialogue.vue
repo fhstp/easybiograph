@@ -200,4 +200,18 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+.position{
+  position: fixed;
+  margin-left: 10vw;
+  margin-top: 4vh;
+  z-index: 10;
+}
+
+@media screen and (min-width: 769px), print {
+  .field-body {
+    flex-grow: 3;
+  }
+}
+</style>
