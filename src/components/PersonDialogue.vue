@@ -138,6 +138,7 @@ export default {
       this.endYear = this.newPersonDetails.interviewMonth;
 
       store.commit("data/addPerson", this.newPersonDetails);
+      this.$router.go(0);
       this.close();
     },
     chooseYear() {
@@ -162,6 +163,7 @@ export default {
       //@ts-ignore
       this.$emit("abort");
     },
+
     displayPersonYears(): Array<number> {
       let displayedArray: number[] = [];
       //@ts-ignore

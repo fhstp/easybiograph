@@ -261,7 +261,7 @@
             :key="event.eventId"
             :event="event"
             :show-notes="isOnlyEventAtPos(event)"
-            :style="calcPos(event)"
+            :style="calcPos(event), calcYPos(event)"
             @click="openEventDisplay(event)"
             style="cursor: pointer !important"
           />
@@ -359,7 +359,6 @@ export default {
       this.closeModal();
       //@ts-ignore
       this.showEditDialogue = true;
-      console.log("I am open")
     },
     isOnlyEventAtPos(event: any): Boolean {
       const eventYears = [] as number[];
@@ -434,7 +433,6 @@ export default {
       newEvent.startDate = this.newEventDetails.startDate;
       //@ts-ignore
       newEvent.endDate = this.newEventDetails.endDate;
-      console.log("Function addEvent" + newEvent.eventId);
       store.commit("data/addEvent", newEvent);
 
       //@ts-ignore
@@ -448,8 +446,26 @@ export default {
         return el.dimensionId == Dimension[dimension];
       });
     },
+    calcYPos(event: any) {
+      if(!this.isOnlyEventAtPos(event)){
+        let margin = 0
+
+        for(let i = 0; i < this.events.length; i++) {
+          margin = margin + 10
+          console.log("here")
+          let styleObject = {
+            top: + margin + "%"
+          };
+          return styleObject
+        }
+
+
+      }else{
+        console.log("is only event")
+      }
+    },
     calcPos(event: any) {
-      let totalYearWidth = 100;
+      let totalYearWidth = 90;
       //@ts-ignore
       let dYears: number[] = Object.values(this.displayYears);
 
@@ -501,14 +517,14 @@ export default {
 
       let monthsTilBegin: number = yearsTilBegin + startMonth;
 
-      let margin: number = (totalYearWidth / months) * monthsTilBegin;
+      let margin: number = (totalYearWidth / months) * monthsTilBegin + 8;
 
       let marginPoint: number = totalYearWidth / dYears.length;
 
       //@ts-ignore
       let width: number = event.isInterval
         ? (totalYearWidth / months) * eventMonths
-        : 5;
+        : 5 + 8.5;
 
       let styleObject = {
         left: margin + "%",
