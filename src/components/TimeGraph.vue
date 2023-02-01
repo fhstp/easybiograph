@@ -248,7 +248,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="value in dimensionOptions" :key="value">
+      <tr v-for="(value, index) in dimensionOptions" :key="value">
         <td class="content">
           <div>
             {{ value }}
@@ -256,15 +256,16 @@
         </td>
         <td class="eventWrap">
           <!-- -->
-          <TimeEvent
-            v-for="event in filterEvents(value)"
-            :key="event.eventId"
-            :event="event"
-            :show-notes="isOnlyEventAtPos(event)"
-            :style="calcPos(event), calcYPos(event)"
-            @click="openEventDisplay(event)"
-            style="cursor: pointer !important"
-          />
+
+            <TimeEvent
+                v-for="event in filteredEvents[index]"
+                :key="event.eventId"
+              :event="event"
+              :show-notes="isOnlyEventAtPos(event)"
+              :style="calcPos(event)"
+              @click="openEventDisplay(event)"
+              style="cursor: pointer !important"
+            />
         </td>
       </tr>
     </tbody>
@@ -279,6 +280,7 @@ import TimeEvent from "@/components/TimeEvent.vue";
 import DeleteEditDialogue from "@/components/DeleteEditDialogue.vue";
 import PersonDialogue from "@/components/PersonDialogue.vue";
 import EventDisplay from "@/components/EventDisplay.vue";
+import {loadSettingsFromStore} from "@/store/localStoragePlugin";
 
 export default {
   name: "TimeGraph",
@@ -315,6 +317,8 @@ export default {
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       personYears: store.getters.getTimeline,
       displayYears: {},
+      eventPos: [],
+      filteredEvents: [],
       showDialogue: false,
       showEditDialogue: false,
       showEventDisplay: false,
@@ -339,6 +343,9 @@ export default {
       deep: true,
     },
   },
+  mounted() {
+    this.loadEvents()
+  },
   methods: {
     loadEvents() {
       //@ts-ignore
@@ -346,6 +353,13 @@ export default {
       this.displayPersonYears();
       //@ts-ignore
       this.events = store.getters.getEvents;
+      const dims = Object.keys(Dimension).filter((item) => {
+        return isNaN(Number(item))
+      })
+      console.log(dims)
+      for(let i = 0; i < dims.length; i++){
+        this.filteredEvents.push(this.filterEvents(dims[i]))
+      }
     },
     showDiv() {
       // TODO: use self-explaining function name, which <div>? add event dialog
@@ -440,31 +454,32 @@ export default {
       //console.log(store.getters.getEvents);
     },
     filterEvents(dimension: String): any {
+
       //@ts-ignore
       return this.events.filter(function (el) {
         //@ts-ignore
         return el.dimensionId == Dimension[dimension];
       });
     },
-    calcYPos(event: any) {
-      if(!this.isOnlyEventAtPos(event)){
-        let margin = 0
+    calcYPos(po: any): number {
 
-        for(let i = 0; i < this.events.length; i++) {
-          margin = margin + 10
-          console.log("here")
-          let styleObject = {
-            top: + margin + "%"
-          };
-          return styleObject
+      //@ts-ignore
+      if(this.eventPos.length < 1) return 1
+      let counter = 0
+      //@ts-ignore
+      this.eventPos.forEach((e) => {
+        if(po.event.dimensionId == e.event.dimensionId){
+          if(po.margin >= e.margin && po.margin <= e.margin + e.width || po.margin + po.width >= e.margin && po.margin + po.width <= e.margin + e.width){
+            counter++
+          }
         }
-
-
-      }else{
-        console.log("is only event")
-      }
+      })
+      return counter
     },
     calcPos(event: any) {
+
+      console.log("Yow")
+
       let totalYearWidth = 90;
       //@ts-ignore
       let dYears: number[] = Object.values(this.displayYears);
@@ -526,6 +541,26 @@ export default {
         ? (totalYearWidth / months) * eventMonths
         : 5 + 8.5;
 
+      let positionObject = {}
+      //@ts-ignore
+      positionObject.event = event
+
+      if(event.isInterval){
+        //@ts-ignore
+        positionObject.margin = margin
+        //@ts-ignore
+        positionObject.width = width
+      }else{
+        //@ts-ignore
+        positionObject.margin = margin
+        //@ts-ignore
+        positionObject.width = marginPoint
+      }
+
+      let topGap = 0
+
+
+
       let styleObject = {
         left: margin + "%",
         width: width + "%",
@@ -535,6 +570,16 @@ export default {
         width: marginPoint + "%",
       };
 
+      if(!this.eventPos.includes(positionObject)){
+
+
+      topGap = 1.5 * this.calcYPos(positionObject)
+      styleObject.marginTop = topGap + "%"
+      eventObject.marginTop = topGap + "%"
+
+      //@ts-ignore
+      this.eventPos.push(positionObject)
+      }
       return event.isInterval ? styleObject : eventObject;
     },
     calcEventMonths(sy: number, ey: number, sm: number, em: number) {
