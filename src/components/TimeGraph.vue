@@ -541,45 +541,48 @@ export default {
         ? (totalYearWidth / months) * eventMonths
         : 5 + 8.5;
 
-      let positionObject = {}
-      //@ts-ignore
-      positionObject.event = event
 
-      if(event.isInterval){
+      let positionObject = this.eventPos.find((d) => d.event === event);
+
+      if (!positionObject) {
+        positionObject = {};
+
         //@ts-ignore
-        positionObject.margin = margin
+        positionObject.event = event;
+
+        if (event.isInterval) {
+          //@ts-ignore
+          positionObject.margin = margin;
+          //@ts-ignore
+          positionObject.width = width;
+        } else {
+          //@ts-ignore
+          positionObject.margin = margin;
+          //@ts-ignore
+          positionObject.width = marginPoint;
+        }
+
+        positionObject.yPos = this.calcYPos(positionObject);
+
         //@ts-ignore
-        positionObject.width = width
-      }else{
-        //@ts-ignore
-        positionObject.margin = margin
-        //@ts-ignore
-        positionObject.width = marginPoint
+        this.eventPos.push(positionObject);
       }
 
-      let topGap = 0
-
-
+      let topGap = 1.5 * positionObject.yPos
 
       let styleObject = {
         left: margin + "%",
         width: width + "%",
+        top: topGap + "%",
       };
       let eventObject = {
         left: margin + "%",
         width: marginPoint + "%",
+        top: topGap + "%",
       };
 
-      if(!this.eventPos.includes(positionObject)){
-
-
-      topGap = 1.5 * this.calcYPos(positionObject)
-      styleObject.marginTop = topGap + "%"
-      eventObject.marginTop = topGap + "%"
-
-      //@ts-ignore
-      this.eventPos.push(positionObject)
-      }
+      console.log("length of eventPos: " + this.eventPos.length + " vs. " + store.state.data.events.length);
+      console.log(styleObject);
       return event.isInterval ? styleObject : eventObject;
     },
     calcEventMonths(sy: number, ey: number, sm: number, em: number) {
