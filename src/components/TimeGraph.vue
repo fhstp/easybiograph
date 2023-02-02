@@ -344,6 +344,7 @@ export default {
     },
   },
   mounted() {
+    //@ts-ignore
     this.loadEvents()
   },
   methods: {
@@ -358,6 +359,7 @@ export default {
       })
       console.log(dims)
       for(let i = 0; i < dims.length; i++){
+        //@ts-ignore
         this.filteredEvents.push(this.filterEvents(dims[i]))
       }
     },
@@ -466,6 +468,7 @@ export default {
       //@ts-ignore
       if(this.eventPos.length < 1) return 1
       let counter = 0
+      /*
       //@ts-ignore
       this.eventPos.forEach((e) => {
         if(po.event.dimensionId == e.event.dimensionId){
@@ -474,11 +477,12 @@ export default {
           }
         }
       })
+       */
       return counter
     },
     calcPos(event: any) {
 
-      console.log("Yow")
+      console.log("called")
 
       let totalYearWidth = 90;
       //@ts-ignore
@@ -541,7 +545,7 @@ export default {
         ? (totalYearWidth / months) * eventMonths
         : 5 + 8.5;
 
-
+      //@ts-ignore
       let positionObject = this.eventPos.find((d) => d.event === event);
 
       if (!positionObject) {
@@ -568,7 +572,7 @@ export default {
         this.eventPos.push(positionObject);
       }
 
-      let topGap = 1.5 * positionObject.yPos
+      let topGap = 35 * positionObject.yPos
 
       let styleObject = {
         left: margin + "%",
@@ -581,6 +585,7 @@ export default {
         top: topGap + "%",
       };
 
+      //@ts-ignore
       console.log("length of eventPos: " + this.eventPos.length + " vs. " + store.state.data.events.length);
       console.log(styleObject);
       return event.isInterval ? styleObject : eventObject;
@@ -623,7 +628,9 @@ export default {
     },
     newData() {
       store.commit("data/newZeitbalken");
+      //@ts-ignore
       this.temporaryPerson = Object.assign({}, store.state.data.person); // shallow clone (ok for ZBPerson)
+      //@ts-ignore
       this.showCreateBiograph = true;
     },
     downloadData() {
@@ -690,6 +697,7 @@ tr:nth-child(odd) {
 }
 
 .eventWrap {
+  position: relative;
 }
 
 thead > tr {
