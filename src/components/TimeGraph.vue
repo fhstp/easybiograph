@@ -5,9 +5,18 @@
     @close="closePerson"
     @abort="showCreateBiograph = false"
   />
+
+  <DeleteEditDialogue
+      v-show="showEditDialogue"
+      @close="closeEditDiv"
+      :selectedEvent="clickedEvent"
+      @reload="loadEvents"
+  />
   <nav class="navbar is-fixed-top is-black" v-show="!showCreateBiograph">
     <div class="navbar-brand">
-      <div class="navbar-item">easyBiograph</div>
+      <div class="navbar-item" title="easyBiograph version 2.0 alpha 1">
+        easyBiograph
+      </div>
     </div>
     <div id="navbarBasicExample" class="navbar-menu bar">
       <div class="navbar-start">
@@ -83,12 +92,7 @@
     ></button>
   </div>
 
-  <DeleteEditDialogue
-    v-show="showEditDialogue"
-    @close="closeEditDiv"
-    :selectedEvent="clickedEvent"
-    @reload="loadEvents"
-  />
+
   <!-- begin add event dialog -->
   <div
     class="box position"
@@ -246,7 +250,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="value in dimensionOptions" :key="value">
+      <tr v-for="(value, index) in dimensionOptions" :key="value" :id="value">
         <td class="content">
           <div>
             {{ value }}
@@ -254,15 +258,17 @@
         </td>
         <td class="eventWrap">
           <!-- -->
-          <TimeEvent
-            v-for="event in filterEvents(value)"
-            :key="event.eventId"
-            :event="event"
-            :show-notes="isOnlyEventAtPos(event)"
-            :style="calcPos(event)"
-            @click="openEventDisplay(event)"
-            style="cursor: pointer !important"
-          />
+
+            <TimeEvent
+                v-for="event in filteredEvents[index]"
+                :key="event.eventId"
+                class="eventSelector"
+              :event="event"
+              :show-notes="isOnlyEventAtPos(event)"
+              :style="calcPos(event)"
+              @click="openEventDisplay(event)"
+              style="cursor: pointer !important"
+            />
         </td>
       </tr>
     </tbody>
@@ -277,6 +283,7 @@ import TimeEvent from "@/components/TimeEvent.vue";
 import DeleteEditDialogue from "@/components/DeleteEditDialogue.vue";
 import PersonDialogue from "@/components/PersonDialogue.vue";
 import EventDisplay from "@/components/EventDisplay.vue";
+import {loadSettingsFromStore} from "@/store/localStoragePlugin";
 
 export default {
   name: "TimeGraph",
@@ -313,6 +320,8 @@ export default {
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       personYears: store.getters.getTimeline,
       displayYears: {},
+      eventPos: [],
+      filteredEvents: [],
       showDialogue: false,
       showEditDialogue: false,
       showEventDisplay: false,
@@ -337,6 +346,10 @@ export default {
       deep: true,
     },
   },
+  mounted() {
+    //@ts-ignore
+    this.loadEvents()
+  },
   methods: {
     loadEvents() {
       //@ts-ignore
@@ -344,6 +357,13 @@ export default {
       this.displayPersonYears();
       //@ts-ignore
       this.events = store.getters.getEvents;
+      const dims = Object.keys(Dimension).filter((item) => {
+        return isNaN(Number(item))
+      })
+      for(let i = 0; i < dims.length; i++){
+        //@ts-ignore
+        this.filteredEvents.push(this.filterEvents(dims[i]))
+      }
     },
     showDiv() {
       // TODO: use self-explaining function name, which <div>? add event dialog
@@ -357,6 +377,20 @@ export default {
       this.closeModal();
       //@ts-ignore
       this.showEditDialogue = true;
+    },
+    checkHeight(dimension: string, stack: number){
+      let selector = "#" + dimension
+      const row = document.querySelector(selector)
+      const itemHeight = 80
+      const newHeight = itemHeight * stack
+
+
+      if(!row){return}
+      if(newHeight > row.style.height){
+        row.style.height = newHeight + "px"
+        console.log(dimension, newHeight)
+      }
+
     },
     isOnlyEventAtPos(event: any): Boolean {
       const eventYears = [] as number[];
@@ -433,19 +467,37 @@ export default {
       newEvent.endDate = this.newEventDetails.endDate;
       store.commit("data/addEvent", newEvent);
 
+      this.$router.go(0);
       //@ts-ignore
       this.newEventDetails = {};
       //console.log(store.getters.getEvents);
     },
     filterEvents(dimension: String): any {
+
       //@ts-ignore
       return this.events.filter(function (el) {
         //@ts-ignore
         return el.dimensionId == Dimension[dimension];
       });
     },
+    calcYPos(po: any): number {
+
+      //@ts-ignore
+      if(this.eventPos.length < 1) return 0
+      let counter = 0
+      //@ts-ignore
+      this.eventPos.forEach((e) => {
+        if(po.event.dimensionId == e.event.dimensionId){
+          if(po.margin >= e.margin && po.margin <= e.margin + e.width || po.margin + po.width >= e.margin && po.margin + po.width <= e.margin + e.width){
+            counter++
+          }
+        }
+      })
+      return counter
+    },
     calcPos(event: any) {
-      let totalYearWidth = 100;
+
+      let totalYearWidth = 90;
       //@ts-ignore
       let dYears: number[] = Object.values(this.displayYears);
 
@@ -504,15 +556,55 @@ export default {
       //@ts-ignore
       let width: number = event.isInterval
         ? (totalYearWidth / months) * eventMonths
-        : 5;
+        : 5 + 8.5;
+
+      //@ts-ignore
+      let positionObject = this.eventPos.find((d) => d.event === event);
+
+      if (!positionObject) {
+        positionObject = {};
+
+        //@ts-ignore
+        positionObject.event = event;
+
+        if (event.isInterval) {
+          //@ts-ignore
+          positionObject.margin = margin;
+          //@ts-ignore
+          positionObject.width = width;
+        } else {
+          //@ts-ignore
+          positionObject.margin = margin;
+          //@ts-ignore
+          positionObject.width = marginPoint;
+        }
+
+        positionObject.yPos = this.calcYPos(positionObject);
+
+        //@ts-ignore
+        this.eventPos.push(positionObject);
+        //@ts-ignore
+        this.eventPos.sort((a, b) =>{
+          let dateA = new Date(a.event.startDate)
+          let dateB = new Date(b.event.startDate)
+          //@ts-ignore
+          return dateA - dateB
+        })
+      }
+
+      let topGap = 25 * positionObject.yPos
+
+      this.checkHeight(Dimension[event.dimensionId], positionObject.yPos)
 
       let styleObject = {
         left: margin + "%",
         width: width + "%",
+        top: topGap + "px",
       };
       let eventObject = {
         left: margin + "%",
         width: marginPoint + "%",
+        top: topGap + "px",
       };
 
       return event.isInterval ? styleObject : eventObject;
@@ -555,7 +647,9 @@ export default {
     },
     newData() {
       store.commit("data/newZeitbalken");
+      //@ts-ignore
       this.temporaryPerson = Object.assign({}, store.state.data.person); // shallow clone (ok for ZBPerson)
+      //@ts-ignore
       this.showCreateBiograph = true;
     },
     downloadData() {
@@ -599,13 +693,15 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+
 table {
   border-spacing: 0;
   width: 100vw;
-  height: 93vh;
+  height: 90vh;
   display: table;
-  margin-top: 1vh;
-  margin-left: -5.2vh;
+  margin-top: 7vh;
+  margin-left: -2.2vh;
   table-layout: fixed;
 }
 
@@ -622,6 +718,7 @@ tr:nth-child(odd) {
 }
 
 .eventWrap {
+  position: relative;
 }
 
 thead > tr {

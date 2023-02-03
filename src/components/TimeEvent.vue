@@ -11,7 +11,7 @@
           : event.startDate
       }}
     </span>
-    <div :class="[event.isInterval ? 'period' : 'event']" id="contentEvent">
+    <div :class="[event.isInterval ? 'period sel' : 'event sel']">
       <p class="eventText">
         {{ event.description }}
       </p>
@@ -44,10 +44,23 @@ export default {
       showEditDialogue: false,  // TODO: unused
     };
   },
+  mounted() {
+    this.setHeight()
+  },
   methods: {
     editDiv() {
       this.showEditDialogue = true; // TODO: unused
     },
+    setHeight(){
+      const notesEvent = document.querySelector(".sel")
+
+      console.log(this.showNotes)
+      if(this.showNotes){
+        notesEvent.style.height = "41px"
+      }else{
+        notesEvent.style.height = "25px"
+      }
+    }
   },
 };
 </script>
