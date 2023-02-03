@@ -14,7 +14,9 @@
   />
   <nav class="navbar is-fixed-top is-black" v-show="!showCreateBiograph">
     <div class="navbar-brand">
-      <div class="navbar-item">easyBiograph</div>
+      <div class="navbar-item" title="easyBiograph version 2.0 alpha 1">
+        easyBiograph
+      </div>
     </div>
     <div id="navbarBasicExample" class="navbar-menu bar">
       <div class="navbar-start">
