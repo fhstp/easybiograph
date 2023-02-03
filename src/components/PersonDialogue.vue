@@ -156,6 +156,7 @@ export default {
       this.chooseYear();
       //@ts-ignore
       store.commit("data/addTimeline", this.personYears);
+      this.$router.go(0);
       //@ts-ignore
       this.$emit("close");
     },

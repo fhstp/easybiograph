@@ -167,6 +167,7 @@ export default {
     },
     removeEvent() {
       store.commit("data/removeEvent", this.selectedEvent.eventId);
+      this.$router.go(0);
       this.$emit("close");
     },
     editEvent() {

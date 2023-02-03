@@ -465,6 +465,7 @@ export default {
       newEvent.endDate = this.newEventDetails.endDate;
       store.commit("data/addEvent", newEvent);
 
+      this.$router.go(0);
       //@ts-ignore
       this.newEventDetails = {};
       //console.log(store.getters.getEvents);
@@ -546,7 +547,7 @@ export default {
 
       let monthsTilBegin: number = yearsTilBegin + startMonth;
 
-      let margin: number = (totalYearWidth / months) * monthsTilBegin + 8;
+      let margin: number = (totalYearWidth / months) * monthsTilBegin;
 
       let marginPoint: number = totalYearWidth / dYears.length;
 
