@@ -248,7 +248,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(value, index) in dimensionOptions" :key="value">
+      <tr v-for="(value, index) in dimensionOptions" :key="value" :id="value">
         <td class="content">
           <div>
             {{ value }}
@@ -260,6 +260,7 @@
             <TimeEvent
                 v-for="event in filteredEvents[index]"
                 :key="event.eventId"
+                class="eventSelector"
               :event="event"
               :show-notes="isOnlyEventAtPos(event)"
               :style="calcPos(event)"
@@ -357,7 +358,6 @@ export default {
       const dims = Object.keys(Dimension).filter((item) => {
         return isNaN(Number(item))
       })
-      console.log(dims)
       for(let i = 0; i < dims.length; i++){
         //@ts-ignore
         this.filteredEvents.push(this.filterEvents(dims[i]))
@@ -375,6 +375,20 @@ export default {
       this.closeModal();
       //@ts-ignore
       this.showEditDialogue = true;
+    },
+    checkHeight(dimension: string, stack: number){
+      let selector = "#" + dimension
+      const row = document.querySelector(selector)
+      const itemHeight = 80
+      const newHeight = itemHeight * stack
+
+
+      if(!row){return}
+      if(newHeight > row.style.height){
+        row.style.height = newHeight + "px"
+        console.log(dimension, newHeight)
+      }
+
     },
     isOnlyEventAtPos(event: any): Boolean {
       const eventYears = [] as number[];
@@ -466,9 +480,8 @@ export default {
     calcYPos(po: any): number {
 
       //@ts-ignore
-      if(this.eventPos.length < 1) return 1
+      if(this.eventPos.length < 1) return 0
       let counter = 0
-      /*
       //@ts-ignore
       this.eventPos.forEach((e) => {
         if(po.event.dimensionId == e.event.dimensionId){
@@ -477,12 +490,9 @@ export default {
           }
         }
       })
-       */
       return counter
     },
     calcPos(event: any) {
-
-      console.log("called")
 
       let totalYearWidth = 90;
       //@ts-ignore
@@ -570,24 +580,30 @@ export default {
 
         //@ts-ignore
         this.eventPos.push(positionObject);
+        //@ts-ignore
+        this.eventPos.sort((a, b) =>{
+          let dateA = new Date(a.event.startDate)
+          let dateB = new Date(b.event.startDate)
+          //@ts-ignore
+          return dateA - dateB
+        })
       }
 
-      let topGap = 35 * positionObject.yPos
+      let topGap = 25 * positionObject.yPos
+
+      this.checkHeight(Dimension[event.dimensionId], positionObject.yPos)
 
       let styleObject = {
         left: margin + "%",
         width: width + "%",
-        top: topGap + "%",
+        top: topGap + "px",
       };
       let eventObject = {
         left: margin + "%",
         width: marginPoint + "%",
-        top: topGap + "%",
+        top: topGap + "px",
       };
 
-      //@ts-ignore
-      console.log("length of eventPos: " + this.eventPos.length + " vs. " + store.state.data.events.length);
-      console.log(styleObject);
       return event.isInterval ? styleObject : eventObject;
     },
     calcEventMonths(sy: number, ey: number, sm: number, em: number) {
@@ -674,6 +690,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+
 table {
   border-spacing: 0;
   width: 100vw;
