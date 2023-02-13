@@ -42,12 +42,15 @@
         <label class="label" style="text-align: left">Datum</label>
       </div>
       <div class="field-body">
-        <input type="month" v-model="currentEvent.startDate" />
-        <input
-          type="month"
-          v-show="currentEvent.isInterval == true"
-          v-model="currentEvent.endDate"
-        />
+        <MonthChooser v-model="currentEvent.startDate" />
+      </div>
+    </div>
+    <div class="field is-horizontal" v-show="currentEvent.isInterval">
+      <div class="field-label is-normal">
+        <label class="label" style="text-align: left">bis</label>
+      </div>
+      <div class="field-body">
+        <MonthChooser v-model="currentEvent.endDate" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -129,9 +132,11 @@
 <script>
 import { store } from "@/store";
 import { Dimension } from "@/data/Dimension";
+import MonthChooser from "./MonthChooser.vue";
 
 export default {
   name: "DeleteEditDialogue",
+  components: { MonthChooser },
   setup() {
     const dimensionOptions = Object.keys(Dimension).filter((v) =>
       isNaN(Number(v))
