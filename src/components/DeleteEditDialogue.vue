@@ -82,8 +82,7 @@
             <input
               class="input"
               type="text"
-              :value="currentEvent.description"
-              v-on:change="updateEvent($event.target.value)"
+              v-model="currentEvent.description"
             />
           </div>
         </div>
@@ -134,7 +133,6 @@
 <script>
 import { store } from "@/store";
 import { Dimension } from "@/data/Dimension";
-import { initEvent } from "@/data/ZBEvent";
 
 export default {
   name: "DeleteEditDialogue",
@@ -156,33 +154,17 @@ export default {
     };
   },
   methods: {
-    init() {
-      this.currentEvent = this.selectedEvent;
-      this.selectedDimension = Dimension[this.selectedEvent.dimensionId];
-
-      console.table(this.currentEvent);
-    },
-    updateEvent(event) {
-      this.currentEvent.description = event;
-    },
+    // TODO: init is never called
+    // TODO: updateEvent() replaced by v-model
     removeEvent() {
       store.commit("data/removeEvent", this.selectedEvent.eventId);
       this.$router.go(0);
       this.$emit("close");
     },
     editEvent() {
-      const payload = initEvent();
-      payload.eventId = this.selectedEvent.eventId;
+      // safe to send currentEvent because it is a clone
+      const payload = this.currentEvent;
       payload.dimensionId = Dimension[this.selectedDimension];
-      //@ts-ignore
-      payload.description = this.currentEvent.description;
-      //@ts-ignore
-      payload.notes = this.currentEvent.notes;
-      payload.isInterval =
-        //@ts-ignore
-        this.currentEvent.isInterval ? true : false;
-      payload.startDate = this.currentEvent.startDate;
-      payload.endDate = this.currentEvent.endDate;
       console.table(payload);
       store.commit("data/editEvents", payload);
       this.$emit("reload");
@@ -194,7 +176,8 @@ export default {
   },
   watch: {
     selectedEvent: function () {
-      this.currentEvent = this.selectedEvent;
+      // shallow clone event data when opening the dialog
+      this.currentEvent = Object.assign({}, this.selectedEvent);
       this.selectedDimension = Dimension[this.selectedEvent.dimensionId];
     },
   },
