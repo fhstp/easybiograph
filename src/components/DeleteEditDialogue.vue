@@ -20,20 +20,16 @@
             <label class="radio">
               <input
                 type="radio"
-                name="member"
                 v-model="currentEvent.isInterval"
-                value="period"
-                :checked="currentEvent.isInterval"
+                v-bind:value="true"
               />
               Zeitraum
             </label>
             <label class="radio">
               <input
                 type="radio"
-                name="member"
                 v-model="currentEvent.isInterval"
-                value="point"
-                :checked="currentEvent.isInterval == false"
+                v-bind:value="false"
               />
               Zeitpunkt
             </label>

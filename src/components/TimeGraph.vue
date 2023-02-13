@@ -120,19 +120,16 @@
             <label class="radio">
               <input
                 type="radio"
-                name="member"
-                v-model="newEventDetails.newEventIsPeriod"
-                value="period"
-                checked
+                v-model="newEventDetails.isInterval"
+                v-bind:value="true"
               />
               Zeitraum
             </label>
             <label class="radio">
               <input
                 type="radio"
-                name="member"
-                v-model="newEventDetails.newEventIsPeriod"
-                value="point"
+                v-model="newEventDetails.isInterval"
+                v-bind:value="false"
               />
               Zeitpunkt
             </label>
@@ -148,7 +145,7 @@
         <input type="month" v-model="newEventDetails.startDate" />
         <input
           type="month"
-          v-show="newEventDetails.newEventIsPeriod == 'period'"
+          v-show="newEventDetails.isInterval"
           v-model="newEventDetails.endDate"
         />
       </div>
@@ -327,8 +324,9 @@ export default {
       showEventDisplay: false,
       showCreateBiograph: !store.getters.getPersonCreated,
       clickedEvent: {},
+      // TODO: without refresh it will be necessary to reset newEventDetails
       newEventDetails: {
-        newEventIsPeriod: "period",
+        isInterval: true,
         description: "",
         note: "",
         dimension: Dimension.Familie,
@@ -451,6 +449,7 @@ export default {
       this.$forceUpdate();
     },
     addEvent() {
+      // TODO: should be safe to pass newEventDetails as payload because it is cloned in mutation
       const newEvent = initEvent();
       //@ts-ignore
       newEvent.dimensionId = Dimension[this.newEventDetails.dimension];
@@ -458,9 +457,7 @@ export default {
       newEvent.description = this.newEventDetails.description;
       //@ts-ignore
       newEvent.notes = this.newEventDetails.note;
-      newEvent.isInterval =
-        //@ts-ignore
-        this.newEventDetails.newEventIsPeriod == "period" ? true : false;
+      newEvent.isInterval = this.newEventDetails.isInterval;
       //@ts-ignore
       newEvent.startDate = this.newEventDetails.startDate;
       //@ts-ignore
