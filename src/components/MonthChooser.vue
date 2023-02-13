@@ -2,10 +2,15 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 
-const props = defineProps(["modelValue"]);
+const props = defineProps<{
+  modelValue?: string;
+  min?: string;
+  max?: string;
+}>();
+
 const emit = defineEmits(["update:modelValue"]);
 
-const MONTHS = [
+const AVAIL_MONTHS = [
   "Jänner",
   "Februar",
   "März",
@@ -19,6 +24,16 @@ const MONTHS = [
   "November",
   "Dezember",
 ];
+
+let avail_years = null;
+if (props.min && props.max) {
+  // console.log(`min: ${props.min}, max: ${props.max}`);
+  const minYear = parseInt(props.min.slice(0, 4));
+  const maxYear = parseInt(props.max.slice(0, 4));
+  // console.log(`min: ${minYear}, max: ${maxYear}`);
+  avail_years = Array.from(Array(maxYear - minYear + 1), (_, i) => i + minYear);
+  // console.log(`avail: ${avail_years}`);
+}
 
 const month = ref(2);
 // const month = ref(MONTHS[0]);
@@ -35,7 +50,7 @@ const setFromProperties = (newModelValue: string) => {
       year.value = parseInt(match[1]);
       month.value = parseInt(match[2]) - 1;
       // TODO insert error handling
-      console.log(`parsed as ${match[1]} - ${MONTHS[month.value]}`);
+      console.log(`parsed as ${match[1]} - ${AVAIL_MONTHS[month.value]}`);
     }
   }
 };
@@ -82,7 +97,7 @@ watch([month, year], ([newMonth, newYear]) => {
   <div class="control has-icons-left">
     <div class="select">
       <select v-model="month">
-        <option v-for="(label, i) in MONTHS" :key="i" :value="i">
+        <option v-for="(label, i) in AVAIL_MONTHS" :key="i" :value="i">
           {{ label }}
         </option>
       </select>
@@ -93,6 +108,13 @@ watch([month, year], ([newMonth, newYear]) => {
   </div>
   &nbsp;
   <div class="control">
-    <input v-model="year" class="input" type="number" />
+    <div v-if="avail_years" class="select">
+      <select v-model="year">
+        <option v-for="label in avail_years" :key="label" :value="label">
+          {{ label }}
+        </option>
+      </select>
+    </div>
+    <input v-else v-model="year" class="input" type="number" />
   </div>
 </template>

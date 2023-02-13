@@ -142,17 +142,23 @@
         <label class="label" style="text-align: left">Datum</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newEventDetails.startDate" />
+        <MonthChooser
+          v-model="newEventDetails.startDate"
+          :min="birthMonth"
+          :max="interviewMonth"
+        />
       </div>
     </div>
-    <div
-      class="field is-horizontal"
-      v-show="newEventDetails.isInterval">
+    <div class="field is-horizontal" v-show="newEventDetails.isInterval">
       <div class="field-label is-normal">
         <label class="label" style="text-align: left">bis</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newEventDetails.endDate" />
+        <MonthChooser
+          v-model="newEventDetails.endDate"
+          :min="birthMonth"
+          :max="interviewMonth"
+        />
       </div>
     </div>
 
@@ -342,6 +348,14 @@ export default {
       },
       events: store.getters.getEvents,
     };
+  },
+  computed: {
+    birthMonth() {
+      return store.state.data.person.birthMonth;
+    },
+    interviewMonth() {
+      return store.state.data.person.interviewMonth;
+    },
   },
   watch: {
     displayYears: {

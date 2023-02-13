@@ -42,7 +42,11 @@
         <label class="label" style="text-align: left">Datum</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="currentEvent.startDate" />
+        <MonthChooser
+          v-model="currentEvent.startDate"
+          :min="birthMonth"
+          :max="interviewMonth"
+        />
       </div>
     </div>
     <div class="field is-horizontal" v-show="currentEvent.isInterval">
@@ -50,7 +54,11 @@
         <label class="label" style="text-align: left">bis</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="currentEvent.endDate" />
+        <MonthChooser
+          v-model="currentEvent.endDate"
+          :min="birthMonth"
+          :max="interviewMonth"
+        />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -153,6 +161,14 @@ export default {
       currentEvent: {},
       selectedDimension: Dimension.Familie,
     };
+  },
+  computed: {
+    birthMonth() {
+      return store.state.data.person.birthMonth;
+    },
+    interviewMonth() {
+      return store.state.data.person.interviewMonth;
+    },
   },
   methods: {
     // TODO: init is never called
