@@ -1,6 +1,6 @@
 <!-- wrapper for MonthYear input with model-value is a string formatted YYYY-MM -->
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
 const props = defineProps<{
   modelValue?: string;
@@ -25,24 +25,47 @@ const AVAIL_MONTHS = [
   "Dezember",
 ];
 
-let avail_years = null;
-if (props.min && props.max) {
-  // console.log(`min: ${props.min}, max: ${props.max}`);
-  const minYear = parseInt(props.min.slice(0, 4));
-  const maxYear = parseInt(props.max.slice(0, 4));
-  // console.log(`min: ${minYear}, max: ${maxYear}`);
-  avail_years = Array.from(Array(maxYear - minYear + 1), (_, i) => i + minYear);
-  // console.log(`avail: ${avail_years}`);
-}
+const minYear = computed(() => {
+  return props.min ? parseInt(props.min.slice(0, 4)) : undefined;
+});
 
-const month = ref(2);
-// const month = ref(MONTHS[0]);
-const year = ref(2020);
+/** birth month (zero-based) */
+const minMonth = computed(() => {
+  return props.min ? parseInt(props.min.slice(5, 7)) - 1 : undefined;
+});
 
-const setFromProperties = (newModelValue: string) => {
+const age = computed(() => {
+  if (minYear.value && minMonth.value) {
+    const ageMon =
+      (year.value - minYear.value) * 12 + (month.value - minMonth.value);
+
+    return `${Math.floor(ageMon / 12)} Jahre, ${ageMon % 12} Monate`;
+  } else {
+    return undefined;
+  }
+});
+
+const avail_years = computed(() => {
+  if (minYear.value && props.max) {
+    // console.log(`min: ${props.min}, max: ${props.max}`);
+    const maxYear = parseInt(props.max.slice(0, 4));
+    // console.log(`min: ${minYear}, max: ${maxYear}`);
+    const minY2 = minYear.value;
+    return Array.from(Array(maxYear - minY2 + 1), (_, i) => i + minY2);
+    // console.log(`avail: ${avail_years}`);
+  } else {
+    return null;
+  }
+});
+
+/** current month (zero-based) as reactive data variable */
+const month = ref(minMonth.value || 0); // month internally zero-based
+const year = ref(minYear.value || 2020);
+
+/** helper to split YYYY-MM string into two integers month and year */
+const setFromProperties = (newModelValue: string | undefined) => {
   console.log(`parent set monthyear to ${newModelValue}`);
 
-  // ^\d{4}\-[0-1][0-9]$
   const re = /^(\d{4})-(([0][1-9])|([1][0-2]))$/;
   if (newModelValue) {
     const match = newModelValue.match(re);
@@ -57,19 +80,6 @@ const setFromProperties = (newModelValue: string) => {
 
 setFromProperties(props.modelValue);
 watch(() => props.modelValue, setFromProperties);
-//   (newModelValue) => {
-//     console.log(`parent set monthyear to ${newModelValue}`);
-
-//     // ^\d{4}\-[0-1][0-9]$
-//     const re = /^(\d{4})-(([0][1-9])|([1][0-2]))$/;
-//     const match = newModelValue.match(re);
-//     year.value = match[1];
-//     month.value = parseInt(match[2]) - 1;
-//     // TODO insert error handling
-//     console.log(`parsed as ${match[1]} - ${MONTHS[month.value]}`);
-//   }
-//   // { deep: true }
-// );
 
 watch([month, year], ([newMonth, newYear]) => {
   const modelStr =
@@ -79,18 +89,6 @@ watch([month, year], ([newMonth, newYear]) => {
   console.log(`built as: ${modelStr}`);
   emit("update:modelValue", modelStr);
 });
-
-// const year = computed({
-//   get() {
-//     return props.modelValue;
-//   },
-//   set(value) {
-//     emit("update:modelValue", value);
-//   },
-// });
-
-// <!-- :value="modelValue"
-//     @input="$emit('update:modelValue', $event.target.value)" -->
 </script>
 
 <template>
@@ -117,4 +115,14 @@ watch([month, year], ([newMonth, newYear]) => {
     </div>
     <input v-else v-model="year" class="input" type="number" />
   </div>
+  &nbsp;
+  <div class="age field-label is-normal">
+    {{ age }}
+  </div>
 </template>
+
+<style scoped lang="scss">
+.age {
+  color: hsl(0, 0%, 71%);
+}
+</style>
