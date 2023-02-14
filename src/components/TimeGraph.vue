@@ -329,7 +329,7 @@ export default {
         isInterval: true,
         description: "",
         note: "",
-        dimension: Dimension.Familie,
+        dimension: Dimension[Dimension.Familie], // XXX: might solve bug with uninitialized dimension
         startDate: "",
         endDate: "",
       },
@@ -452,7 +452,9 @@ export default {
       // TODO: should be safe to pass newEventDetails as payload because it is cloned in mutation
       const newEvent = initEvent();
       //@ts-ignore
+      // XXX: replace by array? (this should convert enum to int, but sometimes it does not work)
       newEvent.dimensionId = Dimension[this.newEventDetails.dimension];
+      console.log(`dimension: |${this.newEventDetails.dimension}| -> |${newEvent.dimensionId}|`)
       //@ts-ignore
       newEvent.description = this.newEventDetails.description;
       //@ts-ignore
