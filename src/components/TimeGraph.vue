@@ -76,6 +76,12 @@
   </nav>
   <br />
 
+  <div v-show="personYears < 1">
+    <embed src = "easybiographWelcome.svg"
+         alt="Welcome to easybiograph"
+    >
+  </div>
+
   <div id="modal-event" class="modal">
     <div class="modal-background" @click="closeModal"></div>
 
@@ -280,7 +286,6 @@ import TimeEvent from "@/components/TimeEvent.vue";
 import DeleteEditDialogue from "@/components/DeleteEditDialogue.vue";
 import PersonDialogue from "@/components/PersonDialogue.vue";
 import EventDisplay from "@/components/EventDisplay.vue";
-import {loadSettingsFromStore} from "@/store/localStoragePlugin";
 
 export default {
   name: "TimeGraph",
