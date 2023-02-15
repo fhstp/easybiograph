@@ -41,7 +41,7 @@
               </label>
             </a>
 
-            <a class="button is-dark" @click="downloadData">
+            <a class="button is-dark" @click="downloadData" v-show="!showIntro">
               <span class="icon is-small">
                 <font-awesome-icon icon="save" />
               </span>
@@ -53,7 +53,7 @@
         <div class="navbar-item">
           <!-- TODO fill from stored ZBPerson -->
           <span class="client">{{ $store.state.data.person.name }}</span>
-          <a class="button is-dark" @click="showCreateBiograph = true">
+          <a class="button is-dark" @click="showCreateBiograph = true" v-show="!showIntro">
             <!-- TODO edit instead of new -->
             <span class="icon">
               <font-awesome-icon icon="pencil-alt" />
@@ -63,7 +63,7 @@
 
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-dark" @click="showDiv()">
+            <a class="button is-dark" @click="showDiv()" v-show="!showIntro">
               <span class="icon">
                 <font-awesome-icon icon="plus" />
               </span>
@@ -76,7 +76,7 @@
   </nav>
   <br />
 
-  <div v-show="personYears < 1">
+  <div v-if="showIntro">
     <embed src = "easybiographWelcome.svg"
          alt="Welcome to easybiograph"
     >
@@ -233,7 +233,8 @@
     </button>
   </div>
   <!-- end of add event dialog -->
-  <table v-show="!showCreateBiograph">
+
+  <table v-show="!showCreateBiograph && !showIntro">
     <thead>
       <tr class="year_age">
         <td class="content">
@@ -353,6 +354,13 @@ export default {
     //@ts-ignore
     this.loadEvents()
   },
+  computed:{
+    showIntro(): boolean{
+      //@ts-ignore
+      //this.displayYears.length > 0
+      return this.personYears < 1
+    }
+  },
   methods: {
     loadEvents() {
       //@ts-ignore
@@ -447,7 +455,6 @@ export default {
       this.personYears = store.getters.getTimeline;
       //@ts-ignore
       this.showCreateBiograph = false;
-
       //@ts-ignore
       this.displayYears = this.displayPersonYears();
       //@ts-ignore
