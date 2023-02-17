@@ -508,7 +508,7 @@ export default {
     },
     calcPos(event: any) {
 
-      let totalYearWidth = 90;
+      let totalYearWidth = 100;
       //@ts-ignore
       let dYears: number[] = Object.values(this.displayYears);
 
