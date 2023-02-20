@@ -148,14 +148,26 @@
         <label class="label" style="text-align: left">Datum</label>
       </div>
       <div class="field-body">
-        <input type="month" v-model="newEventDetails.startDate" />
-        <input
-          type="month"
-          v-show="newEventDetails.isInterval"
-          v-model="newEventDetails.endDate"
+        <MonthChooser
+          v-model="newEventDetails.startDate"
+          :min="birthMonth"
+          :max="interviewMonth"
         />
       </div>
     </div>
+    <div class="field is-horizontal" v-show="newEventDetails.isInterval">
+      <div class="field-label is-normal">
+        <label class="label" style="text-align: left">bis</label>
+      </div>
+      <div class="field-body">
+        <MonthChooser
+          v-model="newEventDetails.endDate"
+          :min="birthMonth"
+          :max="interviewMonth"
+        />
+      </div>
+    </div>
+
     <div class="field is-horizontal">
       <div class="field-label is-normal">
         <label class="label" style="text-align: left">Dimension</label>
@@ -287,10 +299,12 @@ import TimeEvent from "@/components/TimeEvent.vue";
 import DeleteEditDialogue from "@/components/DeleteEditDialogue.vue";
 import PersonDialogue from "@/components/PersonDialogue.vue";
 import EventDisplay from "@/components/EventDisplay.vue";
+import MonthChooser from "./MonthChooser.vue";
+import {loadSettingsFromStore} from "@/store/localStoragePlugin";
 
 export default {
   name: "TimeGraph",
-  components: { TimeEvent, DeleteEditDialogue, PersonDialogue, EventDisplay },
+  components: { TimeEvent, DeleteEditDialogue, PersonDialogue, EventDisplay, MonthChooser },
 
   props: {
     event: {
@@ -341,6 +355,14 @@ export default {
       },
       events: store.getters.getEvents,
     };
+  },
+  computed: {
+    birthMonth() {
+      return store.state.data.person.birthMonth;
+    },
+    interviewMonth() {
+      return store.state.data.person.interviewMonth;
+    },
   },
   watch: {
     displayYears: {

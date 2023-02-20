@@ -32,7 +32,7 @@
         <label class="label" style="text-align: left">Geburtsdatum</label>
       </div>
       <div class="field-body">
-        <input type="month" v-model="newPersonDetails.birthMonth" />
+        <MonthChooser v-model="newPersonDetails.birthMonth" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -40,7 +40,7 @@
         <label class="label" style="text-align: left">Bis</label>
       </div>
       <div class="field-body">
-        <input type="month" v-model="newPersonDetails.interviewMonth"/>
+        <MonthChooser v-model="newPersonDetails.interviewMonth" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -99,9 +99,11 @@
 <script lang="ts">
 // import { initPerson } from "../data/ZBPerson";
 import { store } from "@/store";
+import MonthChooser from "./MonthChooser.vue";
 
 export default {
   name: "PersonDialogue",
+  components: { MonthChooser },
   props: {
     newPersonDetails: {
       type: Object,

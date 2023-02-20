@@ -6,7 +6,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "lib": ["ES2017", "dom", "dom.iterable", "scripthost"]
   },
 
   "references": [
