@@ -339,6 +339,7 @@ export default {
       displayYears: {},
       eventPos: [],
       filteredEvents: [],
+      categoryHeight: [0,0,0,0,0,0,0],
       showDialogue: false,
       showEditDialogue: false,
       showEventDisplay: false,
@@ -513,6 +514,13 @@ export default {
         return el.dimensionId == Dimension[dimension];
       });
     },
+    setCategoryHeight(){
+      for(let i = 0; i < this.categoryHeight.length; i++){
+        let element = document.getElementById(Dimension[i])
+        element.style.height = `${this.categoryHeight[i] * 4.4}vh`
+        console.log(this.categoryHeight[i])
+      }
+    },
     calcYPos(po: any): number {
 
       //@ts-ignore
@@ -526,6 +534,10 @@ export default {
           }
         }
       })
+      if(counter > this.categoryHeight[po.event.dimensionId]){
+        this.categoryHeight[po.event.dimensionId] = counter
+        this.setCategoryHeight()
+      }
       return counter
     },
     calcPos(event: any) {
@@ -727,7 +739,6 @@ export default {
 
 <style scoped lang="scss">
 
-
 table {
   border-spacing: 0;
   width: 100vw;
@@ -747,7 +758,7 @@ td:not(.eventWrap, .year-wrap) {
 }
 
 tr:nth-child(odd) {
-  background-color: $gridgrey;
+  background-color: #f2efea; //DFDFDF
 }
 
 .eventWrap {
@@ -785,7 +796,7 @@ thead > tr {
 }
 
 .subcontent {
-  color: darkgrey;
+  color: dimgrey;
 }
 
 .event_dialogue {
