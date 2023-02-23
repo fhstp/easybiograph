@@ -246,7 +246,7 @@
   </div>
   <!-- end of add event dialog -->
 
-  <table v-show="!showCreateBiograph && !showIntro">
+  <table v-show="!showCreateBiograph && !showIntro" id="table">
     <thead>
       <tr class="year_age">
         <td class="content">
@@ -377,6 +377,7 @@ export default {
     //@ts-ignore
     this.loadEvents()
   },
+  //@ts-ignore
   computed:{
     showIntro(): boolean{
       //@ts-ignore
@@ -420,7 +421,9 @@ export default {
 
 
       if(!row){return}
+      //@ts-ignore
       if(newHeight > row.style.height){
+        //@ts-ignore
         row.style.height = newHeight + "px"
         console.log(dimension, newHeight)
       }
@@ -489,18 +492,20 @@ export default {
       //@ts-ignore
       // XXX: replace by array? (this should convert enum to int, but sometimes it does not work)
       newEvent.dimensionId = Dimension[this.newEventDetails.dimension];
+      //@ts-ignore
       console.log(`dimension: |${this.newEventDetails.dimension}| -> |${newEvent.dimensionId}|`)
       //@ts-ignore
       newEvent.description = this.newEventDetails.description;
       //@ts-ignore
       newEvent.notes = this.newEventDetails.note;
+      //@ts-ignore
       newEvent.isInterval = this.newEventDetails.isInterval;
       //@ts-ignore
       newEvent.startDate = this.newEventDetails.startDate;
       //@ts-ignore
       newEvent.endDate = this.newEventDetails.endDate;
       store.commit("data/addEvent", newEvent);
-
+      //@ts-ignore
       this.$router.go(0);
       //@ts-ignore
       this.newEventDetails = {};
@@ -515,10 +520,11 @@ export default {
       });
     },
     setCategoryHeight(){
+      //@ts-ignore
       for(let i = 0; i < this.categoryHeight.length; i++){
         let element = document.getElementById(Dimension[i])
+        //@ts-ignore
         element.style.height = `${this.categoryHeight[i] * 4.4}vh`
-        console.log(this.categoryHeight[i])
       }
     },
     calcYPos(po: any): number {
@@ -534,15 +540,20 @@ export default {
           }
         }
       })
+      //@ts-ignore
       if(counter > this.categoryHeight[po.event.dimensionId]){
+        //@ts-ignore
         this.categoryHeight[po.event.dimensionId] = counter
         this.setCategoryHeight()
       }
+      let tableHeight = document.getElementById("table")
+      //@ts-ignore
+      tableHeight.style.height = 90 + counter * 4.5 + "vh"
       return counter
     },
     calcPos(event: any) {
 
-      let totalYearWidth = 100;
+      let totalYearWidth = 97.5;
       //@ts-ignore
       let dYears: number[] = Object.values(this.displayYears);
 
@@ -739,14 +750,19 @@ export default {
 
 <style scoped lang="scss">
 
+
+#table {
+  height: 90vh;
+}
+
 table {
   border-spacing: 0;
   width: 100vw;
-  height: 90vh;
   display: table;
   margin-top: 7vh;
   margin-left: -2.2vh;
   table-layout: fixed;
+  overflow: auto;
 }
 
 td {
@@ -758,7 +774,7 @@ td:not(.eventWrap, .year-wrap) {
 }
 
 tr:nth-child(odd) {
-  background-color: #f2efea; //DFDFDF
+  background-color: #f2efea;
 }
 
 .eventWrap {
@@ -767,6 +783,10 @@ tr:nth-child(odd) {
 
 thead > tr {
   background-color: white !important;
+}
+
+tbody {
+  overflow-y: scroll;
 }
 
 .year {
@@ -781,7 +801,8 @@ thead > tr {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  text-align: center;
+  margin-left: -2vh;
+  text-align: left;
   font-size: small;
 }
 
