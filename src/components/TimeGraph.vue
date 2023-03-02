@@ -518,7 +518,7 @@ export default {
       for(let i = 0; i < this.categoryHeight.length; i++){
         let element = document.getElementById(Dimension[i])
         //@ts-ignore
-        element.style.height = `${this.categoryHeight[i] * 4.4}vh`
+        element.style.height = `${this.categoryHeight[i] * 5}vh`
       }
     },
     calcYPos(po: any): number {
@@ -526,6 +526,7 @@ export default {
       //@ts-ignore
       if(this.eventPos.length < 1) return 0
       let counter = 0
+      let heightCounter = 0
       //@ts-ignore
       this.eventPos.forEach((e) => {
         if(po.event.dimensionId == e.event.dimensionId){
@@ -539,10 +540,11 @@ export default {
         //@ts-ignore
         this.categoryHeight[po.event.dimensionId] = counter
         this.setCategoryHeight()
+        heightCounter++
       }
       let tableHeight = document.getElementById("table")
       //@ts-ignore
-      tableHeight.style.height = 90 + counter * 4.5 + "vh"
+      tableHeight.style.height = 90 + (heightCounter * 40) + "vh"
       return counter
     },
     calcPos(event: any) {
@@ -746,7 +748,7 @@ export default {
 
 
 #table {
-  height: 90vh;
+  height: 75vh;
 }
 
 table {
