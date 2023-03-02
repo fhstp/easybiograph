@@ -52,7 +52,7 @@
 
         <div class="navbar-item">
           <!-- TODO fill from stored ZBPerson -->
-          <span class="client">{{ $store.state.data.person.name }}</span>
+          <!-- <span class="client">{{ $store.state.data.person.name }}</span> -->
           <a class="button is-dark" @click="showCreateBiograph = true" v-show="!showIntro">
             <!-- TODO edit instead of new -->
             <span class="icon">
@@ -103,19 +103,12 @@
   <div
     class="box position"
     id="box"
-    style="position: absolute; top: 3vh; height: 93vh; left: 10vw; width: 40vw; z-index: 2"
+    style="position: absolute; top: 3vh; height: 93vh; left: 10vw; width: 40vw; z-index: 5"
     v-show="showDialogue"
   >
-    <button
-      class="button is-light is-small"
-      style="right: -33vw"
-      v-on:click="showDialogue = false"
-    >
-      X
-    </button>
 
+    <br>
     <h1 class="title block">Eintrag erstellen</h1>
-    <br />
     <div class="field is-horizontal">
       <div class="field-label">
         <label class="label" style="text-align: left">Typ</label>
@@ -201,11 +194,6 @@
               id="eventNameId"
             />
           </div>
-          <!--
-          <p class="help is-danger">
-            Bitte gib dem Event einen Titel
-          </p>
-          -->
         </div>
       </div>
     </div>
@@ -230,14 +218,14 @@
     <br />
     <button
       class="button is-white"
-      style="margin-right: 1vw; right: -20vw"
+      style="margin-right: 1vw; right: -20vw; margin-top: -5vh"
       v-on:click="showDialogue = false"
     >
       Abbrechen
     </button>
     <button
       class="button is-link is-light"
-      style="right: -20vw"
+      style="right: -20vw; margin-top: -5vh"
       v-on:click="addEvent"
       v-on:mouseup="showDialogue = false"
     >
@@ -246,25 +234,31 @@
   </div>
   <!-- end of add event dialog -->
 
+  <div v-show="!showCreateBiograph && !showIntro" class="personInfo">
+    <p class="same interviewee">{{$store.state.data.person.name}}, geboren am {{$store.state.data.person.birthMonth.substring(5,7)}}.{{$store.state.data.person.birthMonth.substring(0,4)}} in {{$store.state.data.person.birthplace}}.</p>
+    <p class="same interviewer"> Interviewt von: {{$store.state.data.person.interviewers}}, {{$store.state.data.person.interviewMonth.substring(5,7)}}.{{$store.state.data.person.interviewMonth.substring(0,4)}}</p>
+  </div>
+
+  <div v-show="!showCreateBiograph && !showIntro">
+    <div class="year_age">
+      <div class="content">
+        <p>Jahr</p>
+        <p class="subcontent">Alter</p>
+      </div>
+      <div class="year-wrap" id="year-wrap" ref="yearwrapper">
+        <div v-for="(year, index) in displayYears" :key="index" class="year">
+          <p>
+            {{ year }}
+          </p>
+          <p class="subcontent">
+            {{ index }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <table v-show="!showCreateBiograph && !showIntro" id="table">
-    <thead>
-      <tr class="year_age">
-        <td class="content">
-          <p>Jahr</p>
-          <p class="subcontent">Alter</p>
-        </td>
-        <td class="year-wrap" id="year-wrap" ref="yearwrapper">
-          <div v-for="(year, index) in displayYears" :key="index" class="year">
-            <p>
-              {{ year }}
-            </p>
-            <p class="subcontent">
-              {{ index }}
-            </p>
-          </div>
-        </td>
-      </tr>
-    </thead>
     <tbody>
       <tr v-for="(value, index) in dimensionOptions" :key="value" :id="value">
         <td class="content">
@@ -759,8 +753,8 @@ table {
   border-spacing: 0;
   width: 100vw;
   display: table;
-  margin-top: 7vh;
   margin-left: -2.2vh;
+  margin-top: 21.5vh;
   table-layout: fixed;
   overflow: auto;
 }
@@ -779,6 +773,28 @@ tr:nth-child(odd) {
 
 .eventWrap {
   position: relative;
+}
+
+.personInfo{
+  position: fixed;
+  padding-left: 1vw;
+  padding-top: 0.5vh;
+  margin-top: 5.5vh;
+  background-color: grey;
+  color: white;
+  width: 100vw;
+  height: 7vh;
+  z-index: 3;
+  white-space: nowrap;
+}
+
+.interviewee {
+  font-size: large;
+}
+
+.interviewer {
+  margin-left: 2vw;
+  font-size: smaller;
 }
 
 thead > tr {
@@ -801,13 +817,27 @@ tbody {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  margin-left: -2vh;
+  margin-top: -7.5vh;
+  margin-bottom: 2vh;
+  margin-left: 5.5vh;
+  padding-left: 15vh;
   text-align: left;
   font-size: small;
 }
 
 .year_age {
+  margin-top: 16.5vh;
+  margin-left: -2vh;
   border-bottom: 0.5px solid lightgrey;
+  position: fixed;
+  width: 100vw;
+  top: 0px;
+  background-color: white;
+  z-index: 3;
+}
+
+.same {
+  display:inline-block;
 }
 
 .content {
