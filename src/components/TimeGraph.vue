@@ -258,16 +258,19 @@
     </div>
   </div>
 
+
+
   <table v-show="!showCreateBiograph && !showIntro" id="table">
     <tbody>
-      <tr v-for="(value, index) in dimensionOptions" :key="value" :id="value">
+    <!-- is there an event at that dimension? -->
+    <div class="moz-class" >
+      <tr v-for="(value, index) in dimensionOptions" :key="value" :id="value"> <!-- <tr v-for="(value, index) in dimensionOptions" :key="value" :id="value"> -->
         <td class="content">
           <div>
             {{ value }}
           </div>
         </td>
         <td class="eventWrap">
-          <!-- -->
 
             <TimeEvent
                 v-for="event in filteredEvents[index]"
@@ -281,8 +284,10 @@
             />
         </td>
       </tr>
+    </div>
     </tbody>
   </table>
+
 </template>
 
 <script lang="ts">
@@ -345,8 +350,8 @@ export default {
         description: "",
         note: "",
         dimension: Dimension[Dimension.Familie], // XXX: might solve bug with uninitialized dimension
-        startDate: "",
-        endDate: "",
+        startDate: "2020-01",
+        endDate: "2020-01",
       },
       events: store.getters.getEvents,
     };
@@ -358,6 +363,11 @@ export default {
     interviewMonth() {
       return store.state.data.person.interviewMonth;
     },
+    showIntro(): boolean{
+      //@ts-ignore
+      //this.displayYears.length > 0
+      return this.personYears < 1
+    }
   },
   watch: {
     displayYears: {
@@ -370,14 +380,6 @@ export default {
   mounted() {
     //@ts-ignore
     this.loadEvents()
-  },
-  //@ts-ignore
-  computed:{
-    showIntro(): boolean{
-      //@ts-ignore
-      //this.displayYears.length > 0
-      return this.personYears < 1
-    }
   },
   methods: {
     loadEvents() {
@@ -398,6 +400,16 @@ export default {
       // TODO: use self-explaining function name, which <div>? add event dialog
       //@ts-ignore
       this.showDialogue = true;
+    },
+    showDimension(dimension: string): boolean{
+      console.log(dimension)
+      //@ts-ignore
+      let filter = this.events.filter(el => {
+        //@ts-ignore
+        return el.dimensionId == Dimension[dimension]
+      })
+      if(filter.length > 0) return true
+      return false
     },
     removeEvent() {
       store.commit("data/removeEvent", 0);
@@ -503,7 +515,6 @@ export default {
       this.$router.go(0);
       //@ts-ignore
       this.newEventDetails = {};
-      //console.log(store.getters.getEvents);
     },
     filterEvents(dimension: String): any {
 
@@ -544,7 +555,7 @@ export default {
       }
       let tableHeight = document.getElementById("table")
       //@ts-ignore
-      tableHeight.style.height = 90 + (heightCounter * 40) + "vh"
+      tableHeight.style.height = 90 + (counter * 60) + "vh"
       return counter
     },
     calcPos(event: any) {
@@ -751,6 +762,13 @@ export default {
   height: 75vh;
 }
 
+@supports (-moz-appearance:none) {
+  /* Firefox-specific CSS */
+  .moz-class {
+    min-height: 30vh;
+  }
+}
+
 table {
   border-spacing: 0;
   width: 100vw;
@@ -820,7 +838,7 @@ tbody {
   flex-direction: row;
   justify-content: space-around;
   margin-top: -7.5vh;
-  margin-bottom: 2vh;
+  margin-bottom: 1.5vh;
   margin-left: 5.5vh;
   padding-left: 15vh;
   text-align: left;
@@ -828,8 +846,8 @@ tbody {
 }
 
 .year_age {
-  margin-top: 16.5vh;
-  margin-left: -2vh;
+  margin-top: 16.7vh;
+  margin-left: -2.2vh;
   border-bottom: 0.5px solid lightgrey;
   position: fixed;
   width: 100vw;
