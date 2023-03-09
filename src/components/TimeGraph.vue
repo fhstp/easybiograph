@@ -203,14 +203,14 @@
     <br />
     <button
       class="button is-white"
-      style="margin-right: 1vw; right: -20vw; margin-top: -5vh"
+      style="margin-right: 1vw; right: -20vw; margin-top: -20px"
       v-on:click="showDialogue = false"
     >
       Abbrechen
     </button>
     <button
       class="button is-link is-light"
-      style="right: -20vw; margin-top: -5vh"
+      style="right: -20vw; margin-top: -20px"
       v-on:click="addEvent"
       v-on:mouseup="showDialogue = false"
     >
@@ -239,7 +239,7 @@
         <p class="subcontent">Alter</p>
       </div>
       <div class="year-wrap" id="year-wrap" ref="yearwrapper">
-        <div v-for="(year, index) in displayYears" :key="index" class="year">
+        <div v-for="(year, index) in displayYears" :key="index" class="year" :style="calcYearStart(index)">
           <p>
             {{ year }}
           </p>
@@ -252,13 +252,10 @@
   </div>
 
 
-
-
   <table v-show="!showCreateBiograph && !showIntro" id="table">
     <tbody>
-    <!-- is there an event at that dimension? <div class="moz-class" > -->
 
-      <tr v-for="(value, index) in dimensionOptions" :key="value" :id="value"> <!-- <tr v-for="(value, index) in dimensionOptions" :key="value" :id="value"> -->
+      <tr v-for="(value, index) in dimensionOptions" :key="value" :id="value">
         <td class="content">
           <div>
             {{ value }}
@@ -526,6 +523,36 @@ export default {
         element.style.height = `${this.categoryHeight[i] * 5}vh`
       }
     },
+    calcYearStart(index: any){
+      //@ts-ignore
+      let dYears: number[] = Object.values(this.displayYears);
+
+      //@ts-ignore
+      let months = this.personYears.length * 12;
+
+      if (
+          //@ts-ignore
+          this.personYears[this.personYears.length - 1] ==
+          dYears[dYears.length - 1]
+      ) {
+        //@ts-ignore
+        months = this.personYears.length * 12;
+      } else {
+        let extra =
+            (dYears[dYears.length - 1] -
+                //@ts-ignore
+                this.personYears[this.personYears.length - 1]) *
+            12;
+        //@ts-ignore
+        months = this.personYears.length * 12 + extra;
+      }
+      let spaceFromLeft =  87 / months * (index * 12)
+      let yearStyle = {
+        marginLeft: spaceFromLeft + "%",
+      };
+      return yearStyle;
+
+    },
     calcYPos(po: any): number {
 
       //@ts-ignore
@@ -606,9 +633,9 @@ export default {
 
       let monthsTilBegin: number = yearsTilBegin + startMonth;
 
-      let margin: number = (totalYearWidth / months) * monthsTilBegin;
+      let leftCord: number = (totalYearWidth / months) * monthsTilBegin;
 
-      let marginPoint: number = totalYearWidth / dYears.length;
+      let widthPoint: number = totalYearWidth / dYears.length;
 
       //@ts-ignore
       let width: number = event.isInterval
@@ -626,14 +653,14 @@ export default {
 
         if (event.isInterval) {
           //@ts-ignore
-          positionObject.margin = margin;
+          positionObject.margin = leftCord;
           //@ts-ignore
           positionObject.width = width;
         } else {
           //@ts-ignore
-          positionObject.margin = margin;
+          positionObject.margin = leftCord;
           //@ts-ignore
-          positionObject.width = marginPoint;
+          positionObject.width = widthPoint;
         }
 
         positionObject.yPos = this.calcYPos(positionObject);
@@ -654,13 +681,13 @@ export default {
       this.checkHeight(Dimension[event.dimensionId], positionObject.yPos)
 
       let styleObject = {
-        left: margin + "%",
+        left: leftCord + "%",
         width: width + "%",
         top: topGap + "px",
       };
       let eventObject = {
-        left: margin + "%",
-        width: marginPoint + "%",
+        left: leftCord + "%",
+        width: widthPoint + "%",
         top: topGap + "px",
       };
 
@@ -813,6 +840,7 @@ tbody {
 
 .year {
   padding: 0 10px;
+  position: absolute;
 }
 
 .year:nth-child(1) {
@@ -822,10 +850,9 @@ tbody {
 .year-wrap {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
   margin-top: -45px;
   margin-bottom: 1.5vh;
-  margin-left: 5.5vh;
+  margin-left: 3.1%;
   padding-left: 15vh;
   text-align: left;
   font-size: small;

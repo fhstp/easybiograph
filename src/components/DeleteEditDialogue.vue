@@ -109,20 +109,20 @@
     <button
       class="button is-danger is-light"
       @click="removeEvent"
-      style="margin-right: 1vw; right: 0vw; margin-top: -5vh"
+      style="margin-right: 1vw; right: 0vw; margin-top: -20px"
     >
       Löschen
     </button>
     <button
       class="button is-white"
-      style="margin-right: 1vw; right: -11vw; margin-top: -5vh"
+      style="margin-right: 1vw; right: -11vw; margin-top: -20px"
       @click="close"
     >
       Abbrechen
     </button>
     <button
       class="button is-link is-light"
-      style="right: -11vw; margin-top: -5vh"
+      style="right: -11vw; margin-top: -20px"
       @click="editEvent"
     >
       Speichern
