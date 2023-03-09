@@ -760,7 +760,7 @@ table {
   width: 100vw;
   display: table;
   margin-left: -2.2vh;
-  margin-top: 21.5vh;
+  margin-top: 132px;
   table-layout: fixed;
   overflow: auto;
 }
@@ -785,11 +785,11 @@ tr:nth-child(odd) {
   position: fixed;
   padding-left: 1vw;
   padding-top: 0.5vh;
-  margin-top: 5.3vh;
+  margin-top: 32px;
   background-color: grey;
   color: white;
   width: 100vw;
-  height: 7vh;
+  height: 45px;
   z-index: 3;
   white-space: nowrap;
 }
@@ -823,7 +823,7 @@ tbody {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  margin-top: -7.5vh;
+  margin-top: -45px;
   margin-bottom: 1.5vh;
   margin-left: 5.5vh;
   padding-left: 15vh;
@@ -832,11 +832,12 @@ tbody {
 }
 
 .year_age {
-  margin-top: 16.7vh;
+  margin-top: 100px;
   margin-left: -2.2vh;
   border-bottom: 0.5px solid lightgrey;
   position: fixed;
   width: 100vw;
+  height: 55px;
   top: 0px;
   background-color: white;
   z-index: 3;
