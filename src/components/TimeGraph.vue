@@ -253,6 +253,7 @@
 
 
 
+
   <table v-show="!showCreateBiograph && !showIntro" id="table">
     <tbody>
     <!-- is there an event at that dimension? <div class="moz-class" > -->
@@ -374,6 +375,7 @@ export default {
     this.loadEvents()
   },
   methods: {
+
     loadEvents() {
       //@ts-ignore
       this.personYears = store.getters.getTimeline;
@@ -547,7 +549,7 @@ export default {
       }
       let tableHeight = document.getElementById("table")
       //@ts-ignore
-      tableHeight.style.height = 85 + counter + "vh"
+      tableHeight.style.height = 90 + counter + "vh"
       return counter
     },
     calcPos(event: any) {
@@ -749,16 +751,8 @@ export default {
 
 <style scoped lang="scss">
 
-
 #table {
   height: 75vh;
-}
-
-@supports (-moz-appearance:none) {
-  /* Firefox-specific CSS */
-  .moz-class {
-    min-height: 30vh;
-  }
 }
 
 table {
@@ -791,7 +785,7 @@ tr:nth-child(odd) {
   position: fixed;
   padding-left: 1vw;
   padding-top: 0.5vh;
-  margin-top: 5.5vh;
+  margin-top: 5.3vh;
   background-color: grey;
   color: white;
   width: 100vw;
