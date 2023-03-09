@@ -47,22 +47,7 @@
               </span>
               <span>Speichern</span>
             </a>
-          </div>
-        </div>
 
-        <div class="navbar-item">
-          <!-- TODO fill from stored ZBPerson -->
-          <!-- <span class="client">{{ $store.state.data.person.name }}</span> -->
-          <a class="button is-dark" @click="showCreateBiograph = true" v-show="!showIntro">
-            <!-- TODO edit instead of new -->
-            <span class="icon">
-              <font-awesome-icon icon="pencil-alt" />
-            </span>
-          </a>
-        </div>
-
-        <div class="navbar-item">
-          <div class="buttons">
             <a class="button is-dark" @click="showDiv()" v-show="!showIntro">
               <span class="icon">
                 <font-awesome-icon icon="plus" />
@@ -236,7 +221,15 @@
 
   <div v-show="!showCreateBiograph && !showIntro" class="personInfo">
     <p class="same interviewee">{{$store.state.data.person.name}}, geboren am {{$store.state.data.person.birthMonth.substring(5,7)}}.{{$store.state.data.person.birthMonth.substring(0,4)}} in {{$store.state.data.person.birthplace}}.</p>
-    <p class="same interviewer"> Interviewt von: {{$store.state.data.person.interviewers}}, {{$store.state.data.person.interviewMonth.substring(5,7)}}.{{$store.state.data.person.interviewMonth.substring(0,4)}}</p>
+    <p class="same interviewer"> Interviewt von: {{$store.state.data.person.interviewers}}, {{$store.state.data.person.interviewMonth.substring(5,7)}}.{{$store.state.data.person.interviewMonth.substring(0,4)}} &nbsp</p>
+    <!-- TODO fill from stored ZBPerson -->
+    <!-- <span class="client">{{ $store.state.data.person.name }}</span> -->
+    <a class="button is-small is-light"  @click="showCreateBiograph = true" v-show="!showIntro">
+      <!-- TODO edit instead of new -->
+      <span class="icon">
+              <font-awesome-icon icon="pencil-alt" />
+            </span>
+    </a>
   </div>
 
   <div v-show="!showCreateBiograph && !showIntro">
@@ -270,7 +263,7 @@
             {{ value }}
           </div>
         </td>
-        <td class="eventWrap">
+        <td class="eventWrap" style="height: 0.5vh">
 
             <TimeEvent
                 v-for="event in filteredEvents[index]"
@@ -554,7 +547,7 @@ export default {
       }
       let tableHeight = document.getElementById("table")
       //@ts-ignore
-      tableHeight.style.height = 90 + (counter * 60) + "vh"
+      tableHeight.style.height = 85 + counter + "vh"
       return counter
     },
     calcPos(event: any) {
@@ -758,7 +751,7 @@ export default {
 
 
 #table {
-  height: 90vh;
+  height: 75vh;
 }
 
 @supports (-moz-appearance:none) {
