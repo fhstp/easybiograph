@@ -262,8 +262,8 @@
 
   <table v-show="!showCreateBiograph && !showIntro" id="table">
     <tbody>
-    <!-- is there an event at that dimension? -->
-    <div class="moz-class" >
+    <!-- is there an event at that dimension? <div class="moz-class" > -->
+
       <tr v-for="(value, index) in dimensionOptions" :key="value" :id="value"> <!-- <tr v-for="(value, index) in dimensionOptions" :key="value" :id="value"> -->
         <td class="content">
           <div>
@@ -284,7 +284,6 @@
             />
         </td>
       </tr>
-    </div>
     </tbody>
   </table>
 
@@ -759,7 +758,7 @@ export default {
 
 
 #table {
-  height: 75vh;
+  height: 90vh;
 }
 
 @supports (-moz-appearance:none) {
