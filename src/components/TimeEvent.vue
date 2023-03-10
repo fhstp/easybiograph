@@ -1,6 +1,6 @@
 <template>
   <div class="tooltip">
-    <span class="tooltiptext"
+    <span class="tooltiptext"  style="z-index: 6"
       >{{ event.description }}
       <br />
       {{
@@ -8,7 +8,7 @@
           ? event.startDate.substring(0, 4) +
             " - " +
             event.endDate.substring(0, 4)
-          : event.startDate
+          : event.startDate.substring(5,7) + "." + event.startDate.substring(0,4)
       }}
     </span>
     <div :class="[event.isInterval ? 'period sel' : 'event sel']">
@@ -23,7 +23,7 @@
             ? event.startDate.substring(0, 4) +
               " - " +
               event.endDate.substring(0, 4)
-            : event.startDate
+            : event.startDate.substring(5,7) + "." + event.startDate.substring(0,4)
         }}
       </p>
     </div>

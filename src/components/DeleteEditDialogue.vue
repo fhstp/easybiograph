@@ -1,15 +1,8 @@
 <template>
   <div class="box position" style="height: 92vh; width: 40vw">
-    <button
-      class="button is-light is-small"
-      style="right: -33vw"
-      @click="close"
-    >
-      X
-    </button>
+    <br>
 
     <h1 class="title block">Eintrag bearbeiten</h1>
-    <br />
     <div class="field is-horizontal">
       <div class="field-label">
         <label class="label" style="text-align: left">Typ</label>
@@ -116,20 +109,20 @@
     <button
       class="button is-danger is-light"
       @click="removeEvent"
-      style="margin-right: 1vw; right: 0vw"
+      style="margin-right: 1vw; right: 0vw; margin-top: -20px"
     >
       Löschen
     </button>
     <button
       class="button is-white"
-      style="margin-right: 1vw; right: -11vw"
+      style="margin-right: 1vw; right: -11vw; margin-top: -20px"
       @click="close"
     >
       Abbrechen
     </button>
     <button
       class="button is-link is-light"
-      style="right: -11vw"
+      style="right: -11vw; margin-top: -20px"
       @click="editEvent"
     >
       Speichern
@@ -185,6 +178,7 @@ export default {
       console.table(payload);
       store.commit("data/editEvents", payload);
       this.$emit("reload");
+      this.$router.go(0);s
       this.$emit("close");
     },
     close() {

@@ -14,7 +14,7 @@
   />
   <nav class="navbar is-fixed-top is-black" v-show="!showCreateBiograph">
     <div class="navbar-brand">
-      <div class="navbar-item" title="easyBiograph version 2.0 alpha 1">
+      <div class="navbar-item" title="easyBiograph version 2.0 alpha 2">
         easyBiograph
       </div>
     </div>
@@ -47,22 +47,7 @@
               </span>
               <span>Speichern</span>
             </a>
-          </div>
-        </div>
 
-        <div class="navbar-item">
-          <!-- TODO fill from stored ZBPerson -->
-          <span class="client">{{ $store.state.data.person.name }}</span>
-          <a class="button is-dark" @click="showCreateBiograph = true" v-show="!showIntro">
-            <!-- TODO edit instead of new -->
-            <span class="icon">
-              <font-awesome-icon icon="pencil-alt" />
-            </span>
-          </a>
-        </div>
-
-        <div class="navbar-item">
-          <div class="buttons">
             <a class="button is-dark" @click="showDiv()" v-show="!showIntro">
               <span class="icon">
                 <font-awesome-icon icon="plus" />
@@ -76,10 +61,12 @@
   </nav>
   <br />
 
-  <div v-if="showIntro">
+  <div class="welcome" v-if="showIntro">
     <embed src = "easybiographWelcome.svg"
          alt="Welcome to easybiograph"
     >
+    <h2 class="title is-2">Willkommen bei easyBiograph!</h2>
+    <p class="block">Erstelle einen neuen Zeitbalken oder öffne einen bestehenden Zeitbalken, um fortzufahren.</p>
   </div>
 
   <div id="modal-event" class="modal">
@@ -103,19 +90,12 @@
   <div
     class="box position"
     id="box"
-    style="position: absolute; top: 3vh; height: 93vh; left: 10vw; width: 40vw; z-index: 2"
+    style="position: absolute; top: 3vh; height: 93vh; left: 10vw; width: 40vw; z-index: 5"
     v-show="showDialogue"
   >
-    <button
-      class="button is-light is-small"
-      style="right: -33vw"
-      v-on:click="showDialogue = false"
-    >
-      X
-    </button>
 
+    <br>
     <h1 class="title block">Eintrag erstellen</h1>
-    <br />
     <div class="field is-horizontal">
       <div class="field-label">
         <label class="label" style="text-align: left">Typ</label>
@@ -201,11 +181,6 @@
               id="eventNameId"
             />
           </div>
-          <!--
-          <p class="help is-danger">
-            Bitte gib dem Event einen Titel
-          </p>
-          -->
         </div>
       </div>
     </div>
@@ -230,14 +205,14 @@
     <br />
     <button
       class="button is-white"
-      style="margin-right: 1vw; right: -20vw"
+      style="margin-right: 1vw; right: -20vw; margin-top: -20px"
       v-on:click="showDialogue = false"
     >
       Abbrechen
     </button>
     <button
       class="button is-link is-light"
-      style="right: -20vw"
+      style="right: -20vw; margin-top: -20px"
       v-on:click="addEvent"
       v-on:mouseup="showDialogue = false"
     >
@@ -246,34 +221,57 @@
   </div>
   <!-- end of add event dialog -->
 
-  <table v-show="!showCreateBiograph && !showIntro">
-    <thead>
-      <tr class="year_age">
-        <td class="content">
-          <p>Jahr</p>
-          <p class="subcontent">Alter</p>
-        </td>
-        <td class="year-wrap" id="year-wrap" ref="yearwrapper">
-          <div v-for="(year, index) in displayYears" :key="index" class="year">
-            <p>
-              {{ year }}
-            </p>
-            <p class="subcontent">
-              {{ index }}
-            </p>
-          </div>
-        </td>
-      </tr>
-    </thead>
+  <div v-show="!showCreateBiograph && !showIntro" class="personInfo">
+    <p class="same interviewee">
+      {{$store.state.data.person.name}},
+      geboren am {{$store.state.data.person.birthMonth.substring(5,7)}}.{{$store.state.data.person.birthMonth.substring(0,4)}}
+      <span v-if="$store.state.data.person.birthplace">in {{$store.state.data.person.birthplace}}</span>
+    </p>
+    <p class="same interviewer">
+      interviewt <span v-if="$store.state.data.person.interviewers">von: {{$store.state.data.person.interviewers}},</span>
+      {{$store.state.data.person.interviewMonth.substring(5,7)}}.{{$store.state.data.person.interviewMonth.substring(0,4)}}
+      &nbsp;
+    </p>
+    <!-- TODO fill from stored ZBPerson -->
+    <!-- <span class="client">{{ $store.state.data.person.name }}</span> -->
+    <a class="button is-small is-light"  @click="showCreateBiograph = true" v-show="!showIntro">
+      <!-- TODO edit instead of new -->
+      <span class="icon">
+              <font-awesome-icon icon="pencil-alt" />
+            </span>
+    </a>
+  </div>
+
+  <div v-show="!showCreateBiograph && !showIntro">
+    <div class="year_age">
+      <div class="content">
+        <p>Jahr</p>
+        <p class="subcontent">Alter</p>
+      </div>
+      <div class="year-wrap" id="year-wrap" ref="yearwrapper">
+        <div v-for="(year, index) in displayYears" :key="index" class="year" :style="calcYearStart(index)">
+          <p>
+            {{ year }}
+          </p>
+          <p class="subcontent">
+            {{ index }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <table v-show="!showCreateBiograph && !showIntro" id="table">
     <tbody>
+
       <tr v-for="(value, index) in dimensionOptions" :key="value" :id="value">
         <td class="content">
           <div>
             {{ value }}
           </div>
         </td>
-        <td class="eventWrap">
-          <!-- -->
+        <td class="eventWrap" style="height: 0.5vh">
 
             <TimeEvent
                 v-for="event in filteredEvents[index]"
@@ -289,6 +287,7 @@
       </tr>
     </tbody>
   </table>
+
 </template>
 
 <script lang="ts">
@@ -339,6 +338,7 @@ export default {
       displayYears: {},
       eventPos: [],
       filteredEvents: [],
+      categoryHeight: [0,0,0,0,0,0,0],
       showDialogue: false,
       showEditDialogue: false,
       showEventDisplay: false,
@@ -350,8 +350,8 @@ export default {
         description: "",
         note: "",
         dimension: Dimension[Dimension.Familie], // XXX: might solve bug with uninitialized dimension
-        startDate: "",
-        endDate: "",
+        startDate: "2020-01",
+        endDate: "2020-01",
       },
       events: store.getters.getEvents,
     };
@@ -363,6 +363,11 @@ export default {
     interviewMonth() {
       return store.state.data.person.interviewMonth;
     },
+    showIntro(): boolean{
+      //@ts-ignore
+      //this.displayYears.length > 0
+      return this.personYears < 1
+    }
   },
   watch: {
     displayYears: {
@@ -376,14 +381,8 @@ export default {
     //@ts-ignore
     this.loadEvents()
   },
-  computed:{
-    showIntro(): boolean{
-      //@ts-ignore
-      //this.displayYears.length > 0
-      return this.personYears < 1
-    }
-  },
   methods: {
+
     loadEvents() {
       //@ts-ignore
       this.personYears = store.getters.getTimeline;
@@ -403,6 +402,16 @@ export default {
       //@ts-ignore
       this.showDialogue = true;
     },
+    showDimension(dimension: string): boolean{
+      console.log(dimension)
+      //@ts-ignore
+      let filter = this.events.filter(el => {
+        //@ts-ignore
+        return el.dimensionId == Dimension[dimension]
+      })
+      if(filter.length > 0) return true
+      return false
+    },
     removeEvent() {
       store.commit("data/removeEvent", 0);
     },
@@ -419,7 +428,9 @@ export default {
 
 
       if(!row){return}
+      //@ts-ignore
       if(newHeight > row.style.height){
+        //@ts-ignore
         row.style.height = newHeight + "px"
         console.log(dimension, newHeight)
       }
@@ -488,22 +499,23 @@ export default {
       //@ts-ignore
       // XXX: replace by array? (this should convert enum to int, but sometimes it does not work)
       newEvent.dimensionId = Dimension[this.newEventDetails.dimension];
+      //@ts-ignore
       console.log(`dimension: |${this.newEventDetails.dimension}| -> |${newEvent.dimensionId}|`)
       //@ts-ignore
       newEvent.description = this.newEventDetails.description;
       //@ts-ignore
       newEvent.notes = this.newEventDetails.note;
+      //@ts-ignore
       newEvent.isInterval = this.newEventDetails.isInterval;
       //@ts-ignore
       newEvent.startDate = this.newEventDetails.startDate;
       //@ts-ignore
       newEvent.endDate = this.newEventDetails.endDate;
       store.commit("data/addEvent", newEvent);
-
+      //@ts-ignore
       this.$router.go(0);
       //@ts-ignore
       this.newEventDetails = {};
-      //console.log(store.getters.getEvents);
     },
     filterEvents(dimension: String): any {
 
@@ -513,11 +525,50 @@ export default {
         return el.dimensionId == Dimension[dimension];
       });
     },
+    setCategoryHeight(){
+      //@ts-ignore
+      for(let i = 0; i < this.categoryHeight.length; i++){
+        let element = document.getElementById(Dimension[i])
+        //@ts-ignore
+        element.style.height = `${this.categoryHeight[i] * 5}vh`
+      }
+    },
+    calcYearStart(index: any){
+      //@ts-ignore
+      let dYears: number[] = Object.values(this.displayYears);
+
+      //@ts-ignore
+      let months = this.personYears.length * 12;
+
+      if (
+          //@ts-ignore
+          this.personYears[this.personYears.length - 1] ==
+          dYears[dYears.length - 1]
+      ) {
+        //@ts-ignore
+        months = this.personYears.length * 12;
+      } else {
+        let extra =
+            (dYears[dYears.length - 1] -
+                //@ts-ignore
+                this.personYears[this.personYears.length - 1]) *
+            12;
+        //@ts-ignore
+        months = this.personYears.length * 12 + extra;
+      }
+      let spaceFromLeft =  87 / months * (index * 12)
+      let yearStyle = {
+        marginLeft: spaceFromLeft + "%",
+      };
+      return yearStyle;
+
+    },
     calcYPos(po: any): number {
 
       //@ts-ignore
       if(this.eventPos.length < 1) return 0
       let counter = 0
+      let heightCounter = 0
       //@ts-ignore
       this.eventPos.forEach((e) => {
         if(po.event.dimensionId == e.event.dimensionId){
@@ -526,11 +577,21 @@ export default {
           }
         }
       })
+      //@ts-ignore
+      if(counter > this.categoryHeight[po.event.dimensionId]){
+        //@ts-ignore
+        this.categoryHeight[po.event.dimensionId] = counter
+        this.setCategoryHeight()
+        heightCounter++
+      }
+      let tableHeight = document.getElementById("table")
+      //@ts-ignore
+      tableHeight.style.height = 90 + counter + "vh"
       return counter
     },
     calcPos(event: any) {
 
-      let totalYearWidth = 100;
+      let totalYearWidth = 97.5;
       //@ts-ignore
       let dYears: number[] = Object.values(this.displayYears);
 
@@ -582,9 +643,9 @@ export default {
 
       let monthsTilBegin: number = yearsTilBegin + startMonth;
 
-      let margin: number = (totalYearWidth / months) * monthsTilBegin;
+      let leftCord: number = (totalYearWidth / months) * monthsTilBegin;
 
-      let marginPoint: number = totalYearWidth / dYears.length;
+      let widthPoint: number = totalYearWidth / dYears.length;
 
       //@ts-ignore
       let width: number = event.isInterval
@@ -602,14 +663,14 @@ export default {
 
         if (event.isInterval) {
           //@ts-ignore
-          positionObject.margin = margin;
+          positionObject.margin = leftCord;
           //@ts-ignore
           positionObject.width = width;
         } else {
           //@ts-ignore
-          positionObject.margin = margin;
+          positionObject.margin = leftCord;
           //@ts-ignore
-          positionObject.width = marginPoint;
+          positionObject.width = widthPoint;
         }
 
         positionObject.yPos = this.calcYPos(positionObject);
@@ -630,13 +691,13 @@ export default {
       this.checkHeight(Dimension[event.dimensionId], positionObject.yPos)
 
       let styleObject = {
-        left: margin + "%",
+        left: leftCord + "%",
         width: width + "%",
         top: topGap + "px",
       };
       let eventObject = {
-        left: margin + "%",
-        width: marginPoint + "%",
+        left: leftCord + "%",
+        width: widthPoint + "%",
         top: topGap + "px",
       };
 
@@ -727,15 +788,18 @@ export default {
 
 <style scoped lang="scss">
 
+#table {
+  height: 75vh;
+}
 
 table {
   border-spacing: 0;
   width: 100vw;
-  height: 90vh;
   display: table;
-  margin-top: 7vh;
   margin-left: -2.2vh;
+  margin-top: 132px;
   table-layout: fixed;
+  overflow: auto;
 }
 
 td {
@@ -747,19 +811,46 @@ td:not(.eventWrap, .year-wrap) {
 }
 
 tr:nth-child(odd) {
-  background-color: $gridgrey;
+  background-color: #f2efea;
 }
 
 .eventWrap {
   position: relative;
 }
 
+.personInfo{
+  position: fixed;
+  padding-left: 1vw;
+  padding-top: 0.5vh;
+  margin-top: 32px;
+  background-color: grey;
+  color: white;
+  width: 100vw;
+  height: 45px;
+  z-index: 3;
+  white-space: nowrap;
+}
+
+.interviewee {
+  font-size: large;
+}
+
+.interviewer {
+  margin-left: 2vw;
+  font-size: smaller;
+}
+
 thead > tr {
   background-color: white !important;
 }
 
+tbody {
+  overflow-y: scroll;
+}
+
 .year {
   padding: 0 10px;
+  position: absolute;
 }
 
 .year:nth-child(1) {
@@ -769,13 +860,28 @@ thead > tr {
 .year-wrap {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  text-align: center;
+  margin-top: -45px;
+  margin-bottom: 1.5vh;
+  margin-left: 3.1%;
+  padding-left: 15vh;
+  text-align: left;
   font-size: small;
 }
 
 .year_age {
+  margin-top: 100px;
+  margin-left: -2.2vh;
   border-bottom: 0.5px solid lightgrey;
+  position: fixed;
+  width: 100vw;
+  height: 55px;
+  top: 0px;
+  background-color: white;
+  z-index: 3;
+}
+
+.same {
+  display:inline-block;
 }
 
 .content {
@@ -785,7 +891,7 @@ thead > tr {
 }
 
 .subcontent {
-  color: darkgrey;
+  color: dimgrey;
 }
 
 .event_dialogue {
@@ -822,5 +928,9 @@ thead > tr {
 
 .client {
   margin-right: 0.5rem;
+}
+
+.welcome {
+  text-align: center;
 }
 </style>

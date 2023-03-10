@@ -106,6 +106,7 @@ export default {
 * {
   overflow-x: auto;
   display: flex;
+  z-index: 5;
 }
 .position {
   right: -47vw;

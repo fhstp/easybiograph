@@ -64,7 +64,7 @@ const year = ref(minYear.value || 2020);
 
 /** helper to split YYYY-MM string into two integers month and year */
 const setFromProperties = (newModelValue: string | undefined) => {
-  console.log(`parent set monthyear to ${newModelValue}`);
+  //console.log(`parent set monthyear to ${newModelValue}`);
 
   const re = /^(\d{4})-(([0][1-9])|([1][0-2]))$/;
   if (newModelValue) {
@@ -73,7 +73,7 @@ const setFromProperties = (newModelValue: string | undefined) => {
       year.value = parseInt(match[1]);
       month.value = parseInt(match[2]) - 1;
       // TODO insert error handling
-      console.log(`parsed as ${match[1]} - ${AVAIL_MONTHS[month.value]}`);
+      //console.log(`parsed as ${match[1]} - ${AVAIL_MONTHS[month.value]}`);
     }
   }
 };
@@ -86,7 +86,7 @@ watch([month, year], ([newMonth, newYear]) => {
     newYear.toString().padStart(4, "0") +
     "-" +
     (newMonth + 1).toString().padStart(2, "0");
-  console.log(`built as: ${modelStr}`);
+  //console.log(`built as: ${modelStr}`);
   emit("update:modelValue", modelStr);
 });
 </script>
