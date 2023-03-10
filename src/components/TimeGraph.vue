@@ -14,7 +14,7 @@
   />
   <nav class="navbar is-fixed-top is-black" v-show="!showCreateBiograph">
     <div class="navbar-brand">
-      <div class="navbar-item" title="easyBiograph version 2.0 alpha 1">
+      <div class="navbar-item" title="easyBiograph version 2.0 alpha 2">
         easyBiograph
       </div>
     </div>
@@ -61,10 +61,12 @@
   </nav>
   <br />
 
-  <div v-if="showIntro">
+  <div class="welcome" v-if="showIntro">
     <embed src = "easybiographWelcome.svg"
          alt="Welcome to easybiograph"
     >
+    <h2 class="title is-2">Willkommen bei easyBiograph!</h2>
+    <p class="block">Erstelle einen neuen Zeitbalken oder öffne einen bestehenden Zeitbalken, um fortzufahren.</p>
   </div>
 
   <div id="modal-event" class="modal">
@@ -220,8 +222,16 @@
   <!-- end of add event dialog -->
 
   <div v-show="!showCreateBiograph && !showIntro" class="personInfo">
-    <p class="same interviewee">{{$store.state.data.person.name}}, geboren am {{$store.state.data.person.birthMonth.substring(5,7)}}.{{$store.state.data.person.birthMonth.substring(0,4)}} in {{$store.state.data.person.birthplace}}.</p>
-    <p class="same interviewer"> Interviewt von: {{$store.state.data.person.interviewers}}, {{$store.state.data.person.interviewMonth.substring(5,7)}}.{{$store.state.data.person.interviewMonth.substring(0,4)}} &nbsp</p>
+    <p class="same interviewee">
+      {{$store.state.data.person.name}},
+      geboren am {{$store.state.data.person.birthMonth.substring(5,7)}}.{{$store.state.data.person.birthMonth.substring(0,4)}}
+      <span v-if="$store.state.data.person.birthplace">in {{$store.state.data.person.birthplace}}</span>
+    </p>
+    <p class="same interviewer">
+      interviewt <span v-if="$store.state.data.person.interviewers">von: {{$store.state.data.person.interviewers}},</span>
+      {{$store.state.data.person.interviewMonth.substring(5,7)}}.{{$store.state.data.person.interviewMonth.substring(0,4)}}
+      &nbsp;
+    </p>
     <!-- TODO fill from stored ZBPerson -->
     <!-- <span class="client">{{ $store.state.data.person.name }}</span> -->
     <a class="button is-small is-light"  @click="showCreateBiograph = true" v-show="!showIntro">
@@ -918,5 +928,9 @@ tbody {
 
 .client {
   margin-right: 0.5rem;
+}
+
+.welcome {
+  text-align: center;
 }
 </style>
