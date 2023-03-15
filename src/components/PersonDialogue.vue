@@ -37,10 +37,18 @@
     </div>
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Bis</label>
+        <label class="label" style="text-align: left">Zeitbalken bis</label>
       </div>
       <div class="field-body">
         <MonthChooser v-model="newPersonDetails.interviewMonth" />
+      </div>
+    </div>
+    <div class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label" style="text-align: left">Erstellt am</label>
+      </div>
+      <div class="field-body">
+        <MonthChooser v-model="newPersonDetails.creationMonth" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -63,7 +71,7 @@
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Ersteller</label>
+        <label class="label" style="text-align: left">Ersteller*in</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -114,6 +122,7 @@ export default {
     return {
       startYear: "",
       endYear: "",
+      creationYear: "",
       personYears: [] as number[],
       showBiograph: false,
       // newPersonDetails: {},
@@ -138,6 +147,8 @@ export default {
       // TODO: for backwards compatibility
       this.startYear = this.newPersonDetails.birthMonth;
       this.endYear = this.newPersonDetails.interviewMonth;
+      this.creationYear = this.newPersonDetails.creationMonth;
+
 
       store.commit("data/addPerson", this.newPersonDetails);
       this.$router.go(0);

@@ -12,8 +12,8 @@
       :selectedEvent="clickedEvent"
       @reload="loadEvents"
   />
-  <nav class="navbar is-fixed-top is-black" v-show="!showCreateBiograph">
-    <div class="navbar-brand">
+  <nav class="navbar is-fixed-top is-black" style="background-color: #1E2952" v-show="!showCreateBiograph">
+  <div class="navbar-brand">
       <div class="navbar-item" title="easyBiograph version 2.0 alpha 2">
         easyBiograph
       </div>
@@ -53,6 +53,13 @@
                 <font-awesome-icon icon="plus" />
               </span>
               <span>Event erstellen</span>
+            </a>
+
+            <a class="button is-dark"  @click="showCreateBiograph = true" v-show="!showIntro">
+              <!-- TODO edit instead of new -->
+              <span class="icon">
+              <font-awesome-icon icon="pencil-alt" />
+            </span>
             </a>
           </div>
         </div>
@@ -227,19 +234,13 @@
       geboren am {{$store.state.data.person.birthMonth.substring(5,7)}}.{{$store.state.data.person.birthMonth.substring(0,4)}}
       <span v-if="$store.state.data.person.birthplace">in {{$store.state.data.person.birthplace}}</span>
     </p>
-    <p class="same interviewer">
-      interviewt <span v-if="$store.state.data.person.interviewers">von: {{$store.state.data.person.interviewers}},</span>
+    <p class="same interviewer" style="float: right; text-align: right;  margin-right: 1%">
+      erstellt <span v-if="$store.state.data.person.interviewers">von: {{$store.state.data.person.interviewers}},</span>
       {{$store.state.data.person.interviewMonth.substring(5,7)}}.{{$store.state.data.person.interviewMonth.substring(0,4)}}
       &nbsp;
     </p>
     <!-- TODO fill from stored ZBPerson -->
     <!-- <span class="client">{{ $store.state.data.person.name }}</span> -->
-    <a class="button is-small is-light"  @click="showCreateBiograph = true" v-show="!showIntro">
-      <!-- TODO edit instead of new -->
-      <span class="icon">
-              <font-awesome-icon icon="pencil-alt" />
-            </span>
-    </a>
   </div>
 
   <div v-show="!showCreateBiograph && !showIntro">
@@ -568,11 +569,10 @@ export default {
       //@ts-ignore
       if(this.eventPos.length < 1) return 0
       let counter = 0
-      let heightCounter = 0
       //@ts-ignore
       this.eventPos.forEach((e) => {
         if(po.event.dimensionId == e.event.dimensionId){
-          if(po.margin >= e.margin && po.margin <= e.margin + e.width || po.margin + po.width >= e.margin && po.margin + po.width <= e.margin + e.width){
+          if(po.margin >= e.margin && po.margin <= e.margin + e.width - 1 || po.margin + po.width - 1 >= e.margin && po.margin + po.width - 1 <= e.margin + e.width - 1){
             counter++
           }
         }
@@ -582,13 +582,13 @@ export default {
         //@ts-ignore
         this.categoryHeight[po.event.dimensionId] = counter
         this.setCategoryHeight()
-        heightCounter++
       }
       let tableHeight = document.getElementById("table")
       //@ts-ignore
-      tableHeight.style.height = 90 + counter + "vh"
+      tableHeight.style.height = 35 + counter + "em"
       return counter
     },
+
     calcPos(event: any) {
 
       let totalYearWidth = 97.5;
@@ -862,7 +862,7 @@ tbody {
   flex-direction: row;
   margin-top: -45px;
   margin-bottom: 1.5vh;
-  margin-left: 3.1%;
+  margin-left: 3.5%;
   padding-left: 15vh;
   text-align: left;
   font-size: small;
@@ -870,7 +870,7 @@ tbody {
 
 .year_age {
   margin-top: 100px;
-  margin-left: -2.2vh;
+  margin-left: -1vw;
   border-bottom: 0.5px solid lightgrey;
   position: fixed;
   width: 100vw;
