@@ -13,8 +13,8 @@ export function initPerson(): ZBPerson {
     name: "",
     birthplace: "",
     interviewers: "",
-    creationMonth: "",
-    birthMonth: "1980-01",
+    creationMonth: new Date().toISOString().substring(0, 7),
+    birthMonth: "1980-01-01",
     interviewMonth: new Date().toISOString().substring(0, 7),
     notes: "",
   };

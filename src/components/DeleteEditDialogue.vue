@@ -178,7 +178,7 @@ export default {
       console.table(payload);
       store.commit("data/editEvents", payload);
       this.$emit("reload");
-      this.$router.go(0);s
+      this.$router.go(0);
       this.$emit("close");
     },
     close() {

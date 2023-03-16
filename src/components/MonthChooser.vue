@@ -34,6 +34,10 @@ const minMonth = computed(() => {
   return props.min ? parseInt(props.min.slice(5, 7)) - 1 : undefined;
 });
 
+const minDay = computed(() => {
+  return props.min ? parseInt(props.min.slice(8, 10)) : undefined;
+});
+
 const age = computed(() => {
   if (minYear.value && minMonth.value) {
     const ageMon =
@@ -58,9 +62,12 @@ const avail_years = computed(() => {
   }
 });
 
+const avail_days = ["01","02","03","04","05","06","07","08","09","10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"]
+
 /** current month (zero-based) as reactive data variable */
 const month = ref(minMonth.value || 0); // month internally zero-based
 const year = ref(minYear.value || 2020);
+const day = ref(minDay.value || "01");
 
 /** helper to split YYYY-MM string into two integers month and year */
 const setFromProperties = (newModelValue: string | undefined) => {
@@ -81,18 +88,36 @@ const setFromProperties = (newModelValue: string | undefined) => {
 setFromProperties(props.modelValue);
 watch(() => props.modelValue, setFromProperties);
 
-watch([month, year], ([newMonth, newYear]) => {
+watch([day, month, year], ([newDay, newMonth, newYear]) => {
   const modelStr =
     newYear.toString().padStart(4, "0") +
     "-" +
-    (newMonth + 1).toString().padStart(2, "0");
+    (newMonth + 1).toString().padStart(2, "0")+
+      "-" +
+      newDay.toString().padStart(2, "0");
+  console.log(newDay, newMonth, newYear)
   //console.log(`built as: ${modelStr}`);
   emit("update:modelValue", modelStr);
 });
 </script>
 
 <template>
+
   <div class="control has-icons-left">
+    <div v-if="avail_days" class="select">
+      <select v-model="day">
+        <option v-for="label in avail_days" :key="label" :value="label">
+          {{ label }}
+        </option>
+      </select>
+    </div>
+    <input v-else v-model="day" class="input" type="number"  />
+    <span class="icon is-small is-left">
+      <font-awesome-icon icon="fa-calendar" />
+    </span>
+  </div>
+
+  <div class="control">
     <div class="select">
       <select v-model="month">
         <option v-for="(label, i) in AVAIL_MONTHS" :key="i" :value="i">
@@ -100,9 +125,6 @@ watch([month, year], ([newMonth, newYear]) => {
         </option>
       </select>
     </div>
-    <span class="icon is-small is-left">
-      <font-awesome-icon icon="fa-calendar" />
-    </span>
   </div>
   &nbsp;
   <div class="control">

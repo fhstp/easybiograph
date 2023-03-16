@@ -12,7 +12,7 @@
       :selectedEvent="clickedEvent"
       @reload="loadEvents"
   />
-  <nav class="navbar is-fixed-top is-black" style="background-color: #1E2952" v-show="!showCreateBiograph">
+  <nav class="navbar is-fixed-top is-black" style="background-color: #488193" v-show="!showCreateBiograph">
   <div class="navbar-brand">
       <div class="navbar-item" title="easyBiograph version 2.0 alpha 2">
         easyBiograph
@@ -22,17 +22,17 @@
       <div class="navbar-start">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-dark" @click="newData">
+            <a class="button is-dark" style="background-color: #36626F" @click="newData">
               <span class="icon is-small">
                 <font-awesome-icon icon="file" />
               </span>
               <span>Neu</span>
             </a>
 
-            <a class="file is-dark">
+            <a class="file is-dark" >
               <label class="file-label">
                 <input class="file-input" type="file" @change="importData" />
-                <span class="file-cta">
+                <span class="file-cta" style="background-color: #36626F">
                   <span class="file-icon icon is-small">
                     <font-awesome-icon icon="folder-open" />
                   </span>
@@ -41,21 +41,21 @@
               </label>
             </a>
 
-            <a class="button is-dark" @click="downloadData" v-show="!showIntro">
+            <a class="button is-dark" @click="downloadData" v-show="!showIntro" style="background-color: #36626F">
               <span class="icon is-small">
                 <font-awesome-icon icon="save" />
               </span>
               <span>Speichern</span>
             </a>
 
-            <a class="button is-dark" @click="showDiv()" v-show="!showIntro">
+            <a class="button is-dark" @click="showDiv()" v-show="!showIntro" style="background-color: #36626F">
               <span class="icon">
                 <font-awesome-icon icon="plus" />
               </span>
               <span>Event erstellen</span>
             </a>
 
-            <a class="button is-dark"  @click="showCreateBiograph = true" v-show="!showIntro">
+            <a class="button is-dark"  @click="showCreateBiograph = true" v-show="!showIntro" style="background-color: #36626F">
               <!-- TODO edit instead of new -->
               <span class="icon">
               <font-awesome-icon icon="pencil-alt" />
@@ -231,12 +231,12 @@
   <div v-show="!showCreateBiograph && !showIntro" class="personInfo">
     <p class="same interviewee">
       {{$store.state.data.person.name}},
-      geboren am {{$store.state.data.person.birthMonth.substring(5,7)}}.{{$store.state.data.person.birthMonth.substring(0,4)}}
+      geboren am {{$store.state.data.person.birthMonth.substring(8,10)}}.{{$store.state.data.person.birthMonth.substring(5,7)}}.{{$store.state.data.person.birthMonth.substring(0,4)}}
       <span v-if="$store.state.data.person.birthplace">in {{$store.state.data.person.birthplace}}</span>
     </p>
     <p class="same interviewer" style="float: right; text-align: right;  margin-right: 1%">
       erstellt <span v-if="$store.state.data.person.interviewers">von: {{$store.state.data.person.interviewers}},</span>
-      {{$store.state.data.person.interviewMonth.substring(5,7)}}.{{$store.state.data.person.interviewMonth.substring(0,4)}}
+      {{$store.state.data.person.interviewMonth.substring(8,10)}}.{{$store.state.data.person.interviewMonth.substring(5,7)}}.{{$store.state.data.person.interviewMonth.substring(0,4)}}
       &nbsp;
     </p>
     <!-- TODO fill from stored ZBPerson -->
@@ -351,8 +351,8 @@ export default {
         description: "",
         note: "",
         dimension: Dimension[Dimension.Familie], // XXX: might solve bug with uninitialized dimension
-        startDate: "2020-01",
-        endDate: "2020-01",
+        startDate: "2020-01-01",
+        endDate: "2020-01-01",
       },
       events: store.getters.getEvents,
     };
@@ -811,7 +811,7 @@ td:not(.eventWrap, .year-wrap) {
 }
 
 tr:nth-child(odd) {
-  background-color: #f2efea;
+  background-color: #F3F2F2; //#f2efea
 }
 
 .eventWrap {
@@ -823,8 +823,9 @@ tr:nth-child(odd) {
   padding-left: 1vw;
   padding-top: 0.5vh;
   margin-top: 32px;
-  background-color: grey;
-  color: white;
+  background-color: #D2DEE2;
+  color: #3E505B;
+  font-weight: normal;
   width: 100vw;
   height: 45px;
   z-index: 3;
@@ -832,7 +833,8 @@ tr:nth-child(odd) {
 }
 
 .interviewee {
-  font-size: large;
+  font-size: medium;
+  font-weight: bold;
 }
 
 .interviewer {

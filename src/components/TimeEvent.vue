@@ -8,7 +8,7 @@
           ? event.startDate.substring(0, 4) +
             " - " +
             event.endDate.substring(0, 4)
-          : event.startDate.substring(5,7) + "." + event.startDate.substring(0,4)
+          : event.startDate.substring(8,10) + "." + event.startDate.substring(5,7) + "." + event.startDate.substring(0,4)
       }}
     </span>
     <div :class="[event.isInterval ? 'period sel' : 'event sel']">
@@ -23,7 +23,7 @@
             ? event.startDate.substring(0, 4) +
               " - " +
               event.endDate.substring(0, 4)
-            : event.startDate.substring(5,7) + "." + event.startDate.substring(0,4)
+            : event.startDate.substring(8,10) + "." + event.startDate.substring(5,7) + "." + event.startDate.substring(0,4)
         }}
       </p>
     </div>
