@@ -56,9 +56,9 @@ export default {
 
       console.log(this.showNotes)
       if(this.showNotes){
-        notesEvent.style.height = "41px"
+        notesEvent.style.height = "2.5em"
       }else{
-        notesEvent.style.height = "25px"
+        notesEvent.style.height = "1.25em"
       }
     }
   },
@@ -113,7 +113,7 @@ export default {
 }
 
 .tooltip .tooltiptext {
-  top: -9vh;
+  top: -3.7em;
   visibility: hidden;
   width: 140px;
   background-color: darkgrey;

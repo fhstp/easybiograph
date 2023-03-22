@@ -527,11 +527,23 @@ export default {
       });
     },
     setCategoryHeight(){
+
+      var x = window.matchMedia("(max-height: 900px)")
+
+      if(x.matches){
       //@ts-ignore
       for(let i = 0; i < this.categoryHeight.length; i++){
         let element = document.getElementById(Dimension[i])
         //@ts-ignore
-        element.style.height = `${this.categoryHeight[i] * 5}vh`
+        element.style.height = `${this.categoryHeight[i] * 6}%`
+      }
+      }else{
+        //@ts-ignore
+        for(let i = 0; i < this.categoryHeight.length; i++){
+          let element = document.getElementById(Dimension[i])
+          //@ts-ignore
+          element.style.height = `${this.categoryHeight[i] * 2.5}%`
+        }
       }
     },
     calcYearStart(index: any){
@@ -566,6 +578,8 @@ export default {
     },
     calcYPos(po: any): number {
 
+      var x = window.matchMedia("(max-height: 900px)")
+
       //@ts-ignore
       if(this.eventPos.length < 1) return 0
       let counter = 0
@@ -583,10 +597,20 @@ export default {
         this.categoryHeight[po.event.dimensionId] = counter
         this.setCategoryHeight()
       }
-      let tableHeight = document.getElementById("table")
-      //@ts-ignore
-      tableHeight.style.height = 35 + counter + "em"
-      return counter
+      if(x.matches) {
+
+        let smallHeight = 73 + this.events.length
+
+        let tableHeight = document.getElementById("table")
+        //@ts-ignore
+        tableHeight.style.height = smallHeight  + "vh"
+        return counter
+      }else{
+        let tableHeight = document.getElementById("table")
+        //@ts-ignore
+        tableHeight.style.height = 83 + "vh"
+        return counter
+      }
     },
 
     calcPos(event: any) {
@@ -788,8 +812,16 @@ export default {
 
 <style scoped lang="scss">
 
-#table {
-  height: 75vh;
+@media (min-height: 900px) {
+  #table {
+    height: 83vh;
+  }
+}
+
+@media (max-height: 900px) {
+  #table {
+    height: 73vh;
+  }
 }
 
 table {
