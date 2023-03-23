@@ -55,7 +55,7 @@
               <span>Event erstellen</span>
             </a>
 
-            <a class="button is-dark"  @click="showCreateBiograph = true" v-show="!showIntro" style="background-color: #36626F">
+            <a class="button is-dark"  @click="showCreateBiograph = true" v-show="!showIntro" v-on:click="$emit('edit')" style="background-color: #36626F">
               <!-- TODO edit instead of new -->
               <span class="icon">
               <font-awesome-icon icon="pencil-alt" />
@@ -403,16 +403,6 @@ export default {
       //@ts-ignore
       this.showDialogue = true;
     },
-    showDimension(dimension: string): boolean{
-      console.log(dimension)
-      //@ts-ignore
-      let filter = this.events.filter(el => {
-        //@ts-ignore
-        return el.dimensionId == Dimension[dimension]
-      })
-      if(filter.length > 0) return true
-      return false
-    },
     removeEvent() {
       store.commit("data/removeEvent", 0);
     },
@@ -598,7 +588,7 @@ export default {
         this.setCategoryHeight()
       }
       if(x.matches) {
-
+        //@ts-ignore
         let smallHeight = 73 + this.events.length
 
         let tableHeight = document.getElementById("table")
