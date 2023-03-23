@@ -32,7 +32,7 @@
         <label class="label" style="text-align: left">Geburtsdatum</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.birthMonth" />
+        <MonthChooser v-model="newPersonDetails.birthMonth" require-day />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -40,7 +40,7 @@
         <label class="label" style="text-align: left">Zeitbalken bis</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.interviewMonth" />
+        <MonthChooser v-model="newPersonDetails.interviewMonth" require-day />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -48,7 +48,7 @@
         <label class="label" style="text-align: left">Erstellt am</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.creationMonth" />
+        <MonthChooser v-model="newPersonDetails.creationMonth" require-day />
       </div>
     </div>
     <div class="field is-horizontal">

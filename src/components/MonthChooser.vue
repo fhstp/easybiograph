@@ -4,6 +4,7 @@ import { computed, ref, watch } from "vue";
 
 const props = defineProps<{
   modelValue?: string;
+  requireDay?: boolean;
   min?: string;
   max?: string;
 }>();
@@ -25,6 +26,15 @@ const AVAIL_MONTHS = [
   "Dezember",
 ];
 
+const UNSET_DAY = "--";
+
+const AVAIL_DAYS = Array.from({ length: 31 }, (_, i) =>
+  (i + 1).toString().padStart(2, "0")
+);
+if (!props.requireDay) {
+  AVAIL_DAYS.unshift(UNSET_DAY);
+}
+
 const minYear = computed(() => {
   return props.min ? parseInt(props.min.slice(0, 4)) : undefined;
 });
@@ -34,6 +44,7 @@ const minMonth = computed(() => {
   return props.min ? parseInt(props.min.slice(5, 7)) - 1 : undefined;
 });
 
+/* AR: currently not use the minimum data as default for the chooser because it will likely be set on day in the middle of the month but most events will be set to 01 or empty day */
 const minDay = computed(() => {
   return props.min ? parseInt(props.min.slice(8, 10)) : undefined;
 });
@@ -62,25 +73,33 @@ const avail_years = computed(() => {
   }
 });
 
-const avail_days = ["01","02","03","04","05","06","07","08","09","10", "11", "12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"]
+// TODO warn if 2020-04-31
 
 /** current month (zero-based) as reactive data variable */
 const month = ref(minMonth.value || 0); // month internally zero-based
 const year = ref(minYear.value || 2020);
-const day = ref(minDay.value || "01");
+/** current day (one-based string) as reactive data variable */
+const day = ref(props.requireDay ? "01" : UNSET_DAY);
 
-/** helper to split YYYY-MM string into two integers month and year */
+/** helper to split YYYY-MM string into two integers month and year or YYYY-MM-DD into 3 */
 const setFromProperties = (newModelValue: string | undefined) => {
   //console.log(`parent set monthyear to ${newModelValue}`);
 
-  const re = /^(\d{4})-(([0][1-9])|([1][0-2]))$/;
+  const re =
+    /^(\d{4})-((?:[0][1-9])|(?:[1][0-2]))(?:-((?:[0][1-9])|(?:[1-2][0-9])|(?:[3][0-1])))?/;
+
   if (newModelValue) {
     const match = newModelValue.match(re);
     if (match) {
       year.value = parseInt(match[1]);
       month.value = parseInt(match[2]) - 1;
+      if (match[3]) {
+        day.value = match[3];
+      }
       // TODO insert error handling
       //console.log(`parsed as ${match[1]} - ${AVAIL_MONTHS[month.value]}`);
+    } else {
+      console.warn("not a date: " + newModelValue);
     }
   }
 };
@@ -88,30 +107,28 @@ const setFromProperties = (newModelValue: string | undefined) => {
 setFromProperties(props.modelValue);
 watch(() => props.modelValue, setFromProperties);
 
+/** notify parent component of changes */
 watch([day, month, year], ([newDay, newMonth, newYear]) => {
+  const dayStr = newDay === UNSET_DAY ? "" : "-" + newDay;
   const modelStr =
     newYear.toString().padStart(4, "0") +
     "-" +
-    (newMonth + 1).toString().padStart(2, "0")+
-      "-" +
-      newDay.toString().padStart(2, "0");
-  console.log(newDay, newMonth, newYear)
-  //console.log(`built as: ${modelStr}`);
+    (newMonth + 1).toString().padStart(2, "0") +
+    dayStr;
+  console.log(newDay, newMonth, newYear, modelStr);
   emit("update:modelValue", modelStr);
 });
 </script>
 
 <template>
-
   <div class="control has-icons-left">
-    <div v-if="avail_days" class="select">
+    <div class="select">
       <select v-model="day">
-        <option v-for="label in avail_days" :key="label" :value="label">
+        <option v-for="label in AVAIL_DAYS" :key="label" :value="label">
           {{ label }}
         </option>
       </select>
     </div>
-    <input v-else v-model="day" class="input" type="number"  />
     <span class="icon is-small is-left">
       <font-awesome-icon icon="fa-calendar" />
     </span>

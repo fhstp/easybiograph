@@ -351,8 +351,8 @@ export default {
         description: "",
         note: "",
         dimension: Dimension[Dimension.Familie], // XXX: might solve bug with uninitialized dimension
-        startDate: "2020-01-01",
-        endDate: "2020-01-01",
+        startDate: "2020-01",
+        endDate: "2020-12",
       },
       events: store.getters.getEvents,
     };
