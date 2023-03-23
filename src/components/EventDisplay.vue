@@ -5,7 +5,7 @@
         <div class="media-content">
           <p class="title is-4">
             {{ event.description }}
-            <button @click="$emit('open-edit')" class="button is-small">
+            <button @click="$emit('open-edit')" class="button is-link is-small">
               <span class="icon is-small">
                 <font-awesome-icon icon="pencil-alt" />
               </span>

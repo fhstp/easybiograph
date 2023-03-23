@@ -37,8 +37,8 @@
       <div class="field-body">
         <MonthChooser
           v-model="currentEvent.startDate"
-          :min="birthMonth"
-          :max="interviewMonth"
+          :min="birthDate"
+          :max="interviewDate"
         />
       </div>
     </div>
@@ -49,8 +49,8 @@
       <div class="field-body">
         <MonthChooser
           v-model="currentEvent.endDate"
-          :min="birthMonth"
-          :max="interviewMonth"
+          :min="birthDate"
+          :max="interviewDate"
         />
       </div>
     </div>
@@ -121,7 +121,7 @@
       Abbrechen
     </button>
     <button
-      class="button is-link is-light"
+      class="button is-link"
       style="right: -11vw; margin-top: -20px"
       @click="editEvent"
     >
@@ -156,11 +156,11 @@ export default {
     };
   },
   computed: {
-    birthMonth() {
-      return store.state.data.person.birthMonth;
+    birthDate() {
+      return store.state.data.person.birthDate;
     },
-    interviewMonth() {
-      return store.state.data.person.interviewMonth;
+    interviewDate() {
+      return store.state.data.person.interviewDate;
     },
   },
   methods: {

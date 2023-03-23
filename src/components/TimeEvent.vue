@@ -20,10 +20,12 @@
           event.notes
             ? event.notes.substring(0, 15)
             : event.isInterval
-            ? event.startDate.substring(0, 4) +
-              " - " +
-              event.endDate.substring(0, 4)
-            : event.startDate.substring(8,10) + "." + event.startDate.substring(5,7) + "." + event.startDate.substring(0,4)
+              ? event.startDate.substring(0, 4) +
+                " - " +
+                event.endDate.substring(0, 4)
+              : event.startDate.substring(8,10) > 0
+                    ? event.startDate.substring(8,10) + "." + event.startDate.substring(5,7) + "." + event.startDate.substring(0,4)
+                    : event.startDate.substring(5,7) + "." + event.startDate.substring(0,4)
         }}
       </p>
     </div>
@@ -54,7 +56,6 @@ export default {
     setHeight(){
       const notesEvent = document.querySelector(".sel")
 
-      console.log(this.showNotes)
       if(this.showNotes){
         notesEvent.style.height = "2.5em"
       }else{

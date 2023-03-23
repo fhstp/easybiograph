@@ -2,8 +2,21 @@
   <PersonDialogue
     v-show="showCreateBiograph"
     :newPersonDetails="temporaryPerson"
+    :showButton="false"
+    title="Neuen Zeitbalken erstellen"
     @close="closePerson"
     @abort="showCreateBiograph = false"
+    v-if="newPerson"
+  />
+
+  <PersonDialogue
+      v-show="showCreateBiograph"
+      :newPersonDetails="temporaryPerson"
+      :showButton="true"
+      title="Zeitbalken bearbeiten"
+      @close="closePerson"
+      @abort="showCreateBiograph = false"
+      v-if="!newPerson"
   />
 
   <DeleteEditDialogue
@@ -22,7 +35,14 @@
       <div class="navbar-start">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-dark" style="background-color: #36626F" @click="newData">
+            <a class="button is-dark" style="background-color: #36626F" @click="openPopUp" v-if="!showIntro">
+              <span class="icon is-small">
+                <font-awesome-icon icon="file" />
+              </span>
+              <span>Neu</span>
+            </a>
+
+            <a class="button is-dark" style="background-color: #36626F" @click="newData" v-if="showIntro">
               <span class="icon is-small">
                 <font-awesome-icon icon="file" />
               </span>
@@ -55,7 +75,7 @@
               <span>Event erstellen</span>
             </a>
 
-            <a class="button is-dark"  @click="showCreateBiograph = true" v-show="!showIntro" v-on:click="$emit('edit')" style="background-color: #36626F">
+            <a class="button is-dark"  @click="showCreateBiograph = true; newPerson = false" v-show="!showIntro" style="background-color: #36626F">
               <!-- TODO edit instead of new -->
               <span class="icon">
               <font-awesome-icon icon="pencil-alt" />
@@ -76,6 +96,8 @@
     <p class="block">Erstelle einen neuen Zeitbalken oder öffne einen bestehenden Zeitbalken, um fortzufahren.</p>
   </div>
 
+
+  <!-- Modal to edit Events-->
   <div id="modal-event" class="modal">
     <div class="modal-background" @click="closeModal"></div>
 
@@ -89,6 +111,23 @@
       class="modal-close is-large"
       aria-label="close"
       @click="closeModal"
+    ></button>
+  </div>
+
+  <!-- Modal for Pop-Up message-->
+  <div id="modal-popUp" class="modal">
+    <div class="modal-background" @click="closeModal"></div>
+
+    <div class="modal-content">
+      <div class="box">
+        <PopUpNew @open-edit="newData" @abort-new="closeModal" @save-data="downloadData" />
+      </div>
+    </div>
+
+    <button
+        class="modal-close is-large"
+        aria-label="close"
+        @click="closeModal"
     ></button>
   </div>
 
@@ -137,8 +176,8 @@
       <div class="field-body">
         <MonthChooser
           v-model="newEventDetails.startDate"
-          :min="birthMonth"
-          :max="interviewMonth"
+          :min="birthDate"
+          :max="interviewDate"
         />
       </div>
     </div>
@@ -149,8 +188,8 @@
       <div class="field-body">
         <MonthChooser
           v-model="newEventDetails.endDate"
-          :min="birthMonth"
-          :max="interviewMonth"
+          :min="birthDate"
+          :max="interviewDate"
         />
       </div>
     </div>
@@ -218,7 +257,7 @@
       Abbrechen
     </button>
     <button
-      class="button is-link is-light"
+      class="button is-link"
       style="right: -20vw; margin-top: -20px"
       v-on:click="addEvent"
       v-on:mouseup="showDialogue = false"
@@ -231,12 +270,12 @@
   <div v-show="!showCreateBiograph && !showIntro" class="personInfo">
     <p class="same interviewee">
       {{$store.state.data.person.name}},
-      geboren am {{$store.state.data.person.birthMonth.substring(8,10)}}.{{$store.state.data.person.birthMonth.substring(5,7)}}.{{$store.state.data.person.birthMonth.substring(0,4)}}
+      geboren am {{$store.state.data.person.birthDate.substring(8,10)}}.{{$store.state.data.person.birthDate.substring(5,7)}}.{{$store.state.data.person.birthDate.substring(0,4)}}
       <span v-if="$store.state.data.person.birthplace">in {{$store.state.data.person.birthplace}}</span>
     </p>
     <p class="same interviewer" style="float: right; text-align: right;  margin-right: 1%">
       erstellt <span v-if="$store.state.data.person.interviewers">von: {{$store.state.data.person.interviewers}},</span>
-      {{$store.state.data.person.interviewMonth.substring(8,10)}}.{{$store.state.data.person.interviewMonth.substring(5,7)}}.{{$store.state.data.person.interviewMonth.substring(0,4)}}
+      {{$store.state.data.person.interviewDate.substring(8,10)}}.{{$store.state.data.person.interviewDate.substring(5,7)}}.{{$store.state.data.person.interviewDate.substring(0,4)}}
       &nbsp;
     </p>
     <!-- TODO fill from stored ZBPerson -->
@@ -301,10 +340,11 @@ import PersonDialogue from "@/components/PersonDialogue.vue";
 import EventDisplay from "@/components/EventDisplay.vue";
 import MonthChooser from "./MonthChooser.vue";
 import {loadSettingsFromStore} from "@/store/localStoragePlugin";
+import PopUpNew from "@/components/PopUpNew.vue";
 
 export default {
   name: "TimeGraph",
-  components: { TimeEvent, DeleteEditDialogue, PersonDialogue, EventDisplay, MonthChooser },
+  components: {PopUpNew, TimeEvent, DeleteEditDialogue, PersonDialogue, EventDisplay, MonthChooser },
 
   props: {
     event: {
@@ -335,6 +375,7 @@ export default {
   data() {
     return {
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
+      newPerson: true,
       personYears: store.getters.getTimeline,
       displayYears: {},
       eventPos: [],
@@ -358,11 +399,11 @@ export default {
     };
   },
   computed: {
-    birthMonth() {
-      return store.state.data.person.birthMonth;
+    birthDate() {
+      return store.state.data.person.birthDate;
     },
-    interviewMonth() {
-      return store.state.data.person.interviewMonth;
+    interviewDate() {
+      return store.state.data.person.interviewDate;
     },
     showIntro(): boolean{
       //@ts-ignore
@@ -466,6 +507,11 @@ export default {
       const modal = document.querySelector("#modal-event"); // TODO: https://vuejs.org/guide/essentials/class-and-style.html#binding-html-classes
       if (modal) modal.classList.add("is-active");
     },
+    openPopUp(){
+      this.newPerson = true;
+      const modal = document.querySelector("#modal-popUp"); // TODO: https://vuejs.org/guide/essentials/class-and-style.html#binding-html-classes
+      if (modal) modal.classList.add("is-active");
+    },
     closeEditDiv() {
       //@ts-ignore
       this.showEditDialogue = false;
@@ -473,6 +519,9 @@ export default {
     closeModal() {
       const modal = document.querySelector("#modal-event");
       if (modal) modal.classList.remove("is-active");
+
+      const modalPopUp = document.querySelector("#modal-popUp");
+      if (modalPopUp) modalPopUp.classList.remove("is-active");
     },
     closePerson() {
       //@ts-ignore
@@ -754,6 +803,7 @@ export default {
       return displayObj;
     },
     newData() {
+      this.closeModal();
       store.commit("data/newZeitbalken");
       //@ts-ignore
       this.temporaryPerson = Object.assign({}, store.state.data.person); // shallow clone (ok for ZBPerson)
