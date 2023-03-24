@@ -17,7 +17,22 @@ export function initZeitbalkenAsJSON(): string {
 
 export function loadZeitbalken(state: Zeitbalken, loadedText: string): void {
   const loaded = JSON.parse(loadedText);
+  compatibilityChecks(loaded);
   state.person = loaded.person;
   state.events = loaded.events;
   state.timeline = loaded.timeline;
+}
+
+export function compatibilityChecks(loaded: any): Zeitbalken {
+  // backwards compatibility for datastructure change in March 2023
+  if (!loaded.person.birthDate) {
+    loaded.person.birthDate = loaded.person.birthMonth;
+  }
+  if (!loaded.person.creationDate) {
+    loaded.person.creationDate = loaded.person.interviewMonth;
+  }
+  if (!loaded.person.interviewDate) {
+    loaded.person.interviewDate = loaded.person.interviewMonth;
+  }
+  return loaded;
 }

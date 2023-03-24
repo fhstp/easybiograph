@@ -1,7 +1,7 @@
 import type { ZBEvent } from "@/data/ZBEvent";
 import { initEvent } from "@/data/ZBEvent";
 import type { ZBPerson } from "@/data/ZBPerson";
-import type { Zeitbalken } from "@/data/Zeitbalken";
+import { compatibilityChecks, type Zeitbalken } from "@/data/Zeitbalken";
 import { initZeitbalkenAsJSON, loadZeitbalken } from "@/data/Zeitbalken";
 import { initPerson } from "@/data/ZBPerson";
 
@@ -10,7 +10,7 @@ import { loadZeitbalkenFromStore } from "./localStoragePlugin";
 
 // module state object.
 // each Vuex instance is just a single state tree.
-const state = JSON.parse(loadZeitbalkenFromStore());
+const state = compatibilityChecks(JSON.parse(loadZeitbalkenFromStore()));
 
 // mutations are operations that actually mutate the state.
 // each mutation handler gets the entire state tree as the
