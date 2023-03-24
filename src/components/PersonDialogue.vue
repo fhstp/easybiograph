@@ -71,7 +71,7 @@
             <input
               class="input"
               type="text"
-              placeholder="Name des Erstellers"
+              placeholder="Name der Erstellerin/des Erstellers"
               v-model="newPersonDetails.interviewers"
             />
           </div>

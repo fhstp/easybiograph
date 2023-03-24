@@ -133,7 +133,7 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
       <font-awesome-icon icon="fa-calendar" />
     </span>
   </div>
-
+  &nbsp;
   <div class="control">
     <div class="select">
       <select v-model="month">
