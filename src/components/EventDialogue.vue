@@ -92,7 +92,7 @@
     <button class="button is-white" style="margin-right: 1vw; right: -20vw">
       Abbrechen
     </button>
-    <button class="button is-link is-light" style="right: -20vw">Fertig</button>
+    <button class="button is-link" style="right: -20vw">Fertig</button>
   </div>
 </template>
 
@@ -111,4 +111,5 @@ export default {
 .position {
   right: -47vw;
 }
+
 </style>

@@ -1,14 +1,6 @@
 <template>
   <div class="box position" style="height: 96vh; width: 40vw">
-    <button
-      class="button is-light is-small"
-      style="right: -33vw"
-      @click="abort"
-    >
-      X
-    </button>
-
-    <h1 class="title block">Neuen Zeitbalken erstellen</h1>
+    <h1 id="edit" class="title block">{{title}}</h1>
     <br />
     <div class="field is-horizontal">
       <div class="field-label is-normal">
@@ -32,15 +24,23 @@
         <label class="label" style="text-align: left">Geburtsdatum</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.birthMonth" />
+        <MonthChooser v-model="newPersonDetails.birthDate" require-day />
       </div>
     </div>
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Bis</label>
+        <label class="label" style="text-align: left">Zeitbalken bis</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.interviewMonth" />
+        <MonthChooser v-model="newPersonDetails.endDate" require-day />
+      </div>
+    </div>
+    <div class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label" style="text-align: left">Erstellt am</label>
+      </div>
+      <div class="field-body">
+        <MonthChooser v-model="newPersonDetails.creationDate" require-day />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -63,7 +63,7 @@
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Ersteller</label>
+        <label class="label" style="text-align: left">Ersteller*in</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -71,7 +71,7 @@
             <input
               class="input"
               type="text"
-              placeholder="Name des Erstellers"
+              placeholder="Name der Erstellerin/des Erstellers"
               v-model="newPersonDetails.interviewers"
             />
           </div>
@@ -79,7 +79,9 @@
       </div>
     </div>
     <br />
+    <div class="buttons">
     <button
+      v-show="showButton"
       class="button is-white"
       style="margin-right: 1vw; right: -20vw"
       @click="abort"
@@ -87,12 +89,13 @@
       Abbrechen
     </button>
     <button
-      class="button is-link is-light"
+      class="button is-link"
       style="right: -20vw"
       @click="savePerson"
     >
       Fertig
     </button>
+    </div>
   </div>
 </template>
 
@@ -105,6 +108,8 @@ export default {
   name: "PersonDialogue",
   components: { MonthChooser },
   props: {
+    showButton: Boolean,
+    title: String,
     newPersonDetails: {
       type: Object,
       required: true,
@@ -114,8 +119,11 @@ export default {
     return {
       startYear: "",
       endYear: "",
+      creationYear: "",
       personYears: [] as number[],
       showBiograph: false,
+      // //@ts-ignore
+      showButton: this.showButton,
       // newPersonDetails: {},
     };
   },
@@ -136,8 +144,10 @@ export default {
       // newPerson.notes = this.newPersonDetails.notes;
 
       // TODO: for backwards compatibility
-      this.startYear = this.newPersonDetails.birthMonth;
-      this.endYear = this.newPersonDetails.interviewMonth;
+      this.startYear = this.newPersonDetails.birthDate;
+      this.endYear = this.newPersonDetails.endDate;
+      this.creationYear = this.newPersonDetails.creationDate;
+
 
       store.commit("data/addPerson", this.newPersonDetails);
       this.$router.go(0);

@@ -2,8 +2,9 @@ export interface ZBPerson {
   name: string;
   birthplace: string;
   interviewers: string;
-  birthMonth: string;
-  interviewMonth: string;
+  creationDate: string;
+  birthDate: string;
+  endDate: string;
   notes: string;
 }
 
@@ -12,8 +13,9 @@ export function initPerson(): ZBPerson {
     name: "",
     birthplace: "",
     interviewers: "",
-    birthMonth: "1980-01",
-    interviewMonth: new Date().toISOString().substring(0, 7),
+    creationDate: new Date().toISOString().substring(0, 10),
+    birthDate: "1980-01-01",
+    endDate: new Date().toISOString().substring(0, 10),
     notes: "",
   };
 }

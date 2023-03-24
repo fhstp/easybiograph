@@ -2,8 +2,21 @@
   <PersonDialogue
     v-show="showCreateBiograph"
     :newPersonDetails="temporaryPerson"
+    :showButton="false"
+    title="Neuen Zeitbalken erstellen"
     @close="closePerson"
     @abort="showCreateBiograph = false"
+    v-if="newPerson"
+  />
+
+  <PersonDialogue
+      v-show="showCreateBiograph"
+      :newPersonDetails="temporaryPerson"
+      :showButton="true"
+      title="Zeitbalken bearbeiten"
+      @close="closePerson"
+      @abort="showCreateBiograph = false"
+      v-if="!newPerson"
   />
 
   <DeleteEditDialogue
@@ -12,9 +25,9 @@
       :selectedEvent="clickedEvent"
       @reload="loadEvents"
   />
-  <nav class="navbar is-fixed-top is-black" v-show="!showCreateBiograph">
-    <div class="navbar-brand">
-      <div class="navbar-item" title="easyBiograph version 2.0 alpha 2">
+  <nav class="navbar is-fixed-top is-black" style="background-color: #488193" v-show="!showCreateBiograph">
+  <div class="navbar-brand">
+      <div class="navbar-item" title="easyBiograph version 2.0 beta">
         easyBiograph
       </div>
     </div>
@@ -22,17 +35,24 @@
       <div class="navbar-start">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-dark" @click="newData">
+            <a class="button is-dark" style="background-color: #36626F" @click="openPopUp" v-if="!showIntro">
               <span class="icon is-small">
                 <font-awesome-icon icon="file" />
               </span>
               <span>Neu</span>
             </a>
 
-            <a class="file is-dark">
+            <a class="button is-dark" style="background-color: #36626F" @click="newData" v-if="showIntro">
+              <span class="icon is-small">
+                <font-awesome-icon icon="file" />
+              </span>
+              <span>Neu</span>
+            </a>
+
+            <a class="file is-dark" >
               <label class="file-label">
                 <input class="file-input" type="file" @change="importData" />
-                <span class="file-cta">
+                <span class="file-cta" style="background-color: #36626F">
                   <span class="file-icon icon is-small">
                     <font-awesome-icon icon="folder-open" />
                   </span>
@@ -41,18 +61,25 @@
               </label>
             </a>
 
-            <a class="button is-dark" @click="downloadData" v-show="!showIntro">
+            <a class="button is-dark" @click="downloadData" v-show="!showIntro" style="background-color: #36626F">
               <span class="icon is-small">
                 <font-awesome-icon icon="save" />
               </span>
               <span>Speichern</span>
             </a>
 
-            <a class="button is-dark" @click="showDiv()" v-show="!showIntro">
+            <a class="button is-dark" @click="showDiv()" v-show="!showIntro" style="background-color: #36626F">
               <span class="icon">
                 <font-awesome-icon icon="plus" />
               </span>
               <span>Event erstellen</span>
+            </a>
+
+            <a class="button is-dark"  @click="showCreateBiograph = true; newPerson = false" v-show="!showIntro" style="background-color: #36626F">
+              <!-- TODO edit instead of new -->
+              <span class="icon">
+              <font-awesome-icon icon="pencil-alt" />
+            </span>
             </a>
           </div>
         </div>
@@ -69,6 +96,8 @@
     <p class="block">Erstelle einen neuen Zeitbalken oder öffne einen bestehenden Zeitbalken, um fortzufahren.</p>
   </div>
 
+
+  <!-- Modal to edit Events-->
   <div id="modal-event" class="modal">
     <div class="modal-background" @click="closeModal"></div>
 
@@ -82,6 +111,23 @@
       class="modal-close is-large"
       aria-label="close"
       @click="closeModal"
+    ></button>
+  </div>
+
+  <!-- Modal for Pop-Up message-->
+  <div id="modal-popUp" class="modal">
+    <div class="modal-background" @click="closeModal"></div>
+
+    <div class="modal-content">
+      <div class="box">
+        <PopUpNew @open-edit="newData" @abort-new="closeModal" @save-data="downloadData" />
+      </div>
+    </div>
+
+    <button
+        class="modal-close is-large"
+        aria-label="close"
+        @click="closeModal"
     ></button>
   </div>
 
@@ -130,8 +176,8 @@
       <div class="field-body">
         <MonthChooser
           v-model="newEventDetails.startDate"
-          :min="birthMonth"
-          :max="interviewMonth"
+          :min="birthDate"
+          :max="endDate"
         />
       </div>
     </div>
@@ -142,8 +188,8 @@
       <div class="field-body">
         <MonthChooser
           v-model="newEventDetails.endDate"
-          :min="birthMonth"
-          :max="interviewMonth"
+          :min="birthDate"
+          :max="endDate"
         />
       </div>
     </div>
@@ -211,7 +257,7 @@
       Abbrechen
     </button>
     <button
-      class="button is-link is-light"
+      class="button is-link"
       style="right: -20vw; margin-top: -20px"
       v-on:click="addEvent"
       v-on:mouseup="showDialogue = false"
@@ -224,22 +270,16 @@
   <div v-show="!showCreateBiograph && !showIntro" class="personInfo">
     <p class="same interviewee">
       {{$store.state.data.person.name}},
-      geboren am {{$store.state.data.person.birthMonth.substring(5,7)}}.{{$store.state.data.person.birthMonth.substring(0,4)}}
+      geboren am {{$store.state.data.person.birthDate.substring(8,10)}}.{{$store.state.data.person.birthDate.substring(5,7)}}.{{$store.state.data.person.birthDate.substring(0,4)}}
       <span v-if="$store.state.data.person.birthplace">in {{$store.state.data.person.birthplace}}</span>
     </p>
-    <p class="same interviewer">
-      interviewt <span v-if="$store.state.data.person.interviewers">von: {{$store.state.data.person.interviewers}},</span>
-      {{$store.state.data.person.interviewMonth.substring(5,7)}}.{{$store.state.data.person.interviewMonth.substring(0,4)}}
+    <p class="same interviewer" style="float: right; text-align: right;  margin-right: 1%">
+      erstellt <span v-if="$store.state.data.person.interviewers">von: {{$store.state.data.person.interviewers}},</span>
+      {{$store.state.data.person.creationDate.substring(8,10)}}.{{$store.state.data.person.creationDate.substring(5,7)}}.{{$store.state.data.person.creationDate.substring(0,4)}}
       &nbsp;
     </p>
     <!-- TODO fill from stored ZBPerson -->
     <!-- <span class="client">{{ $store.state.data.person.name }}</span> -->
-    <a class="button is-small is-light"  @click="showCreateBiograph = true" v-show="!showIntro">
-      <!-- TODO edit instead of new -->
-      <span class="icon">
-              <font-awesome-icon icon="pencil-alt" />
-            </span>
-    </a>
   </div>
 
   <div v-show="!showCreateBiograph && !showIntro">
@@ -300,10 +340,11 @@ import PersonDialogue from "@/components/PersonDialogue.vue";
 import EventDisplay from "@/components/EventDisplay.vue";
 import MonthChooser from "./MonthChooser.vue";
 import {loadSettingsFromStore} from "@/store/localStoragePlugin";
+import PopUpNew from "@/components/PopUpNew.vue";
 
 export default {
   name: "TimeGraph",
-  components: { TimeEvent, DeleteEditDialogue, PersonDialogue, EventDisplay, MonthChooser },
+  components: {PopUpNew, TimeEvent, DeleteEditDialogue, PersonDialogue, EventDisplay, MonthChooser },
 
   props: {
     event: {
@@ -334,6 +375,7 @@ export default {
   data() {
     return {
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
+      newPerson: true,
       personYears: store.getters.getTimeline,
       displayYears: {},
       eventPos: [],
@@ -351,17 +393,17 @@ export default {
         note: "",
         dimension: Dimension[Dimension.Familie], // XXX: might solve bug with uninitialized dimension
         startDate: "2020-01",
-        endDate: "2020-01",
+        endDate: "2020-12",
       },
       events: store.getters.getEvents,
     };
   },
   computed: {
-    birthMonth() {
-      return store.state.data.person.birthMonth;
+    birthDate() {
+      return store.state.data.person.birthDate;
     },
-    interviewMonth() {
-      return store.state.data.person.interviewMonth;
+    interviewDate() {
+      return store.state.data.person.endDate;
     },
     showIntro(): boolean{
       //@ts-ignore
@@ -401,16 +443,6 @@ export default {
       // TODO: use self-explaining function name, which <div>? add event dialog
       //@ts-ignore
       this.showDialogue = true;
-    },
-    showDimension(dimension: string): boolean{
-      console.log(dimension)
-      //@ts-ignore
-      let filter = this.events.filter(el => {
-        //@ts-ignore
-        return el.dimensionId == Dimension[dimension]
-      })
-      if(filter.length > 0) return true
-      return false
     },
     removeEvent() {
       store.commit("data/removeEvent", 0);
@@ -475,6 +507,11 @@ export default {
       const modal = document.querySelector("#modal-event"); // TODO: https://vuejs.org/guide/essentials/class-and-style.html#binding-html-classes
       if (modal) modal.classList.add("is-active");
     },
+    openPopUp(){
+      this.newPerson = true;
+      const modal = document.querySelector("#modal-popUp"); // TODO: https://vuejs.org/guide/essentials/class-and-style.html#binding-html-classes
+      if (modal) modal.classList.add("is-active");
+    },
     closeEditDiv() {
       //@ts-ignore
       this.showEditDialogue = false;
@@ -482,6 +519,9 @@ export default {
     closeModal() {
       const modal = document.querySelector("#modal-event");
       if (modal) modal.classList.remove("is-active");
+
+      const modalPopUp = document.querySelector("#modal-popUp");
+      if (modalPopUp) modalPopUp.classList.remove("is-active");
     },
     closePerson() {
       //@ts-ignore
@@ -526,11 +566,23 @@ export default {
       });
     },
     setCategoryHeight(){
+
+      var x = window.matchMedia("(max-height: 900px)")
+
+      if(x.matches){
       //@ts-ignore
       for(let i = 0; i < this.categoryHeight.length; i++){
         let element = document.getElementById(Dimension[i])
         //@ts-ignore
-        element.style.height = `${this.categoryHeight[i] * 5}vh`
+        element.style.height = `${this.categoryHeight[i] * 5.5}%`
+      }
+      }else{
+        //@ts-ignore
+        for(let i = 0; i < this.categoryHeight.length; i++){
+          let element = document.getElementById(Dimension[i])
+          //@ts-ignore
+          element.style.height = `${this.categoryHeight[i] * 2.5}%`
+        }
       }
     },
     calcYearStart(index: any){
@@ -565,14 +617,15 @@ export default {
     },
     calcYPos(po: any): number {
 
+      var x = window.matchMedia("(max-height: 900px)")
+
       //@ts-ignore
       if(this.eventPos.length < 1) return 0
       let counter = 0
-      let heightCounter = 0
       //@ts-ignore
       this.eventPos.forEach((e) => {
         if(po.event.dimensionId == e.event.dimensionId){
-          if(po.margin >= e.margin && po.margin <= e.margin + e.width || po.margin + po.width >= e.margin && po.margin + po.width <= e.margin + e.width){
+          if(po.margin >= e.margin && po.margin <= e.margin + e.width - 1 || po.margin + po.width - 1 >= e.margin && po.margin + po.width - 1 <= e.margin + e.width - 1){
             counter++
           }
         }
@@ -582,13 +635,23 @@ export default {
         //@ts-ignore
         this.categoryHeight[po.event.dimensionId] = counter
         this.setCategoryHeight()
-        heightCounter++
       }
-      let tableHeight = document.getElementById("table")
-      //@ts-ignore
-      tableHeight.style.height = 90 + counter + "vh"
-      return counter
+      if(x.matches) {
+        //@ts-ignore
+        let smallHeight = 73 + this.events.length
+
+        let tableHeight = document.getElementById("table")
+        //@ts-ignore
+        tableHeight.style.height = smallHeight  + "vh"
+        return counter
+      }else{
+        let tableHeight = document.getElementById("table")
+        //@ts-ignore
+        tableHeight.style.height = 83 + "vh"
+        return counter
+      }
     },
+
     calcPos(event: any) {
 
       let totalYearWidth = 97.5;
@@ -740,6 +803,7 @@ export default {
       return displayObj;
     },
     newData() {
+      this.closeModal();
       store.commit("data/newZeitbalken");
       //@ts-ignore
       this.temporaryPerson = Object.assign({}, store.state.data.person); // shallow clone (ok for ZBPerson)
@@ -747,13 +811,15 @@ export default {
       this.showCreateBiograph = true;
     },
     downloadData() {
+      // TODO move to utils.ts (consistent with easynwk)
+      const filename = "easybiograph_" + store.state.data.person.name + ".json";
       const dataObject = store.getters.getDownloadData;
       var dataStr =
         "data:text/json;charset=utf-8," +
         encodeURIComponent(JSON.stringify(dataObject));
       var dlAnchorElem = document.createElement("a");
       dlAnchorElem.setAttribute("href", dataStr);
-      dlAnchorElem.setAttribute("download", "easybiograph.json");
+      dlAnchorElem.setAttribute("download", filename);
       dlAnchorElem.style.display = "none";
       document.body.appendChild(dlAnchorElem);
       dlAnchorElem.click();
@@ -788,8 +854,16 @@ export default {
 
 <style scoped lang="scss">
 
-#table {
-  height: 75vh;
+@media (min-height: 900px) {
+  #table {
+    height: 83vh;
+  }
+}
+
+@media (max-height: 900px) {
+  #table {
+    height: 73vh;
+  }
 }
 
 table {
@@ -811,7 +885,7 @@ td:not(.eventWrap, .year-wrap) {
 }
 
 tr:nth-child(odd) {
-  background-color: #f2efea;
+  background-color: #F3F2F2; //#f2efea
 }
 
 .eventWrap {
@@ -823,8 +897,9 @@ tr:nth-child(odd) {
   padding-left: 1vw;
   padding-top: 0.5vh;
   margin-top: 32px;
-  background-color: grey;
-  color: white;
+  background-color: #D2DEE2;
+  color: #3E505B;
+  font-weight: normal;
   width: 100vw;
   height: 45px;
   z-index: 3;
@@ -832,7 +907,8 @@ tr:nth-child(odd) {
 }
 
 .interviewee {
-  font-size: large;
+  font-size: medium;
+  font-weight: bold;
 }
 
 .interviewer {
@@ -862,15 +938,15 @@ tbody {
   flex-direction: row;
   margin-top: -45px;
   margin-bottom: 1.5vh;
-  margin-left: 3.1%;
-  padding-left: 15vh;
+  margin-left: 3.5%;
+  padding-left: 6.6%;
   text-align: left;
   font-size: small;
 }
 
 .year_age {
   margin-top: 100px;
-  margin-left: -2.2vh;
+  margin-left: -1vw;
   border-bottom: 0.5px solid lightgrey;
   position: fixed;
   width: 100vw;
@@ -918,6 +994,7 @@ tbody {
 
 .navbar-brand > div {
   font-weight: bold;
+  font-size: 120%;
 }
 
 .buttons > .file {
