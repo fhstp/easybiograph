@@ -177,7 +177,7 @@
         <MonthChooser
           v-model="newEventDetails.startDate"
           :min="birthDate"
-          :max="interviewDate"
+          :max="endDate"
         />
       </div>
     </div>
@@ -189,7 +189,7 @@
         <MonthChooser
           v-model="newEventDetails.endDate"
           :min="birthDate"
-          :max="interviewDate"
+          :max="endDate"
         />
       </div>
     </div>
@@ -275,7 +275,7 @@
     </p>
     <p class="same interviewer" style="float: right; text-align: right;  margin-right: 1%">
       erstellt <span v-if="$store.state.data.person.interviewers">von: {{$store.state.data.person.interviewers}},</span>
-      {{$store.state.data.person.interviewDate.substring(8,10)}}.{{$store.state.data.person.interviewDate.substring(5,7)}}.{{$store.state.data.person.interviewDate.substring(0,4)}}
+      {{$store.state.data.person.creationDate.substring(8,10)}}.{{$store.state.data.person.creationDate.substring(5,7)}}.{{$store.state.data.person.creationDate.substring(0,4)}}
       &nbsp;
     </p>
     <!-- TODO fill from stored ZBPerson -->
@@ -403,7 +403,7 @@ export default {
       return store.state.data.person.birthDate;
     },
     interviewDate() {
-      return store.state.data.person.interviewDate;
+      return store.state.data.person.endDate;
     },
     showIntro(): boolean{
       //@ts-ignore
@@ -574,7 +574,7 @@ export default {
       for(let i = 0; i < this.categoryHeight.length; i++){
         let element = document.getElementById(Dimension[i])
         //@ts-ignore
-        element.style.height = `${this.categoryHeight[i] * 6}%`
+        element.style.height = `${this.categoryHeight[i] * 5.5}%`
       }
       }else{
         //@ts-ignore
@@ -939,7 +939,7 @@ tbody {
   margin-top: -45px;
   margin-bottom: 1.5vh;
   margin-left: 3.5%;
-  padding-left: 15vh;
+  padding-left: 6.6%;
   text-align: left;
   font-size: small;
 }

@@ -111,4 +111,5 @@ export default {
 .position {
   right: -47vw;
 }
+
 </style>

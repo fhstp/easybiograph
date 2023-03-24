@@ -32,8 +32,8 @@ export function compatibilityChecks(loaded: any): Zeitbalken {
   if (!loaded.person.creationDate && loaded.person.interviewMonth) {
     loaded.person.creationDate = loaded.person.interviewMonth;
   }
-  if (!loaded.person.interviewDate && loaded.person.interviewMonth) {
-    loaded.person.interviewDate = loaded.person.interviewMonth;
+  if (!loaded.person.endDate && loaded.person.interviewMonth) {
+    loaded.person.endDate = loaded.person.interviewMonth;
     delete loaded.person.interviewMonth;
   }
   return loaded;

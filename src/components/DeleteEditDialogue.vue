@@ -38,7 +38,7 @@
         <MonthChooser
           v-model="currentEvent.startDate"
           :min="birthDate"
-          :max="interviewDate"
+          :max="endDate"
         />
       </div>
     </div>
@@ -50,7 +50,7 @@
         <MonthChooser
           v-model="currentEvent.endDate"
           :min="birthDate"
-          :max="interviewDate"
+          :max="endDate"
         />
       </div>
     </div>
@@ -159,8 +159,8 @@ export default {
     birthDate() {
       return store.state.data.person.birthDate;
     },
-    interviewDate() {
-      return store.state.data.person.interviewDate;
+    endDate() {
+      return store.state.data.person.endDate;
     },
   },
   methods: {

@@ -32,7 +32,7 @@
         <label class="label" style="text-align: left">Zeitbalken bis</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.interviewDate" require-day />
+        <MonthChooser v-model="newPersonDetails.endDate" require-day />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -145,7 +145,7 @@ export default {
 
       // TODO: for backwards compatibility
       this.startYear = this.newPersonDetails.birthDate;
-      this.endYear = this.newPersonDetails.interviewDate;
+      this.endYear = this.newPersonDetails.endDate;
       this.creationYear = this.newPersonDetails.creationDate;
 
 
