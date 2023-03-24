@@ -25,14 +25,16 @@ export function loadZeitbalken(state: Zeitbalken, loadedText: string): void {
 
 export function compatibilityChecks(loaded: any): Zeitbalken {
   // backwards compatibility for datastructure change in March 2023
-  if (!loaded.person.birthDate) {
+  if (!loaded.person.birthDate && loaded.person.birthMonth) {
     loaded.person.birthDate = loaded.person.birthMonth;
+    delete loaded.person.birthMonth;
   }
-  if (!loaded.person.creationDate) {
+  if (!loaded.person.creationDate && loaded.person.interviewMonth) {
     loaded.person.creationDate = loaded.person.interviewMonth;
   }
-  if (!loaded.person.interviewDate) {
+  if (!loaded.person.interviewDate && loaded.person.interviewMonth) {
     loaded.person.interviewDate = loaded.person.interviewMonth;
+    delete loaded.person.interviewMonth;
   }
   return loaded;
 }
