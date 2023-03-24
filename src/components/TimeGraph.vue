@@ -27,7 +27,7 @@
   />
   <nav class="navbar is-fixed-top is-black" style="background-color: #488193" v-show="!showCreateBiograph">
   <div class="navbar-brand">
-      <div class="navbar-item" title="easyBiograph version 2.0 alpha 2">
+      <div class="navbar-item" title="easyBiograph version 2.0 beta">
         easyBiograph
       </div>
     </div>
@@ -994,6 +994,7 @@ tbody {
 
 .navbar-brand > div {
   font-weight: bold;
+  font-size: 120%;
 }
 
 .buttons > .file {
