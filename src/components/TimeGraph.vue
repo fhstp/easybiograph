@@ -811,13 +811,15 @@ export default {
       this.showCreateBiograph = true;
     },
     downloadData() {
+      // TODO move to utils.ts (consistent with easynwk)
+      const filename = "easybiograph_" + store.state.data.person.name + ".json";
       const dataObject = store.getters.getDownloadData;
       var dataStr =
         "data:text/json;charset=utf-8," +
         encodeURIComponent(JSON.stringify(dataObject));
       var dlAnchorElem = document.createElement("a");
       dlAnchorElem.setAttribute("href", dataStr);
-      dlAnchorElem.setAttribute("download", "easybiograph.json");
+      dlAnchorElem.setAttribute("download", filename);
       dlAnchorElem.style.display = "none";
       document.body.appendChild(dlAnchorElem);
       dlAnchorElem.click();
