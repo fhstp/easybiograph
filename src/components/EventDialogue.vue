@@ -1,9 +1,19 @@
 <template>
-  <div class="box position" style="height: 96vh; width: 40vw">
-    <button class="button is-light is-small" style="right: -33vw">X</button>
-
-    <h1 class="title block">Eintrag erstellen</h1>
+  <!-- begin add event dialog -->
+  <div
+    class="box position"
+    id="box"
+    style="
+      position: absolute;
+      top: 3vh;
+      height: 93vh;
+      left: 10vw;
+      width: 40vw;
+      z-index: 5;
+    "
+  >
     <br />
+    <h1 class="title block">Eintrag erstellen</h1>
     <div class="field is-horizontal">
       <div class="field-label">
         <label class="label" style="text-align: left">Typ</label>
@@ -12,11 +22,19 @@
         <div class="field is-narrow">
           <div class="control">
             <label class="radio">
-              <input type="radio" name="member" checked />
+              <input
+                type="radio"
+                v-model="newEventDetails.isInterval"
+                v-bind:value="true"
+              />
               Zeitraum
             </label>
             <label class="radio">
-              <input type="radio" name="member" />
+              <input
+                type="radio"
+                v-model="newEventDetails.isInterval"
+                v-bind:value="false"
+              />
               Zeitpunkt
             </label>
           </div>
@@ -28,9 +46,26 @@
         <label class="label" style="text-align: left">Datum</label>
       </div>
       <div class="field-body">
-        <input type="month" />
+        <MonthChooser
+          v-model="newEventDetails.startDate"
+          :min="birthDate"
+          :max="endDate"
+        />
       </div>
     </div>
+    <div class="field is-horizontal" v-show="newEventDetails.isInterval">
+      <div class="field-label is-normal">
+        <label class="label" style="text-align: left">bis</label>
+      </div>
+      <div class="field-body">
+        <MonthChooser
+          v-model="newEventDetails.endDate"
+          :min="birthDate"
+          :max="endDate"
+        />
+      </div>
+    </div>
+
     <div class="field is-horizontal">
       <div class="field-label is-normal">
         <label class="label" style="text-align: left">Dimension</label>
@@ -39,11 +74,10 @@
         <div class="field is-narrow">
           <div class="control">
             <div class="select is-fullwidth">
-              <select>
-                <option>Familie</option>
-                <option>Wohnen</option>
-                <option>Bildung</option>
-                <option>Arbeit</option>
+              <select v-model="newEventDetails.dimension">
+                <option v-for="value in dimensionOptions" :key="value">
+                  {{ value }}
+                </option>
               </select>
             </div>
           </div>
@@ -59,16 +93,12 @@
           <div class="control">
             <input
               class="input"
+              v-model="newEventDetails.description"
               type="text"
               placeholder="Anzeigename des Events"
+              id="eventNameId"
             />
-            <!-- class: is danger -->
           </div>
-          <!--
-          <p class="help is-danger">
-            Bitte beschreibe das Event
-          </p>
-          -->
         </div>
       </div>
     </div>
@@ -82,34 +112,116 @@
           <div class="control">
             <textarea
               class="textarea"
+              v-model="newEventDetails.note"
               placeholder="Notizen zum Event"
+              id="noteId"
             ></textarea>
           </div>
         </div>
       </div>
     </div>
     <br />
-    <button class="button is-white" style="margin-right: 1vw; right: -20vw">
+    <button
+      class="button is-white"
+      style="margin-right: 1vw; right: -20vw; margin-top: -20px"
+      v-on:click="close"
+    >
       Abbrechen
     </button>
-    <button class="button is-link" style="right: -20vw">Fertig</button>
+    <button
+      class="button is-link"
+      style="right: -20vw; margin-top: -20px"
+      v-on:click="addEvent"
+    >
+      Fertig
+    </button>
   </div>
+  <!-- end of add event dialog -->
 </template>
 
 <script>
+import MonthChooser from "./MonthChooser.vue";
+import { store } from "../store";
+import { Dimension } from "../data/Dimension";
+import { initEvent } from "../data/ZBEvent";
+
 export default {
   name: "EventDialogue",
+  components: { MonthChooser },
+  setup() {
+    const dimensionOptions = Object.keys(Dimension).filter((v) =>
+      isNaN(Number(v))
+    );
+    return {
+      dimensionOptions,
+    };
+  },
+  computed: {
+    birthDate() {
+      return store.state.data.person.birthDate;
+    },
+    endDate() {
+      return store.state.data.person.endDate;
+    },
+  },
+  data() {
+    return {
+      newEventDetails: {
+        isInterval: true,
+        description: "",
+        note: "",
+        dimension: Dimension[Dimension.Familie], // XXX: might solve bug with uninitialized dimension
+        startDate: "2020-01",
+        endDate: "2020-12",
+      },
+      selectedDimension: Dimension.Familie,
+    };
+  },
+  methods: {
+    addEvent() {
+      // TODO: should be safe to pass newEventDetails as payload because it is cloned in mutation
+      const newEvent = initEvent();
+      //@ts-ignore
+      // XXX: replace by array? (this should convert enum to int, but sometimes it does not work)
+      newEvent.dimensionId = Dimension[this.newEventDetails.dimension];
+      //@ts-ignore
+      console.log(
+        `dimension: |${this.newEventDetails.dimension}| -> |${newEvent.dimensionId}|`
+      );
+      //@ts-ignore
+      newEvent.description = this.newEventDetails.description;
+      //@ts-ignore
+      newEvent.notes = this.newEventDetails.note;
+      //@ts-ignore
+      newEvent.isInterval = this.newEventDetails.isInterval;
+      //@ts-ignore
+      newEvent.startDate = this.newEventDetails.startDate;
+      //@ts-ignore
+      newEvent.endDate = this.newEventDetails.endDate;
+      store.commit("data/addEvent", newEvent);
+      //@ts-ignore
+      this.$router.go(0);
+      //@ts-ignore
+      this.newEventDetails = {};
+    },
+    close() {
+      this.$emit("close");
+    },
+  },
 };
 </script>
 
-<style scoped lang="scss">
-* {
-  overflow-x: auto;
-  display: flex;
-  z-index: 5;
-}
+<style scoped>
 .position {
-  right: -47vw;
+  position: fixed;
+  margin-left: 10vw;
+  margin-top: 4vh;
+  z-index: 10;
 }
 
+@media screen and (min-width: 769px), print {
+  .field-body {
+    flex-grow: 3;
+  }
+}
 </style>

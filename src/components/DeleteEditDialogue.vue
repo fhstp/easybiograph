@@ -1,6 +1,6 @@
 <template>
   <div class="box position" style="height: 92vh; width: 40vw">
-    <br>
+    <br />
 
     <h1 class="title block">Eintrag bearbeiten</h1>
     <div class="field is-horizontal">
@@ -196,8 +196,7 @@ export default {
 </script>
 
 <style scoped>
-
-.position{
+.position {
   position: fixed;
   margin-left: 10vw;
   margin-top: 4vh;

@@ -1,4 +1,6 @@
 <template>
+  <EventDialogue v-show="showDialogue" @close="showDialogue = false" />
+
   <PersonDialogue
     v-show="showCreateBiograph"
     :newPersonDetails="temporaryPerson"
@@ -10,23 +12,27 @@
   />
 
   <PersonDialogue
-      v-show="showCreateBiograph"
-      :newPersonDetails="temporaryPerson"
-      :showButton="true"
-      title="Zeitbalken bearbeiten"
-      @close="closePerson"
-      @abort="showCreateBiograph = false"
-      v-if="!newPerson"
+    v-show="showCreateBiograph"
+    :newPersonDetails="temporaryPerson"
+    :showButton="true"
+    title="Zeitbalken bearbeiten"
+    @close="closePerson"
+    @abort="showCreateBiograph = false"
+    v-if="!newPerson"
   />
 
   <DeleteEditDialogue
-      v-show="showEditDialogue"
-      @close="closeEditDiv"
-      :selectedEvent="clickedEvent"
-      @reload="loadEvents"
+    v-show="showEditDialogue"
+    @close="closeEditDiv"
+    :selectedEvent="clickedEvent"
+    @reload="loadEvents"
   />
-  <nav class="navbar is-fixed-top is-black" style="background-color: #488193" v-show="!showCreateBiograph">
-  <div class="navbar-brand">
+  <nav
+    class="navbar is-fixed-top is-black"
+    style="background-color: #488193"
+    v-show="!showCreateBiograph"
+  >
+    <div class="navbar-brand">
       <div class="navbar-item" title="easyBiograph version 2.0 beta">
         easyBiograph
       </div>
@@ -35,24 +41,34 @@
       <div class="navbar-start">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-dark" style="background-color: #36626F" @click="openPopUp" v-if="!showIntro">
+            <a
+              class="button is-dark"
+              style="background-color: #36626f"
+              @click="openPopUp"
+              v-if="!showIntro"
+            >
               <span class="icon is-small">
                 <font-awesome-icon icon="file" />
               </span>
               <span>Neu</span>
             </a>
 
-            <a class="button is-dark" style="background-color: #36626F" @click="newData" v-if="showIntro">
+            <a
+              class="button is-dark"
+              style="background-color: #36626f"
+              @click="newData"
+              v-if="showIntro"
+            >
               <span class="icon is-small">
                 <font-awesome-icon icon="file" />
               </span>
               <span>Neu</span>
             </a>
 
-            <a class="file is-dark" >
+            <a class="file is-dark">
               <label class="file-label">
                 <input class="file-input" type="file" @change="importData" />
-                <span class="file-cta" style="background-color: #36626F">
+                <span class="file-cta" style="background-color: #36626f">
                   <span class="file-icon icon is-small">
                     <font-awesome-icon icon="folder-open" />
                   </span>
@@ -61,25 +77,43 @@
               </label>
             </a>
 
-            <a class="button is-dark" @click="downloadData" v-show="!showIntro" style="background-color: #36626F">
+            <a
+              class="button is-dark"
+              @click="downloadData"
+              v-show="!showIntro"
+              style="background-color: #36626f"
+            >
               <span class="icon is-small">
                 <font-awesome-icon icon="save" />
               </span>
               <span>Speichern</span>
             </a>
 
-            <a class="button is-dark" @click="showDiv()" v-show="!showIntro" style="background-color: #36626F">
+            <a
+              class="button is-dark"
+              @click="showDiv()"
+              v-show="!showIntro"
+              style="background-color: #36626f"
+            >
               <span class="icon">
                 <font-awesome-icon icon="plus" />
               </span>
               <span>Event erstellen</span>
             </a>
 
-            <a class="button is-dark"  @click="showCreateBiograph = true; newPerson = false" v-show="!showIntro" style="background-color: #36626F">
+            <a
+              class="button is-dark"
+              @click="
+                showCreateBiograph = true;
+                newPerson = false;
+              "
+              v-show="!showIntro"
+              style="background-color: #36626f"
+            >
               <!-- TODO edit instead of new -->
               <span class="icon">
-              <font-awesome-icon icon="pencil-alt" />
-            </span>
+                <font-awesome-icon icon="pencil-alt" />
+              </span>
             </a>
           </div>
         </div>
@@ -89,13 +123,13 @@
   <br />
 
   <div class="welcome" v-if="showIntro">
-    <embed src = "easybiographWelcome.svg"
-         alt="Welcome to easybiograph"
-    >
+    <embed src="easybiographWelcome.svg" alt="Welcome to easybiograph" />
     <h2 class="title is-2">Willkommen bei easyBiograph!</h2>
-    <p class="block">Erstelle einen neuen Zeitbalken oder öffne einen bestehenden Zeitbalken, um fortzufahren.</p>
+    <p class="block">
+      Erstelle einen neuen Zeitbalken oder öffne einen bestehenden Zeitbalken,
+      um fortzufahren.
+    </p>
   </div>
-
 
   <!-- Modal to edit Events-->
   <div id="modal-event" class="modal">
@@ -120,162 +154,42 @@
 
     <div class="modal-content">
       <div class="box">
-        <PopUpNew @open-edit="newData" @abort-new="closeModal" @save-data="downloadData" />
+        <PopUpNew
+          @open-edit="newData"
+          @abort-new="closeModal"
+          @save-data="downloadData"
+        />
       </div>
     </div>
 
     <button
-        class="modal-close is-large"
-        aria-label="close"
-        @click="closeModal"
+      class="modal-close is-large"
+      aria-label="close"
+      @click="closeModal"
     ></button>
   </div>
 
-
-  <!-- begin add event dialog -->
-  <div
-    class="box position"
-    id="box"
-    style="position: absolute; top: 3vh; height: 93vh; left: 10vw; width: 40vw; z-index: 5"
-    v-show="showDialogue"
-  >
-
-    <br>
-    <h1 class="title block">Eintrag erstellen</h1>
-    <div class="field is-horizontal">
-      <div class="field-label">
-        <label class="label" style="text-align: left">Typ</label>
-      </div>
-      <div class="field-body">
-        <div class="field is-narrow">
-          <div class="control">
-            <label class="radio">
-              <input
-                type="radio"
-                v-model="newEventDetails.isInterval"
-                v-bind:value="true"
-              />
-              Zeitraum
-            </label>
-            <label class="radio">
-              <input
-                type="radio"
-                v-model="newEventDetails.isInterval"
-                v-bind:value="false"
-              />
-              Zeitpunkt
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="field is-horizontal">
-      <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Datum</label>
-      </div>
-      <div class="field-body">
-        <MonthChooser
-          v-model="newEventDetails.startDate"
-          :min="birthDate"
-          :max="endDate"
-        />
-      </div>
-    </div>
-    <div class="field is-horizontal" v-show="newEventDetails.isInterval">
-      <div class="field-label is-normal">
-        <label class="label" style="text-align: left">bis</label>
-      </div>
-      <div class="field-body">
-        <MonthChooser
-          v-model="newEventDetails.endDate"
-          :min="birthDate"
-          :max="endDate"
-        />
-      </div>
-    </div>
-
-    <div class="field is-horizontal">
-      <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Dimension</label>
-      </div>
-      <div class="field-body">
-        <div class="field is-narrow">
-          <div class="control">
-            <div class="select is-fullwidth">
-              <select v-model="newEventDetails.dimension">
-                <option v-for="value in dimensionOptions" :key="value">
-                  {{ value }}
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="field is-horizontal">
-      <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Titel</label>
-      </div>
-      <div class="field-body">
-        <div class="field">
-          <div class="control">
-            <input
-              class="input"
-              v-model="newEventDetails.description"
-              type="text"
-              placeholder="Anzeigename des Events"
-              id="eventNameId"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="field is-horizontal">
-      <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Notizen</label>
-      </div>
-      <div class="field-body">
-        <div class="field">
-          <div class="control">
-            <textarea
-              class="textarea"
-              v-model="newEventDetails.note"
-              placeholder="Notizen zum Event"
-              id="noteId"
-            ></textarea>
-          </div>
-        </div>
-      </div>
-    </div>
-    <br />
-    <button
-      class="button is-white"
-      style="margin-right: 1vw; right: -20vw; margin-top: -20px"
-      v-on:click="showDialogue = false"
-    >
-      Abbrechen
-    </button>
-    <button
-      class="button is-link"
-      style="right: -20vw; margin-top: -20px"
-      v-on:click="addEvent"
-      v-on:mouseup="showDialogue = false"
-    >
-      Fertig
-    </button>
-  </div>
-  <!-- end of add event dialog -->
-
   <div v-show="!showCreateBiograph && !showIntro" class="personInfo">
     <p class="same interviewee">
-      {{$store.state.data.person.name}},
-      geboren am {{$store.state.data.person.birthDate.substring(8,10)}}.{{$store.state.data.person.birthDate.substring(5,7)}}.{{$store.state.data.person.birthDate.substring(0,4)}}
-      <span v-if="$store.state.data.person.birthplace">in {{$store.state.data.person.birthplace}}</span>
+      {{ $store.state.data.person.name }}, geboren am
+      {{ $store.state.data.person.birthDate.substring(8, 10) }}.{{
+        $store.state.data.person.birthDate.substring(5, 7)
+      }}.{{ $store.state.data.person.birthDate.substring(0, 4) }}
+      <span v-if="$store.state.data.person.birthplace"
+        >in {{ $store.state.data.person.birthplace }}</span
+      >
     </p>
-    <p class="same interviewer" style="float: right; text-align: right;  margin-right: 1%">
-      erstellt <span v-if="$store.state.data.person.interviewers">von: {{$store.state.data.person.interviewers}},</span>
-      {{$store.state.data.person.creationDate.substring(8,10)}}.{{$store.state.data.person.creationDate.substring(5,7)}}.{{$store.state.data.person.creationDate.substring(0,4)}}
+    <p
+      class="same interviewer"
+      style="float: right; text-align: right; margin-right: 1%"
+    >
+      erstellt
+      <span v-if="$store.state.data.person.interviewers"
+        >von: {{ $store.state.data.person.interviewers }},</span
+      >
+      {{ $store.state.data.person.creationDate.substring(8, 10) }}.{{
+        $store.state.data.person.creationDate.substring(5, 7)
+      }}.{{ $store.state.data.person.creationDate.substring(0, 4) }}
       &nbsp;
     </p>
     <!-- TODO fill from stored ZBPerson -->
@@ -289,7 +203,12 @@
         <p class="subcontent">Alter</p>
       </div>
       <div class="year-wrap" id="year-wrap" ref="yearwrapper">
-        <div v-for="(year, index) in displayYears" :key="index" class="year" :style="calcYearStart(index)">
+        <div
+          v-for="(year, index) in displayYears"
+          :key="index"
+          class="year"
+          :style="calcYearStart(index)"
+        >
           <p>
             {{ year }}
           </p>
@@ -301,10 +220,8 @@
     </div>
   </div>
 
-
   <table v-show="!showCreateBiograph && !showIntro" id="table">
     <tbody>
-
       <tr v-for="(value, index) in dimensionOptions" :key="value" :id="value">
         <td class="content">
           <div>
@@ -312,39 +229,42 @@
           </div>
         </td>
         <td class="eventWrap" style="height: 0.5vh">
-
-            <TimeEvent
-                v-for="event in filteredEvents[index]"
-                :key="event.eventId"
-                class="eventSelector"
-              :event="event"
-              :show-notes="isOnlyEventAtPos(event)"
-              :style="calcPos(event)"
-              @click="openEventDisplay(event)"
-              style="cursor: pointer !important"
-            />
+          <TimeEvent
+            v-for="event in filteredEvents[index]"
+            :key="event.eventId"
+            class="eventSelector"
+            :event="event"
+            :show-notes="isOnlyEventAtPos(event)"
+            :style="calcPos(event)"
+            @click="openEventDisplay(event)"
+            style="cursor: pointer !important"
+          />
         </td>
       </tr>
     </tbody>
   </table>
-
 </template>
 
 <script lang="ts">
-import { initEvent } from "@/data/ZBEvent";
 import { Dimension } from "@/data/Dimension";
 import { store } from "@/store";
 import TimeEvent from "@/components/TimeEvent.vue";
 import DeleteEditDialogue from "@/components/DeleteEditDialogue.vue";
 import PersonDialogue from "@/components/PersonDialogue.vue";
 import EventDisplay from "@/components/EventDisplay.vue";
-import MonthChooser from "./MonthChooser.vue";
-import {loadSettingsFromStore} from "@/store/localStoragePlugin";
 import PopUpNew from "@/components/PopUpNew.vue";
+import EventDialogue from "@/components/EventDialogue.vue";
 
 export default {
   name: "TimeGraph",
-  components: {PopUpNew, TimeEvent, DeleteEditDialogue, PersonDialogue, EventDisplay, MonthChooser },
+  components: {
+    EventDialogue,
+    PopUpNew,
+    TimeEvent,
+    DeleteEditDialogue,
+    PersonDialogue,
+    EventDisplay,
+  },
 
   props: {
     event: {
@@ -380,7 +300,7 @@ export default {
       displayYears: {},
       eventPos: [],
       filteredEvents: [],
-      categoryHeight: [0,0,0,0,0,0,0],
+      categoryHeight: [0, 0, 0, 0, 0, 0, 0],
       showDialogue: false,
       showEditDialogue: false,
       showEventDisplay: false,
@@ -402,14 +322,11 @@ export default {
     birthDate() {
       return store.state.data.person.birthDate;
     },
-    interviewDate() {
-      return store.state.data.person.endDate;
-    },
-    showIntro(): boolean{
+    showIntro(): boolean {
       //@ts-ignore
       //this.displayYears.length > 0
-      return this.personYears < 1
-    }
+      return this.personYears < 1;
+    },
   },
   watch: {
     displayYears: {
@@ -421,10 +338,9 @@ export default {
   },
   mounted() {
     //@ts-ignore
-    this.loadEvents()
+    this.loadEvents();
   },
   methods: {
-
     loadEvents() {
       //@ts-ignore
       this.personYears = store.getters.getTimeline;
@@ -432,11 +348,11 @@ export default {
       //@ts-ignore
       this.events = store.getters.getEvents;
       const dims = Object.keys(Dimension).filter((item) => {
-        return isNaN(Number(item))
-      })
-      for(let i = 0; i < dims.length; i++){
+        return isNaN(Number(item));
+      });
+      for (let i = 0; i < dims.length; i++) {
         //@ts-ignore
-        this.filteredEvents.push(this.filterEvents(dims[i]))
+        this.filteredEvents.push(this.filterEvents(dims[i]));
       }
     },
     showDiv() {
@@ -452,21 +368,21 @@ export default {
       //@ts-ignore
       this.showEditDialogue = true;
     },
-    checkHeight(dimension: string, stack: number){
-      let selector = "#" + dimension
-      const row = document.querySelector(selector)
-      const itemHeight = 80
-      const newHeight = itemHeight * stack
+    checkHeight(dimension: string, stack: number) {
+      let selector = "#" + dimension;
+      const row = document.querySelector(selector);
+      const itemHeight = 80;
+      const newHeight = itemHeight * stack;
 
-
-      if(!row){return}
-      //@ts-ignore
-      if(newHeight > row.style.height){
-        //@ts-ignore
-        row.style.height = newHeight + "px"
-        console.log(dimension, newHeight)
+      if (!row) {
+        return;
       }
-
+      //@ts-ignore
+      if (newHeight > row.style.height) {
+        //@ts-ignore
+        row.style.height = newHeight + "px";
+        console.log(dimension, newHeight);
+      }
     },
     isOnlyEventAtPos(event: any): Boolean {
       const eventYears = [] as number[];
@@ -507,7 +423,7 @@ export default {
       const modal = document.querySelector("#modal-event"); // TODO: https://vuejs.org/guide/essentials/class-and-style.html#binding-html-classes
       if (modal) modal.classList.add("is-active");
     },
-    openPopUp(){
+    openPopUp() {
       this.newPerson = true;
       const modal = document.querySelector("#modal-popUp"); // TODO: https://vuejs.org/guide/essentials/class-and-style.html#binding-html-classes
       if (modal) modal.classList.add("is-active");
@@ -533,59 +449,33 @@ export default {
       //@ts-ignore
       this.$forceUpdate();
     },
-    addEvent() {
-      // TODO: should be safe to pass newEventDetails as payload because it is cloned in mutation
-      const newEvent = initEvent();
-      //@ts-ignore
-      // XXX: replace by array? (this should convert enum to int, but sometimes it does not work)
-      newEvent.dimensionId = Dimension[this.newEventDetails.dimension];
-      //@ts-ignore
-      console.log(`dimension: |${this.newEventDetails.dimension}| -> |${newEvent.dimensionId}|`)
-      //@ts-ignore
-      newEvent.description = this.newEventDetails.description;
-      //@ts-ignore
-      newEvent.notes = this.newEventDetails.note;
-      //@ts-ignore
-      newEvent.isInterval = this.newEventDetails.isInterval;
-      //@ts-ignore
-      newEvent.startDate = this.newEventDetails.startDate;
-      //@ts-ignore
-      newEvent.endDate = this.newEventDetails.endDate;
-      store.commit("data/addEvent", newEvent);
-      //@ts-ignore
-      this.$router.go(0);
-      //@ts-ignore
-      this.newEventDetails = {};
-    },
     filterEvents(dimension: String): any {
-
       //@ts-ignore
       return this.events.filter(function (el) {
         //@ts-ignore
         return el.dimensionId == Dimension[dimension];
       });
     },
-    setCategoryHeight(){
+    setCategoryHeight() {
+      var x = window.matchMedia("(max-height: 900px)");
 
-      var x = window.matchMedia("(max-height: 900px)")
-
-      if(x.matches){
-      //@ts-ignore
-      for(let i = 0; i < this.categoryHeight.length; i++){
-        let element = document.getElementById(Dimension[i])
+      if (x.matches) {
         //@ts-ignore
-        element.style.height = `${this.categoryHeight[i] * 5.5}%`
-      }
-      }else{
-        //@ts-ignore
-        for(let i = 0; i < this.categoryHeight.length; i++){
-          let element = document.getElementById(Dimension[i])
+        for (let i = 0; i < this.categoryHeight.length; i++) {
+          let element = document.getElementById(Dimension[i]);
           //@ts-ignore
-          element.style.height = `${this.categoryHeight[i] * 2.5}%`
+          element.style.height = `${this.categoryHeight[i] * 5.5}%`;
+        }
+      } else {
+        //@ts-ignore
+        for (let i = 0; i < this.categoryHeight.length; i++) {
+          let element = document.getElementById(Dimension[i]);
+          //@ts-ignore
+          element.style.height = `${this.categoryHeight[i] * 2.5}%`;
         }
       }
     },
-    calcYearStart(index: any){
+    calcYearStart(index: any) {
       //@ts-ignore
       let dYears: number[] = Object.values(this.displayYears);
 
@@ -593,67 +483,68 @@ export default {
       let months = this.personYears.length * 12;
 
       if (
-          //@ts-ignore
-          this.personYears[this.personYears.length - 1] ==
-          dYears[dYears.length - 1]
+        //@ts-ignore
+        this.personYears[this.personYears.length - 1] ==
+        dYears[dYears.length - 1]
       ) {
         //@ts-ignore
         months = this.personYears.length * 12;
       } else {
         let extra =
-            (dYears[dYears.length - 1] -
-                //@ts-ignore
-                this.personYears[this.personYears.length - 1]) *
-            12;
+          (dYears[dYears.length - 1] -
+            //@ts-ignore
+            this.personYears[this.personYears.length - 1]) *
+          12;
         //@ts-ignore
         months = this.personYears.length * 12 + extra;
       }
-      let spaceFromLeft =  87 / months * (index * 12)
+      let spaceFromLeft = (87 / months) * (index * 12);
       let yearStyle = {
         marginLeft: spaceFromLeft + "%",
       };
       return yearStyle;
-
     },
     calcYPos(po: any): number {
-
-      var x = window.matchMedia("(max-height: 900px)")
+      var x = window.matchMedia("(max-height: 900px)");
 
       //@ts-ignore
-      if(this.eventPos.length < 1) return 0
-      let counter = 0
+      if (this.eventPos.length < 1) return 0;
+      let counter = 0;
       //@ts-ignore
       this.eventPos.forEach((e) => {
-        if(po.event.dimensionId == e.event.dimensionId){
-          if(po.margin >= e.margin && po.margin <= e.margin + e.width - 1 || po.margin + po.width - 1 >= e.margin && po.margin + po.width - 1 <= e.margin + e.width - 1){
-            counter++
+        if (po.event.dimensionId == e.event.dimensionId) {
+          if (
+            (po.margin >= e.margin && po.margin <= e.margin + e.width - 1) ||
+            (po.margin + po.width - 1 >= e.margin &&
+              po.margin + po.width - 1 <= e.margin + e.width - 1)
+          ) {
+            counter++;
           }
         }
-      })
+      });
       //@ts-ignore
-      if(counter > this.categoryHeight[po.event.dimensionId]){
+      if (counter > this.categoryHeight[po.event.dimensionId]) {
         //@ts-ignore
-        this.categoryHeight[po.event.dimensionId] = counter
-        this.setCategoryHeight()
+        this.categoryHeight[po.event.dimensionId] = counter;
+        this.setCategoryHeight();
       }
-      if(x.matches) {
+      if (x.matches) {
         //@ts-ignore
-        let smallHeight = 73 + this.events.length
+        let smallHeight = 73 + this.events.length;
 
-        let tableHeight = document.getElementById("table")
+        let tableHeight = document.getElementById("table");
         //@ts-ignore
-        tableHeight.style.height = smallHeight  + "vh"
-        return counter
-      }else{
-        let tableHeight = document.getElementById("table")
+        tableHeight.style.height = smallHeight + "vh";
+        return counter;
+      } else {
+        let tableHeight = document.getElementById("table");
         //@ts-ignore
-        tableHeight.style.height = 83 + "vh"
-        return counter
+        tableHeight.style.height = 83 + "vh";
+        return counter;
       }
     },
 
     calcPos(event: any) {
-
       let totalYearWidth = 97.5;
       //@ts-ignore
       let dYears: number[] = Object.values(this.displayYears);
@@ -741,17 +632,17 @@ export default {
         //@ts-ignore
         this.eventPos.push(positionObject);
         //@ts-ignore
-        this.eventPos.sort((a, b) =>{
-          let dateA = new Date(a.event.startDate)
-          let dateB = new Date(b.event.startDate)
+        this.eventPos.sort((a, b) => {
+          let dateA = new Date(a.event.startDate);
+          let dateB = new Date(b.event.startDate);
           //@ts-ignore
-          return dateA - dateB
-        })
+          return dateA - dateB;
+        });
       }
 
-      let topGap = 25 * positionObject.yPos
+      let topGap = 25 * positionObject.yPos;
 
-      this.checkHeight(Dimension[event.dimensionId], positionObject.yPos)
+      this.checkHeight(Dimension[event.dimensionId], positionObject.yPos);
 
       let styleObject = {
         left: leftCord + "%",
@@ -853,7 +744,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 @media (min-height: 900px) {
   #table {
     height: 83vh;
@@ -885,20 +775,20 @@ td:not(.eventWrap, .year-wrap) {
 }
 
 tr:nth-child(odd) {
-  background-color: #F3F2F2; //#f2efea
+  background-color: #f3f2f2; //#f2efea
 }
 
 .eventWrap {
   position: relative;
 }
 
-.personInfo{
+.personInfo {
   position: fixed;
   padding-left: 1vw;
   padding-top: 0.5vh;
   margin-top: 32px;
-  background-color: #D2DEE2;
-  color: #3E505B;
+  background-color: #d2dee2;
+  color: #3e505b;
   font-weight: normal;
   width: 100vw;
   height: 45px;
@@ -957,7 +847,7 @@ tbody {
 }
 
 .same {
-  display:inline-block;
+  display: inline-block;
 }
 
 .content {

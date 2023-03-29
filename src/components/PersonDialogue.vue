@@ -1,6 +1,6 @@
 <template>
   <div class="box position" style="height: 96vh; width: 40vw">
-    <h1 id="edit" class="title block">{{title}}</h1>
+    <h1 id="edit" class="title block">{{ title }}</h1>
     <br />
     <div class="field is-horizontal">
       <div class="field-label is-normal">
@@ -80,21 +80,17 @@
     </div>
     <br />
     <div class="buttons">
-    <button
-      v-show="showButton"
-      class="button is-white"
-      style="margin-right: 1vw; right: -20vw"
-      @click="abort"
-    >
-      Abbrechen
-    </button>
-    <button
-      class="button is-link"
-      style="right: -20vw"
-      @click="savePerson"
-    >
-      Fertig
-    </button>
+      <button
+        v-show="showButtons"
+        class="button is-white"
+        style="margin-right: 1vw; right: -20vw"
+        @click="abort"
+      >
+        Abbrechen
+      </button>
+      <button class="button is-link" style="right: -20vw" @click="savePerson">
+        Fertig
+      </button>
     </div>
   </div>
 </template>
@@ -123,7 +119,7 @@ export default {
       personYears: [] as number[],
       showBiograph: false,
       // //@ts-ignore
-      showButton: this.showButton,
+      showButtons: this.showButton,
       // newPersonDetails: {},
     };
   },
@@ -147,7 +143,6 @@ export default {
       this.startYear = this.newPersonDetails.birthDate;
       this.endYear = this.newPersonDetails.endDate;
       this.creationYear = this.newPersonDetails.creationDate;
-
 
       store.commit("data/addPerson", this.newPersonDetails);
       this.$router.go(0);

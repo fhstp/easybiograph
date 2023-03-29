@@ -4,19 +4,17 @@
       <div class="media">
         <div class="media-content">
           <label class="title is-4">
-            Achtung, wenn der aktuelle Zeitbalken noch nicht gespeichtert wurde, dann geht dieser verloren!
+            Achtung, wenn der aktuelle Zeitbalken noch nicht gespeichtert wurde,
+            dann geht dieser verloren!
           </label>
-          <br><br>
+          <br /><br />
 
-          <p class="subtitle is-6">
-            Wollen Sie dennoch fortfahren?
-          </p>
-          <br>
+          <p class="subtitle is-6">Wollen Sie dennoch fortfahren?</p>
+          <br />
         </div>
       </div>
       <br />
       <div class="buttons">
-
         <button @click="$emit('open-edit')" class="button is-link">
           Weiter
         </button>
@@ -28,7 +26,6 @@
         <button @click="$emit('abort-new')" class="button is-danger is-light">
           Abbrechen
         </button>
-
       </div>
     </div>
   </div>
@@ -36,10 +33,8 @@
 
 <script>
 export default {
-  name: "PopUpNew"
-}
+  name: "PopUpNew",
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

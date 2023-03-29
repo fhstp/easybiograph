@@ -1,6 +1,6 @@
 <template>
   <div class="tooltip">
-    <span class="tooltiptext"  style="z-index: 6"
+    <span class="tooltiptext" style="z-index: 6"
       >{{ event.description }}
       <br />
       {{
@@ -8,7 +8,11 @@
           ? event.startDate.substring(0, 4) +
             " - " +
             event.endDate.substring(0, 4)
-          : event.startDate.substring(8,10) + "." + event.startDate.substring(5,7) + "." + event.startDate.substring(0,4)
+          : event.startDate.substring(8, 10) +
+            "." +
+            event.startDate.substring(5, 7) +
+            "." +
+            event.startDate.substring(0, 4)
       }}
     </span>
     <div :class="[event.isInterval ? 'period sel' : 'event sel']">
@@ -20,12 +24,18 @@
           event.notes
             ? event.notes.substring(0, 15)
             : event.isInterval
-              ? event.startDate.substring(0, 4) +
-                " - " +
-                event.endDate.substring(0, 4)
-              : event.startDate.substring(8,10) > 0
-                    ? event.startDate.substring(8,10) + "." + event.startDate.substring(5,7) + "." + event.startDate.substring(0,4)
-                    : event.startDate.substring(5,7) + "." + event.startDate.substring(0,4)
+            ? event.startDate.substring(0, 4) +
+              " - " +
+              event.endDate.substring(0, 4)
+            : event.startDate.substring(8, 10) > 0
+            ? event.startDate.substring(8, 10) +
+              "." +
+              event.startDate.substring(5, 7) +
+              "." +
+              event.startDate.substring(0, 4)
+            : event.startDate.substring(5, 7) +
+              "." +
+              event.startDate.substring(0, 4)
         }}
       </p>
     </div>
@@ -43,25 +53,25 @@ export default {
   },
   data() {
     return {
-      showEditDialogue: false,  // TODO: unused
+      showEditDialogue: false, // TODO: unused
     };
   },
   mounted() {
-    this.setHeight()
+    this.setHeight();
   },
   methods: {
     editDiv() {
       this.showEditDialogue = true; // TODO: unused
     },
-    setHeight(){
-      const notesEvent = document.querySelector(".sel")
+    setHeight() {
+      const notesEvent = document.querySelector(".sel");
 
-      if(this.showNotes){
-        notesEvent.style.height = "2.5em"
-      }else{
-        notesEvent.style.height = "1.25em"
+      if (this.showNotes) {
+        notesEvent.style.height = "2.5em";
+      } else {
+        notesEvent.style.height = "1.25em";
       }
-    }
+    },
   },
 };
 </script>
