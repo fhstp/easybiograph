@@ -96,7 +96,6 @@
 </template>
 
 <script lang="ts">
-// import { initPerson } from "../data/ZBPerson";
 import { store } from "@/store";
 import MonthChooser from "./MonthChooser.vue";
 
@@ -129,22 +128,17 @@ export default {
   // },
   methods: {
     savePerson() {
-      // const newPerson = initPerson();
-      // //@ts-ignore
-      // newPerson.name = this.newPersonDetails.name;
-      // //@ts-ignore
-      // newPerson.birthplace = this.newPersonDetails.birthplace;
-      // //@ts-ignore
-      // newPerson.interviewers = this.newPersonDetails.interviewers;
-      // //@ts-ignore
-      // newPerson.notes = this.newPersonDetails.notes;
-
       // TODO: for backwards compatibility
+      //@ts-ignore
       this.startYear = this.newPersonDetails.birthDate;
+      //@ts-ignore
       this.endYear = this.newPersonDetails.endDate;
+      //@ts-ignore
       this.creationYear = this.newPersonDetails.creationDate;
 
+      //@ts-ignore
       store.commit("data/addPerson", this.newPersonDetails);
+      //@ts-ignore
       this.$router.go(0);
       this.close();
     },
@@ -163,6 +157,7 @@ export default {
       this.chooseYear();
       //@ts-ignore
       store.commit("data/addTimeline", this.personYears);
+      //@ts-ignore
       this.$router.go(0);
       //@ts-ignore
       this.$emit("close");

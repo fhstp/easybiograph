@@ -44,10 +44,11 @@ const minMonth = computed(() => {
   return props.min ? parseInt(props.min.slice(5, 7)) - 1 : undefined;
 });
 
-/* AR: currently not use the minimum data as default for the chooser because it will likely be set on day in the middle of the month but most events will be set to 01 or empty day */
+/* AR: currently not use the minimum data as default for the chooser because it will likely be set on day in the middle of the month but most events will be set to 01 or empty day
 const minDay = computed(() => {
   return props.min ? parseInt(props.min.slice(8, 10)) : undefined;
 });
+ */
 
 const age = computed(() => {
   if (minYear.value && minMonth.value) {

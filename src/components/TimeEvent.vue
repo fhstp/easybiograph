@@ -8,11 +8,15 @@
           ? event.startDate.substring(0, 4) +
             " - " +
             event.endDate.substring(0, 4)
-          : event.startDate.substring(8, 10) +
-            "." +
-            event.startDate.substring(5, 7) +
-            "." +
-            event.startDate.substring(0, 4)
+            : event.startDate.substring(8, 10) > 0
+                ? event.startDate.substring(8, 10) +
+                "." +
+                event.startDate.substring(5, 7) +
+                "." +
+                event.startDate.substring(0, 4)
+                : event.startDate.substring(5, 7) +
+                "." +
+                event.startDate.substring(0, 4)
       }}
     </span>
     <div :class="[event.isInterval ? 'period sel' : 'event sel']">
@@ -22,20 +26,20 @@
       <p class="subcontent" v-show="showNotes">
         {{
           event.notes
-            ? event.notes.substring(0, 15)
+            ? event.notes
             : event.isInterval
-            ? event.startDate.substring(0, 4) +
-              " - " +
-              event.endDate.substring(0, 4)
-            : event.startDate.substring(8, 10) > 0
-            ? event.startDate.substring(8, 10) +
-              "." +
-              event.startDate.substring(5, 7) +
-              "." +
-              event.startDate.substring(0, 4)
-            : event.startDate.substring(5, 7) +
-              "." +
-              event.startDate.substring(0, 4)
+              ? event.startDate.substring(0, 4) +
+                " - " +
+                event.endDate.substring(0, 4)
+              : event.startDate.substring(8, 10) > 0
+                ? event.startDate.substring(8, 10) +
+                  "." +
+                  event.startDate.substring(5, 7) +
+                  "." +
+                  event.startDate.substring(0, 4)
+                : event.startDate.substring(5, 7) +
+                  "." +
+                  event.startDate.substring(0, 4)
         }}
       </p>
     </div>
@@ -43,26 +47,16 @@
 </template>
 
 <script>
-//import {ZBEvent} from "@/data/ZBEvent.ts";
-
 export default {
   name: "TimeEvent",
   props: {
     event: Object,
     showNotes: Boolean,
   },
-  data() {
-    return {
-      showEditDialogue: false, // TODO: unused
-    };
-  },
   mounted() {
     this.setHeight();
   },
   methods: {
-    editDiv() {
-      this.showEditDialogue = true; // TODO: unused
-    },
     setHeight() {
       const notesEvent = document.querySelector(".sel");
 

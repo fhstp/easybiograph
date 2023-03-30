@@ -1,7 +1,5 @@
 <template>
-  <div class="box position" style="height: 92vh; width: 40vw">
-    <br />
-
+  <div class="box position" style="height: 96vh; width: 40vw">
     <h1 class="title block">Eintrag bearbeiten</h1>
     <div class="field is-horizontal">
       <div class="field-label">
@@ -54,6 +52,11 @@
         />
       </div>
     </div>
+    <label class="checkbox is-small" v-show="currentEvent.isInterval" style="float: right; text-align: right; margin-right: 1%; font-size: smaller">
+      <input type="checkbox">
+      Offenes Ende
+    </label>
+    <br>
     <div class="field is-horizontal">
       <div class="field-label is-normal">
         <label class="label" style="text-align: left">Dimension</label>
@@ -199,7 +202,7 @@ export default {
 .position {
   position: fixed;
   margin-left: 10vw;
-  margin-top: 4vh;
+  margin-top: -20vh;
   z-index: 10;
 }
 

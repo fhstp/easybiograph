@@ -1,5 +1,4 @@
 <template>
-  <!-- begin add event dialog -->
   <div
     class="box position"
     id="box"
@@ -12,7 +11,6 @@
       z-index: 5;
     "
   >
-    <br />
     <h1 class="title block">Eintrag erstellen</h1>
     <div class="field is-horizontal">
       <div class="field-label">
@@ -57,7 +55,7 @@
       <div class="field-label is-normal">
         <label class="label" style="text-align: left">bis</label>
       </div>
-      <div class="field-body">
+      <div class="field-body" >
         <MonthChooser
           v-model="newEventDetails.endDate"
           :min="birthDate"
@@ -65,6 +63,12 @@
         />
       </div>
     </div>
+
+    <label class="checkbox is-small" v-show="newEventDetails.isInterval" style="float: right; text-align: right; margin-right: 1%; font-size: smaller">
+      <input type="checkbox">
+      Offenes Ende
+    </label>
+    <br>
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
@@ -136,7 +140,6 @@
       Fertig
     </button>
   </div>
-  <!-- end of add event dialog -->
 </template>
 
 <script>
