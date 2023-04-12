@@ -4,22 +4,26 @@
       >{{ event.description }}
       <br />
       {{
-        event.isInterval
-          ? event.startDate.substring(0, 4) +
-            " - " +
-            event.endDate.substring(0, 4)
-            : event.startDate.substring(8, 10) > 0
-                ? event.startDate.substring(8, 10) +
-                "." +
-                event.startDate.substring(5, 7) +
-                "." +
-                event.startDate.substring(0, 4)
-                : event.startDate.substring(5, 7) +
-                "." +
-                event.startDate.substring(0, 4)
+
+      event.isOpenEnd ?
+          event.startDate.substring(0, 4) +
+          " - " + "Offenes Ende"
+          : event.isInterval
+            ? event.startDate.substring(0, 4) +
+              " - " +
+              event.endDate.substring(0, 4)
+              : event.startDate.substring(8, 10) > 0
+                  ? event.startDate.substring(8, 10) +
+                  "." +
+                  event.startDate.substring(5, 7) +
+                  "." +
+                  event.startDate.substring(0, 4)
+                  : event.startDate.substring(5, 7) +
+                  "." +
+                  event.startDate.substring(0, 4)
       }}
     </span>
-    <div :class="[event.isInterval ? 'period sel' : 'event sel']">
+    <div :class="[event.isInterval && event.isOpenEnd ? 'openEnd sel' : event.isInterval ? 'period sel' : 'event sel']">
       <p class="eventText">
         {{ event.description }}
       </p>
@@ -27,7 +31,9 @@
         {{
           event.notes
             ? event.notes
-            : event.isInterval
+            : event.isOpenEnd
+                  ? event.startDate.substring(0, 4) + " - " + "Offenes Ende"
+              : event.isInterval
               ? event.startDate.substring(0, 4) +
                 " - " +
                 event.endDate.substring(0, 4)
@@ -71,6 +77,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+.openEnd {
+  display: block;
+  background-color: $periodblue;
+  border: 2px solid $periodborderblue;
+  box-shadow: #2c3e50;
+  margin: 5px 0;
+  border-radius: 3px;
+  z-index: 1;
+  margin-right: 1px;
+  border-right: none;
+  border-top-right-radius: 60px;
+
+
+}
+
 .content {
   border-right: 0.5px solid lightgrey;
   width: 10%;

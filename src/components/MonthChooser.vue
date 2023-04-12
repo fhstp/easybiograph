@@ -2,6 +2,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 
+
+
 const props = defineProps<{
   modelValue?: string;
   requireDay?: boolean;
@@ -119,6 +121,7 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
   console.log(newDay, newMonth, newYear, modelStr);
   emit("update:modelValue", modelStr);
 });
+
 </script>
 
 <template>

@@ -6,6 +6,7 @@ export interface ZBEvent {
   isInterval: boolean;
   startDate: string;
   endDate: string;
+  isOpenEnd: boolean;
 }
 
 export function initEvent(): ZBEvent {
@@ -17,5 +18,6 @@ export function initEvent(): ZBEvent {
     isInterval: true,
     startDate: "",
     endDate: "",
+    isOpenEnd: false,
   };
 }

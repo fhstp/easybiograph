@@ -60,12 +60,13 @@
           v-model="newEventDetails.endDate"
           :min="birthDate"
           :max="endDate"
+          :v-if="!isChecked"
         />
       </div>
     </div>
 
     <label class="checkbox is-small" v-show="newEventDetails.isInterval" style="float: right; text-align: right; margin-right: 1%; font-size: smaller">
-      <input type="checkbox">
+      <input type="checkbox" v-model="newEventDetails.isOpenEnd" :checked="isChecked">
       Offenes Ende
     </label>
     <br>
@@ -169,6 +170,7 @@ export default {
   },
   data() {
     return {
+      isChecked: false,
       newEventDetails: {
         isInterval: true,
         description: "",
@@ -176,6 +178,7 @@ export default {
         dimension: Dimension[Dimension.Familie], // XXX: might solve bug with uninitialized dimension
         startDate: "2020-01",
         endDate: "2020-12",
+        isOpenEnd: false,
       },
       selectedDimension: Dimension.Familie,
     };
@@ -199,8 +202,18 @@ export default {
       newEvent.isInterval = this.newEventDetails.isInterval;
       //@ts-ignore
       newEvent.startDate = this.newEventDetails.startDate;
+
+
+      if(this.newEventDetails.isOpenEnd){
+        //@ts-ignore
+        newEvent.endDate = store.state.data.person.endDate
+      }else{
+        //@ts-ignore
+        newEvent.endDate = this.newEventDetails.endDate;
+      }
+
       //@ts-ignore
-      newEvent.endDate = this.newEventDetails.endDate;
+      newEvent.isOpenEnd = this.newEventDetails.isOpenEnd;
       store.commit("data/addEvent", newEvent);
       //@ts-ignore
       this.$router.go(0);
