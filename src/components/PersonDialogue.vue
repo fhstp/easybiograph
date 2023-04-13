@@ -24,7 +24,7 @@
         <label class="label" style="text-align: left">Geburtsdatum</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.birthDate" require-day />
+        <MonthChooser v-model="newPersonDetails.birthDate" require-day :disable-check="false" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -32,7 +32,7 @@
         <label class="label" style="text-align: left">Zeitbalken bis</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.endDate" require-day />
+        <MonthChooser v-model="newPersonDetails.endDate" require-day :disable-check="false" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -40,7 +40,7 @@
         <label class="label" style="text-align: left">Erstellt am</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.creationDate" require-day />
+        <MonthChooser v-model="newPersonDetails.creationDate" require-day :disable-check="false" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -74,6 +74,24 @@
               placeholder="Name der Erstellerin/des Erstellers"
               v-model="newPersonDetails.interviewers"
             />
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label" style="text-align: left">Notizen</label>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <div class="control">
+            <textarea
+                class="textarea"
+                v-model="newPersonDetails.notes"
+                placeholder="Notizen zur Person"
+                id="noteId"
+            ></textarea>
           </div>
         </div>
       </div>

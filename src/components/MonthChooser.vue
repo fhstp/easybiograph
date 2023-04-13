@@ -3,12 +3,12 @@
 import { computed, ref, watch } from "vue";
 
 
-
 const props = defineProps<{
   modelValue?: string;
   requireDay?: boolean;
   min?: string;
   max?: string;
+  disableCheck: boolean;
 }>();
 
 const emit = defineEmits(["update:modelValue"]);
@@ -127,7 +127,7 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
 <template>
   <div class="control has-icons-left">
     <div class="select">
-      <select v-model="day">
+      <select v-model="day" :disabled="disableCheck">
         <option v-for="label in AVAIL_DAYS" :key="label" :value="label">
           {{ label }}
         </option>
@@ -140,7 +140,7 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
   &nbsp;
   <div class="control">
     <div class="select">
-      <select v-model="month">
+      <select v-model="month" :disabled="disableCheck">
         <option v-for="(label, i) in AVAIL_MONTHS" :key="i" :value="i">
           {{ label }}
         </option>
@@ -150,7 +150,7 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
   &nbsp;
   <div class="control">
     <div v-if="avail_years" class="select">
-      <select v-model="year">
+      <select v-model="year" :disabled="disableCheck">
         <option v-for="label in avail_years" :key="label" :value="label">
           {{ label }}
         </option>

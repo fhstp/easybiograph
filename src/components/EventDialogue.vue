@@ -48,6 +48,7 @@
           v-model="newEventDetails.startDate"
           :min="birthDate"
           :max="endDate"
+          :disable-check="false"
         />
       </div>
     </div>
@@ -60,13 +61,13 @@
           v-model="newEventDetails.endDate"
           :min="birthDate"
           :max="endDate"
-          :v-if="!isChecked"
+          :disable-check="isChecked"
         />
       </div>
     </div>
 
     <label class="checkbox is-small" v-show="newEventDetails.isInterval" style="float: right; text-align: right; margin-right: 1%; font-size: smaller">
-      <input type="checkbox" v-model="newEventDetails.isOpenEnd" :checked="isChecked">
+      <input type="checkbox" v-model="newEventDetails.isOpenEnd" @change="isChecked = !isChecked">
       Offenes Ende
     </label>
     <br>
