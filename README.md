@@ -1,12 +1,10 @@
 # easyBiograph
 
 This project aims to provide a modern web-based version of the easyBiograph.
-The easyBiograph is a diagnostical visualization tool for social workers and
-healthcare professionals based on the book
+The easyBiograph visualizes the biographical time bar based on the book 
 [Soziale Diagnostik](https://www.vandenhoeck-ruprecht-verlage.com/themen-entdecken/paedagogik-soziale-arbeit/soziale-arbeit/26908/soziale-diagnostik)
 by Peter Pantuček-Eisenbacher.
-This tool supports the collection, reflection, and analysis of biographical events
-for social support.
+The biographical time bar (or timeline) is an important instrument for biographical diagnostics in social work. It enables the presentation and analysis of a person's life course in a visual and structured form. It provides information about individual life conditions, events and trajectories that are relevant for the design of help and support services.
 
 This projects is a follow-up to:
 * [easyBiograph 1.0](http://www.easybiograph.com/) developed in Java 6 by Nikolaus Kelis
