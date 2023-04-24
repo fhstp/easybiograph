@@ -57,6 +57,6 @@ npm run lint
 
 ## Acknowledgments
 
-<img align="right" src="https://ec.europa.eu/info/sites/default/files/ec-logo-horiz-web_en.jpg" alt="logo of the European Commission">
+<img align="right" src="https://user-images.githubusercontent.com/1217527/234003656-5afae206-1571-4df9-bb49-bfed89578085.png" alt="logo of the European Commission">
 
 This work was partly funded by the Erasmus+ project [TransSoDia](https://research.fhstp.ac.at/en/projects/transsodia-transnational-and-digital-learning-and-teaching-in-cooperative-social-diagnostics) cofunded by the European Union.
