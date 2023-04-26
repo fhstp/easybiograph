@@ -57,7 +57,7 @@
           v-model="currentEvent.endDate"
           :min="birthDate"
           :max="endDate"
-          :disable-check="isChecked = true"
+          :disable-check="disableCheck"
         />
       </div>
     </div>
@@ -165,7 +165,7 @@ export default {
     return {
       currentEvent: {},
       selectedDimension: Dimension.Familie,
-      isChecked: this.selectedEvent.isOpenEnd
+      isChecked: true,
     };
   },
   computed: {
@@ -174,6 +174,9 @@ export default {
     },
     endDate() {
       return store.state.data.person.endDate;
+    },
+    disableCheck() {
+      return this.currentEvent.isOpenEnd ? true : false;
     },
   },
   methods: {
@@ -186,6 +189,9 @@ export default {
     },
     editEvent() {
       // safe to send currentEvent because it is a clone
+      if(this.disableCheck == true){
+        this.currentEvent.endDate = store.state.data.person.endDate
+      }
       const payload = this.currentEvent;
       payload.dimensionId = Dimension[this.selectedDimension];
       console.table(payload);
