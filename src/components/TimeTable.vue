@@ -1,7 +1,7 @@
 <template>
   <DeleteEditDialogue
     v-show="showEditDialogue"
-    @close="!showEditDialogue"
+    @close="showEditDialogue = false"
     :selectedEvent="clickedEvent"
     @reload="loadEvents"
   />

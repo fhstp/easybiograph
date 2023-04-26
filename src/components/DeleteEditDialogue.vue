@@ -1,5 +1,12 @@
 <template>
-  <div class="box position" style="height: 96vh; width: 40vw">
+  <div class="box position" style="
+      position: absolute;
+      top: 27vh;
+      height: 93vh;
+      left: 10vw;
+      width: 40vw;
+      z-index: 6;
+    ">
     <h1 class="title block">Eintrag bearbeiten</h1>
     <div class="field is-horizontal">
       <div class="field-label">
@@ -121,7 +128,7 @@
     <button
       class="button is-white"
       style="margin-right: 1vw; right: -11vw; margin-top: -20px"
-      @click="close"
+      v-on:click="close"
     >
       Abbrechen
     </button>
