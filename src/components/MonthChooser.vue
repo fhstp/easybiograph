@@ -57,7 +57,9 @@ const age = computed(() => {
     const ageMon =
       (year.value - minYear.value) * 12 + (month.value - minMonth.value);
 
-    return `${Math.floor(ageMon / 12)} Jahre, ${ageMon % 12} Monate`;
+    return ageMon >= 0
+      ? `${Math.floor(ageMon / 12)} Jahre, ${ageMon % 12} Monate`
+      : "ungültig"; // otherwise fix integer division of negative values
   } else {
     return undefined;
   }
