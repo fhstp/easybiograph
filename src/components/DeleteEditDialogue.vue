@@ -1,7 +1,12 @@
 <template>
-  <div class="box position" style="height: 92vh; width: 40vw">
-    <br>
-
+  <div class="box position" style="
+      position: absolute;
+      top: 27vh;
+      height: 93vh;
+      left: 10vw;
+      width: 40vw;
+      z-index: 6;
+    ">
     <h1 class="title block">Eintrag bearbeiten</h1>
     <div class="field is-horizontal">
       <div class="field-label">
@@ -39,6 +44,7 @@
           v-model="currentEvent.startDate"
           :min="birthDate"
           :max="endDate"
+          :disable-check="false"
         />
       </div>
     </div>
@@ -51,9 +57,15 @@
           v-model="currentEvent.endDate"
           :min="birthDate"
           :max="endDate"
+          :disable-check="disableCheck"
         />
       </div>
     </div>
+    <label class="checkbox is-small" v-show="currentEvent.isInterval" style="float: right; text-align: right; margin-right: 1%; font-size: smaller">
+      <input type="checkbox" v-model="currentEvent.isOpenEnd" @change="isChecked = !isChecked">
+      Offenes Ende
+    </label>
+    <br>
     <div class="field is-horizontal">
       <div class="field-label is-normal">
         <label class="label" style="text-align: left">Dimension</label>
@@ -116,7 +128,7 @@
     <button
       class="button is-white"
       style="margin-right: 1vw; right: -11vw; margin-top: -20px"
-      @click="close"
+      v-on:click="close"
     >
       Abbrechen
     </button>
@@ -153,6 +165,7 @@ export default {
     return {
       currentEvent: {},
       selectedDimension: Dimension.Familie,
+      isChecked: true,
     };
   },
   computed: {
@@ -161,6 +174,9 @@ export default {
     },
     endDate() {
       return store.state.data.person.endDate;
+    },
+    disableCheck() {
+      return this.currentEvent.isOpenEnd ? true : false;
     },
   },
   methods: {
@@ -173,6 +189,9 @@ export default {
     },
     editEvent() {
       // safe to send currentEvent because it is a clone
+      if(this.disableCheck == true){
+        this.currentEvent.endDate = store.state.data.person.endDate
+      }
       const payload = this.currentEvent;
       payload.dimensionId = Dimension[this.selectedDimension];
       console.table(payload);
@@ -196,11 +215,10 @@ export default {
 </script>
 
 <style scoped>
-
-.position{
+.position {
   position: fixed;
   margin-left: 10vw;
-  margin-top: 4vh;
+  margin-top: -20vh;
   z-index: 10;
 }
 

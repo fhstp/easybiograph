@@ -1,6 +1,6 @@
 <template>
   <div class="box position" style="height: 96vh; width: 40vw">
-    <h1 id="edit" class="title block">{{title}}</h1>
+    <h1 id="edit" class="title block">{{ title }}</h1>
     <br />
     <div class="field is-horizontal">
       <div class="field-label is-normal">
@@ -24,7 +24,7 @@
         <label class="label" style="text-align: left">Geburtsdatum</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.birthDate" require-day />
+        <MonthChooser v-model="newPersonDetails.birthDate" require-day :disable-check="false" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -32,7 +32,7 @@
         <label class="label" style="text-align: left">Zeitbalken bis</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.endDate" require-day />
+        <MonthChooser v-model="newPersonDetails.endDate" require-day :disable-check="false" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -40,7 +40,7 @@
         <label class="label" style="text-align: left">Erstellt am</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.creationDate" require-day />
+        <MonthChooser v-model="newPersonDetails.creationDate" require-day :disable-check="false" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -79,28 +79,41 @@
       </div>
     </div>
     <br />
+    <div class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label" style="text-align: left">Notizen</label>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <div class="control">
+            <textarea
+                class="textarea"
+                v-model="newPersonDetails.notes"
+                placeholder="Notizen zur Person"
+                id="noteId"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
     <div class="buttons">
-    <button
-      v-show="showButton"
-      class="button is-white"
-      style="margin-right: 1vw; right: -20vw"
-      @click="abort"
-    >
-      Abbrechen
-    </button>
-    <button
-      class="button is-link"
-      style="right: -20vw"
-      @click="savePerson"
-    >
-      Fertig
-    </button>
+      <button
+        v-show="showButtons"
+        class="button is-white"
+        style="margin-right: 1vw; right: -20vw"
+        @click="abort"
+      >
+        Abbrechen
+      </button>
+      <button class="button is-link" style="right: -20vw" @click="savePerson">
+        Fertig
+      </button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-// import { initPerson } from "../data/ZBPerson";
 import { store } from "@/store";
 import MonthChooser from "./MonthChooser.vue";
 
@@ -123,7 +136,7 @@ export default {
       personYears: [] as number[],
       showBiograph: false,
       // //@ts-ignore
-      showButton: this.showButton,
+      showButtons: this.showButton,
       // newPersonDetails: {},
     };
   },
@@ -133,23 +146,17 @@ export default {
   // },
   methods: {
     savePerson() {
-      // const newPerson = initPerson();
-      // //@ts-ignore
-      // newPerson.name = this.newPersonDetails.name;
-      // //@ts-ignore
-      // newPerson.birthplace = this.newPersonDetails.birthplace;
-      // //@ts-ignore
-      // newPerson.interviewers = this.newPersonDetails.interviewers;
-      // //@ts-ignore
-      // newPerson.notes = this.newPersonDetails.notes;
-
       // TODO: for backwards compatibility
+      //@ts-ignore
       this.startYear = this.newPersonDetails.birthDate;
+      //@ts-ignore
       this.endYear = this.newPersonDetails.endDate;
+      //@ts-ignore
       this.creationYear = this.newPersonDetails.creationDate;
 
-
+      //@ts-ignore
       store.commit("data/addPerson", this.newPersonDetails);
+      //@ts-ignore
       this.$router.go(0);
       this.close();
     },
@@ -168,6 +175,7 @@ export default {
       this.chooseYear();
       //@ts-ignore
       store.commit("data/addTimeline", this.personYears);
+      //@ts-ignore
       this.$router.go(0);
       //@ts-ignore
       this.$emit("close");

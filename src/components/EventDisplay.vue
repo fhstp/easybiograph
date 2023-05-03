@@ -26,7 +26,8 @@
           <div class="field-body">
             <div class="field">
               {{
-                event.isInterval
+                event.isOpenEnd ? event.startDate + " bis Offenes Ende"
+                : event.isInterval
                   ? event.startDate + " bis " + event.endDate
                   : event.startDate
               }}

@@ -1,31 +1,51 @@
 <template>
   <div class="tooltip">
-    <span class="tooltiptext"  style="z-index: 6"
+    <span class="tooltiptext" style="z-index: 6"
       >{{ event.description }}
       <br />
       {{
-        event.isInterval
-          ? event.startDate.substring(0, 4) +
-            " - " +
-            event.endDate.substring(0, 4)
-          : event.startDate.substring(8,10) + "." + event.startDate.substring(5,7) + "." + event.startDate.substring(0,4)
+
+      event.isOpenEnd ?
+          event.startDate.substring(0, 4) +
+          " - " + "Offenes Ende"
+          : event.isInterval
+            ? event.startDate.substring(0, 4) +
+              " - " +
+              event.endDate.substring(0, 4)
+              : event.startDate.substring(8, 10) > 0
+                  ? event.startDate.substring(8, 10) +
+                  "." +
+                  event.startDate.substring(5, 7) +
+                  "." +
+                  event.startDate.substring(0, 4)
+                  : event.startDate.substring(5, 7) +
+                  "." +
+                  event.startDate.substring(0, 4)
       }}
     </span>
-    <div :class="[event.isInterval ? 'period sel' : 'event sel']">
+    <div :class="[event.isInterval && event.isOpenEnd ? 'openEnd sel' : event.isInterval ? 'period sel' : 'event sel']">
       <p class="eventText">
         {{ event.description }}
       </p>
       <p class="subcontent" v-show="showNotes">
         {{
           event.notes
-            ? event.notes.substring(0, 15)
-            : event.isInterval
+            ? event.notes
+            : event.isOpenEnd
+                  ? event.startDate.substring(0, 4) + " - " + "Offenes Ende"
+              : event.isInterval
               ? event.startDate.substring(0, 4) +
                 " - " +
                 event.endDate.substring(0, 4)
-              : event.startDate.substring(8,10) > 0
-                    ? event.startDate.substring(8,10) + "." + event.startDate.substring(5,7) + "." + event.startDate.substring(0,4)
-                    : event.startDate.substring(5,7) + "." + event.startDate.substring(0,4)
+              : event.startDate.substring(8, 10) > 0
+                ? event.startDate.substring(8, 10) +
+                  "." +
+                  event.startDate.substring(5, 7) +
+                  "." +
+                  event.startDate.substring(0, 4)
+                : event.startDate.substring(5, 7) +
+                  "." +
+                  event.startDate.substring(0, 4)
         }}
       </p>
     </div>
@@ -33,40 +53,46 @@
 </template>
 
 <script>
-//import {ZBEvent} from "@/data/ZBEvent.ts";
-
 export default {
   name: "TimeEvent",
   props: {
     event: Object,
     showNotes: Boolean,
   },
-  data() {
-    return {
-      showEditDialogue: false,  // TODO: unused
-    };
-  },
   mounted() {
-    this.setHeight()
+    this.setHeight();
   },
   methods: {
-    editDiv() {
-      this.showEditDialogue = true; // TODO: unused
-    },
-    setHeight(){
-      const notesEvent = document.querySelector(".sel")
+    setHeight() {
+      const notesEvent = document.querySelector(".sel");
 
-      if(this.showNotes){
-        notesEvent.style.height = "2.5em"
-      }else{
-        notesEvent.style.height = "1.25em"
+      if (this.showNotes) {
+        notesEvent.style.height = "2.5em";
+      } else {
+        notesEvent.style.height = "1.25em";
       }
-    }
+    },
   },
 };
 </script>
 
 <style scoped lang="scss">
+
+.openEnd {
+  display: block;
+  background-color: $periodblue;
+  border: 2px solid $periodborderblue;
+  box-shadow: #2c3e50;
+  margin: 5px 0;
+  border-radius: 3px;
+  z-index: 1;
+  margin-right: 1px;
+  border-right: none;
+  border-top-right-radius: 60px;
+
+
+}
+
 .content {
   border-right: 0.5px solid lightgrey;
   width: 10%;

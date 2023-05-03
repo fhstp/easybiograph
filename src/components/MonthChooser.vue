@@ -2,11 +2,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 
+
 const props = defineProps<{
   modelValue?: string;
   requireDay?: boolean;
   min?: string;
   max?: string;
+  disableCheck: boolean;
 }>();
 
 const emit = defineEmits(["update:modelValue"]);
@@ -44,17 +46,20 @@ const minMonth = computed(() => {
   return props.min ? parseInt(props.min.slice(5, 7)) - 1 : undefined;
 });
 
-/* AR: currently not use the minimum data as default for the chooser because it will likely be set on day in the middle of the month but most events will be set to 01 or empty day */
+/* AR: currently not use the minimum data as default for the chooser because it will likely be set on day in the middle of the month but most events will be set to 01 or empty day
 const minDay = computed(() => {
   return props.min ? parseInt(props.min.slice(8, 10)) : undefined;
 });
+ */
 
 const age = computed(() => {
   if (minYear.value && minMonth.value) {
     const ageMon =
       (year.value - minYear.value) * 12 + (month.value - minMonth.value);
 
-    return `${Math.floor(ageMon / 12)} Jahre, ${ageMon % 12} Monate`;
+    return ageMon >= 0
+      ? `${Math.floor(ageMon / 12)} Jahre, ${ageMon % 12} Monate`
+      : "ungültig"; // otherwise fix integer division of negative values
   } else {
     return undefined;
   }
@@ -118,12 +123,13 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
   console.log(newDay, newMonth, newYear, modelStr);
   emit("update:modelValue", modelStr);
 });
+
 </script>
 
 <template>
   <div class="control has-icons-left">
     <div class="select">
-      <select v-model="day">
+      <select v-model="day" :disabled="disableCheck">
         <option v-for="label in AVAIL_DAYS" :key="label" :value="label">
           {{ label }}
         </option>
@@ -136,7 +142,7 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
   &nbsp;
   <div class="control">
     <div class="select">
-      <select v-model="month">
+      <select v-model="month" :disabled="disableCheck">
         <option v-for="(label, i) in AVAIL_MONTHS" :key="i" :value="i">
           {{ label }}
         </option>
@@ -146,7 +152,7 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
   &nbsp;
   <div class="control">
     <div v-if="avail_years" class="select">
-      <select v-model="year">
+      <select v-model="year" :disabled="disableCheck">
         <option v-for="label in avail_years" :key="label" :value="label">
           {{ label }}
         </option>
