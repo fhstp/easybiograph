@@ -29,7 +29,7 @@
     v-show="!showCreateBiograph"
   >
     <div class="navbar-brand">
-      <div class="navbar-item" title="easyBiograph version 2.0 beta">
+      <div class="navbar-item" title="easyBiograph version 2.0.2 beta">
         easyBiograph
       </div>
     </div>
