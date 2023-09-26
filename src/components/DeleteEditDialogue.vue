@@ -151,6 +151,7 @@ export default {
   name: "DeleteEditDialogue",
   components: { MonthChooser },
   setup() {
+    // TODO enum unnecessarily complex
     const dimensionOptions = Object.keys(Dimension).filter((v) =>
       isNaN(Number(v))
     );

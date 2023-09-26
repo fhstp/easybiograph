@@ -1,5 +1,6 @@
 <template>
-  <TimeTable v-if="!showCreateBiograph && !showIntro" />
+  <!-- <TimeTable v-if="!showCreateBiograph && !showIntro" /> -->
+  <TimePane v-if="!showCreateBiograph && !showIntro" />
 
   <EventDialogue v-show="showDialogue" @close="showDialogue = false" />
 
@@ -156,12 +157,13 @@ import { store } from "@/store";
 import PersonDialogue from "@/components/PersonDialogue.vue";
 import PopUpNew from "@/components/PopUpNew.vue";
 import EventDialogue from "@/components/EventDialogue.vue";
-import TimeTable from "@/components/TimeTable.vue";
+// import TimeTable from "@/components/TimeTable.vue";
+import TimePane from "@/components/TimePane.vue";
 
 export default {
   name: "TimeGraph",
   components: {
-    TimeTable,
+    TimePane, // TimeTable,
     EventDialogue,
     PopUpNew,
     PersonDialogue,

@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
-import { store } from "./store";
+import { key, store } from "./store";
 
 import "@/assets/main.scss";
 
@@ -96,6 +96,6 @@ app.component("font-awesome-icon", FontAwesomeIcon);
 
 // END fontawesome
 
-app.use(store);
+app.use(store, key);
 
 app.mount("#app");
