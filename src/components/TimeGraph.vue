@@ -182,6 +182,7 @@ export default {
       showDialogue: false,
       personYears: store.getters.getTimeline,
       showEventDisplay: false,
+      deleteDia: false,
       showCreateBiograph: !store.getters.getPersonCreated,
       // TODO: without refresh it will be necessary to reset newEventDetails
       newEventDetails: {
@@ -217,6 +218,8 @@ export default {
       // TODO: use self-explaining function name, which <div>? add event dialog
       //@ts-ignore
       this.showDialogue = true;
+      //@ts-ignore
+      this.deleteDia = true;
     },
     removeEvent() {
       store.commit("data/removeEvent", 0);

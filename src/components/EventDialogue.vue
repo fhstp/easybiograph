@@ -11,7 +11,8 @@
       z-index: 5;
     "
   >
-    <h1 class="title block">Eintrag erstellen</h1>
+    <h1 class="title block" v-if="!deleteDia">Eintrag erstellen</h1>
+    <h1 class="title block" v-if="deleteDia">Eintrag bearbeiten</h1>
     <div class="field is-horizontal">
       <div class="field-label">
         <label class="label" style="text-align: left">Typ</label>
@@ -22,7 +23,7 @@
             <label class="radio">
               <input
                 type="radio"
-                v-model="newEventDetails.isInterval"
+                v-model="deleteDia ? newEventDetails.isInterval : currentEvent.isInterval"
                 v-bind:value="true"
               />
               Zeitraum
@@ -30,7 +31,7 @@
             <label class="radio">
               <input
                 type="radio"
-                v-model="newEventDetails.isInterval"
+                v-model="deleteDia ? newEventDetails.isInterval : currentEvent.isInterval"
                 v-bind:value="false"
               />
               Zeitpunkt
@@ -45,20 +46,20 @@
       </div>
       <div class="field-body">
         <MonthChooser
-          v-model="newEventDetails.startDate"
+          v-model="deleteDia ? newEventDetails.startDate : currentEvent.startDate"
           :min="birthDate"
           :max="endDate"
           :disable-check="false"
         />
       </div>
     </div>
-    <div class="field is-horizontal" v-show="newEventDetails.isInterval">
+    <div class="field is-horizontal" v-show="deleteDia ? newEventDetails.isInterval : currentEvent.isInterval">
       <div class="field-label is-normal">
         <label class="label" style="text-align: left">bis</label>
       </div>
       <div class="field-body" >
         <MonthChooser
-          v-model="newEventDetails.endDate"
+          v-model="deleteDia ? newEventDetails.endDate : currentEvent.endDate"
           :min="birthDate"
           :max="endDate"
           :disable-check="isChecked"
@@ -66,8 +67,8 @@
       </div>
     </div>
 
-    <label class="checkbox is-small" v-show="newEventDetails.isInterval" style="float: right; text-align: right; margin-right: 1%; font-size: smaller">
-      <input type="checkbox" v-model="newEventDetails.isOpenEnd" @change="isChecked = !isChecked">
+    <label class="checkbox is-small" v-show="deleteDia ? newEventDetails.isInterval : currentEvent.isInterval" style="float: right; text-align: right; margin-right: 1%; font-size: smaller">
+      <input type="checkbox" v-model="deleteDia ? newEventDetails.isOpenEnd : currentEvent.isOpenEnd" @change="isChecked = !isChecked">
       Offenes Ende
     </label>
     <br>
@@ -80,7 +81,7 @@
         <div class="field is-narrow">
           <div class="control">
             <div class="select is-fullwidth">
-              <select v-model="newEventDetails.dimension">
+              <select v-model="deleteDia ? newEventDetails.dimension : currentEvent.dimension">
                 <option v-for="value in dimensionOptions" :key="value">
                   {{ value }}
                 </option>
@@ -99,7 +100,7 @@
           <div class="control">
             <input
               class="input"
-              v-model="newEventDetails.description"
+              v-model="deleteDia ? newEventDetails.description : currentEvent.description"
               type="text"
               placeholder="Anzeigename des Events"
               id="eventNameId"
@@ -118,7 +119,7 @@
           <div class="control">
             <textarea
               class="textarea"
-              v-model="newEventDetails.note"
+              v-model="deleteDia ? newEventDetails.note : currentEvent.note"
               placeholder="Notizen zum Event"
               id="noteId"
             ></textarea>
@@ -153,6 +154,9 @@ import { initEvent } from "../data/ZBEvent";
 export default {
   name: "EventDialogue",
   components: { MonthChooser },
+  props: {
+    deleteDia: Boolean,
+  },
   setup() {
     const dimensionOptions = Object.keys(Dimension).filter((v) =>
       isNaN(Number(v))
@@ -181,6 +185,7 @@ export default {
         endDate: "2020-12",
         isOpenEnd: false,
       },
+      currentEvent: {},
       selectedDimension: Dimension.Familie,
     };
   },
