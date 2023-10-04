@@ -126,9 +126,10 @@ const ageTicks = computed(() => {
 <style scoped lang="scss">
 div.axis {
   // margin-top: 3.25rem;
-  background: lightgoldenrodyellow; /* TODO JB beautify */
-  height: 3em;
+  background: #edf6f9; /* TODO JB beautify */
+  height: 5.5em;
   position: relative;
+  padding-top: 2.5em;
 }
 
 div.substrate {

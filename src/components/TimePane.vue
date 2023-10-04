@@ -1,11 +1,15 @@
 <template>
   <div class="pane">
-    <TimeAxis :scale="timeScale" />
-    <div>hallo welt</div>
-    <div v-for="dim in layout" :key="dim.id">
-      <div>
-        {{ dim.label }}
-      </div>
+      <PersonInfo />
+      <TimeAxis :scale="timeScale" />
+    <div
+        v-for="(dim, index) in layout"
+        :key="dim.id"
+        :style="{
+        '--div-height': `calc(75vh / ${layout.length})`,
+      }"
+    >
+      <div class="dim-label">{{ dim.label }}</div>
       <div v-for="mark in dim.marks" :key="mark.datum.eventId">
         &nbsp; {{ mark.datum.description }} - {{ mark.x1 }}
       </div>
@@ -21,7 +25,8 @@ import type { ZBEvent } from "@/data/ZBEvent";
 import * as d3 from "d3";
 import { DimensionA } from "@/data/Dimension";
 import TimeAxis from "./TimeAxis.vue";
-import { germanTimeFormat } from "@/assets/util";
+import { germanTimeFormat } from "../assets/util";
+import PersonInfo from "@/components/PersonInfo.vue";
 
 interface EventMark {
   datum: ZBEvent;
@@ -107,5 +112,9 @@ const layout = computed((): Array<DimensionLayout> => {
 div.pane {
   margin-top: 3.25rem; /* TODO handle top panels better */
   background: antiquewhite;
+}
+
+.dim-label {
+  height: var(--div-height);
 }
 </style>

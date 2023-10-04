@@ -24,7 +24,7 @@
   </div>
 
   <div class="personInfo">
-    <p class="same interviewee">
+    <p class="same interviewee">8
       {{ $store.state.data.person.name }}, geboren am
       {{ $store.state.data.person.birthDate.substring(8, 10) }}.{{
         $store.state.data.person.birthDate.substring(5, 7)
