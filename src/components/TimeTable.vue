@@ -24,6 +24,7 @@
   </div>
 
   <div class="personInfo">
+    <!-- TODO JB extract into separate component -->
     <p class="same interviewee">
       {{ $store.state.data.person.name }}, geboren am
       {{ $store.state.data.person.birthDate.substring(8, 10) }}.{{

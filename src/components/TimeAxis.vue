@@ -126,7 +126,8 @@ const ageTicks = computed(() => {
 <style scoped lang="scss">
 div.axis {
   // margin-top: 3.25rem;
-  background: lightgoldenrodyellow; /* TODO JB beautify */
+  background: lightgoldenrodyellow; /* TODO JB beautify backgrounds & borders */
+  width: 100%;
   height: 3em;
   position: relative;
 }
@@ -134,10 +135,12 @@ div.axis {
 div.substrate {
   left: $dimensionWidth;
   right: 0;
+  height: 100%;
   position: absolute;
+  border-left: 1px solid black;
 }
 
-/* TODO JB vertically style scale */
+/* TODO JB vertically style scale, check font-size (e.g. with Michaela's mockups) */
 .year {
   top: 2px;
 }
