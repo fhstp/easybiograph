@@ -7,10 +7,14 @@
         {{ dim.label }}
       </div>
       <div class="substrate" ref="substrateRef">
-        <div v-for="mark in dim.marks" :key="mark.datum.eventId" class="event"
-          :style="`left: ${mark.x1}%; width: ${mark.x2}%; top: ${mark.row * 1.5}rem`">
-          {{ mark.datum.description }}
-        </div>
+        <TimeEvent
+          v-for="mark in dim.marks"
+          :key="mark.datum.eventId"
+          :event="mark.datum"
+          class="event"
+          :style="`left: ${mark.x1}%; width: ${mark.x2}%; top: ${mark.row * 1.5}rem`"
+          @click="$emit('displayEvent', mark.datum)"
+        />
       </div>
     </div>
   </div>
@@ -26,6 +30,7 @@ import { DimensionA } from "@/data/Dimension";
 import TimeAxis from "./TimeAxis.vue";
 import { germanTimeFormat } from "../assets/util";
 import PersonInfo from "@/components/PersonInfo.vue";
+import TimeEvent from "@/components/TimeEvent.vue";
 
 interface EventMark {
   datum: ZBEvent;
@@ -170,8 +175,8 @@ div.substrate {
 
 div.event {
   position: absolute;
-  height: 1.5rem;
-  border: 1px solid orange;
-  overflow: hidden;
+
+  // from TimeTable
+  cursor: pointer !important;
 }
 </style>
