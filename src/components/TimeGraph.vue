@@ -6,22 +6,22 @@
   <PersonDialogue
     v-show="showCreateBiograph"
     :newPersonDetails="temporaryPerson"
-    :showButton="false"
     title="Neuen Zeitbalken erstellen"
     @close="closePerson"
     @abort="showCreateBiograph = false"
     v-if="newPerson"
   />
+  <!--:showButton="false"-->
 
   <PersonDialogue
     v-show="showCreateBiograph"
     :newPersonDetails="temporaryPerson"
-    :showButton="true"
     title="Zeitbalken bearbeiten"
     @close="closePerson"
     @abort="showCreateBiograph = false"
     v-if="!newPerson"
   />
+  <!--:showButton="true"-->
 
   <div class="ebcontainer">
   <nav

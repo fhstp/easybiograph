@@ -1,5 +1,12 @@
 <template>
   <div class="box position" style="height: 96vh; width: 40vw">
+    <div class="tab">
+      <button class="tablinks" @click="openTab($event, 'Allgemein')">Allgemein</button>
+      <button class="tablinks" @click="openTab($event, 'Dimensionen')">Dimensionen</button>
+      <button class="tablinks" @click="openTab($event, 'Farben')">Farben</button>
+    </div>
+    <div id="Allgemein" class="tabcontent">
+      <br>
     <h1 id="edit" class="title block">{{ title }}</h1>
     <br />
     <div class="field is-horizontal">
@@ -99,11 +106,12 @@
     <br />
     <div class="buttons">
       <button
-        v-show="showButtons"
+
         class="button is-white"
         style="margin-right: 1vw; right: -20vw"
         @click="abort"
       >
+        <!-- v-show="showButtons" -->
         Abbrechen
       </button>
       <button class="button is-link" style="right: -20vw" @click="savePerson">
@@ -111,17 +119,28 @@
       </button>
     </div>
   </div>
+    <div id="Dimensionen" class="tabcontent" style="display: none">
+      <h3>Dimensionen bearbeiten</h3>
+      <DimensionDialogue />
+    </div>
+    <div id="Farben" class="tabcontent" style="display: none">
+      <h3>Farben</h3>
+      <ColourDialogue />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { store } from "@/store";
 import MonthChooser from "./MonthChooser.vue";
+import DimensionDialogue from "@/components/DimensionDialogue.vue";
+import ColourDialogue from "@/components/ColourDialogue.vue";
 
 export default {
   name: "PersonDialogue",
-  components: { MonthChooser },
+  components: {ColourDialogue, DimensionDialogue, MonthChooser },
   props: {
-    showButton: Boolean,
+    //showButton: Boolean,
     title: String,
     newPersonDetails: {
       type: Object,
@@ -135,8 +154,6 @@ export default {
       creationYear: "",
       personYears: [] as number[],
       showBiograph: false,
-      // //@ts-ignore
-      showButtons: this.showButton,
       // newPersonDetails: {},
     };
   },
@@ -160,6 +177,30 @@ export default {
       this.$router.go(0);
       this.close();
     },
+    openTab(event: any, tabName: any) {
+      // Declare all variables
+      var i, tabcontent, tablinks;
+
+      // Get all elements with class="tabcontent" and hide them
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        //@ts-ignore
+        tabcontent[i].style.display = "none";
+      }
+
+      // Get all elements with class="tablinks" and remove the class "active"
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+
+      // Show the current tab, and add an "active" class to the button that opened the tab
+      //@ts-ignore
+      event.currentTarget.className += " active";
+      //@ts-ignore
+      document.getElementById(tabName).style.display = "block";
+    },
+
     chooseYear() {
       //@ts-ignore
       let startValue = +this.startYear.substring(0, 4);
