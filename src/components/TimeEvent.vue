@@ -1,5 +1,5 @@
 <template>
-  <div class="tooltip">
+  <div class="ttParent">
     <span class="tooltiptext" style="z-index: 6"
       >{{ event.description }}
       <br />
@@ -134,12 +134,11 @@ export default {
   white-space: nowrap;
 }
 
-.tooltip {
-  position: absolute;
+.ttParent {
   display: inline-block;
 }
 
-.tooltip .tooltiptext {
+.ttParent .tooltiptext {
   top: -3.7em;
   visibility: hidden;
   width: 140px;
@@ -155,10 +154,10 @@ export default {
   z-index: 1;
 }
 
-.tooltip:hover .tooltiptext {
+.ttParent:hover .tooltiptext {
   visibility: visible;
 }
-.tooltip .tooltiptext::after {
+.ttParent .tooltiptext::after {
   content: " ";
   position: absolute;
   top: 100%; /* At the bottom of the tooltip */

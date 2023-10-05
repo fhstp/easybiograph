@@ -117,7 +117,10 @@
       </div>
     </div>
   </nav>
-  <TimePane v-if="!showCreateBiograph && !showIntro" />
+    <TimePane
+      v-if="!showCreateBiograph && !showIntro"
+      @display-event="openEventDisplay"
+    />
 
   <!-- Intro for easybiograph -->
   <div class="welcome" v-if="showIntro">
@@ -160,6 +163,7 @@ import PopUpNew from "@/components/PopUpNew.vue";
 import EventDialogue from "@/components/EventDialogue.vue";
 // import TimeTable from "@/components/TimeTable.vue";
 import TimePane from "@/components/TimePane.vue";
+import type { ZBEvent } from "@/data/ZBEvent";
 
 export default {
   name: "TimeGraph",
@@ -244,6 +248,11 @@ export default {
       this.displayYears = this.displayPersonYears();
       //@ts-ignore
       this.$forceUpdate();
+    },
+    openEventDisplay(event: ZBEvent) {
+      console.log(event);
+      console.log(event.eventId);
+      // TODO JB show event display modal
     },
     displayPersonYears(): object {
       let displayedArray: number[] = [];
