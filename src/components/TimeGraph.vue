@@ -2,7 +2,7 @@
   <!-- <TimeTable v-if="!showCreateBiograph && !showIntro" /> -->
   <TimePane v-if="!showCreateBiograph && !showIntro" />
 
-  <EventDialogue v-show="showDialogue" @close="showDialogue = false" />
+  <EventDialogue v-show="showDialogue" @close="showDialogue = false" :event="newEventDetails" title="Eintrag erstellen" />
 
   <PersonDialogue
     v-show="showCreateBiograph"
