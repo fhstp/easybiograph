@@ -81,7 +81,7 @@
         <div class="field is-narrow">
           <div class="control">
             <div class="select is-fullwidth">
-              <select v-model="event.dimension">
+              <select v-model="newEventDetails.dimension">
                 <option v-for="value in dimensionOptions" :key="value">
                   {{ value }}
                 </option>
@@ -148,8 +148,9 @@
 <script>
 import MonthChooser from "./MonthChooser.vue";
 import { store } from "../store";
-import { Dimension } from "../data/Dimension";
+import { Dimension, DimensionA } from "../data/Dimension";
 import { initEvent } from "../data/ZBEvent";
+import {ref} from "vue";
 
 export default {
   name: "EventDialogue",
@@ -159,11 +160,15 @@ export default {
     title: String,
   },
   setup() {
-    const dimensionOptions = Object.keys(Dimension).filter((v) =>
+    /*const dimensionOptions = Object.keys(Dimension).filter((v) =>
       isNaN(Number(v))
     );
+     */
+
+    const dimensionOptions = ref(DimensionA);
+
     return {
-      dimensionOptions,
+      dimensionOptions
     };
   },
   computed: {
@@ -181,22 +186,24 @@ export default {
         isInterval: true,
         description: "",
         note: "",
-        dimension: Dimension[Dimension.Familie], // XXX: might solve bug with uninitialized dimension
+        dimension: DimensionA[0], // XXX: might solve bug with uninitialized dimension
         startDate: "2020-01",
         endDate: "2020-12",
         isOpenEnd: false,
       },
       currentEvent: {},
-      selectedDimension: Dimension.Familie,
+      selectedDimension: DimensionA[0],
     };
   },
   methods: {
     addEvent() {
       // TODO: should be safe to pass newEventDetails as payload because it is cloned in mutation
       const newEvent = initEvent();
-      //@ts-ignore
-      // XXX: replace by array? (this should convert enum to int, but sometimes it does not work)
-      newEvent.dimensionId = Dimension[this.newEventDetails.dimension];
+      // Find the position (index) of the selected dimension in the DimensionA array
+      const dimId = DimensionA.indexOf(this.newEventDetails.dimension);
+
+      // Assign the dimensionId to the found index
+      newEvent.dimensionId = dimId;
       //@ts-ignore
       console.log(
         `dimension: |${this.newEventDetails.dimension}| -> |${newEvent.dimensionId}|`
@@ -223,7 +230,8 @@ export default {
       newEvent.isOpenEnd = this.newEventDetails.isOpenEnd;
       store.commit("data/addEvent", newEvent);
       //@ts-ignore
-      this.$router.go(0);
+      //this.$router.go(0);
+      console.log(dimId, this.newEventDetails.dimension)
       //@ts-ignore
       this.newEventDetails = {};
     },
