@@ -94,32 +94,52 @@ const ageTicks = computed(() => {
     i++;
     day = d3.utcYear.offset(day);
   }
-  while (day <= timeDomain[1]) {
+  while (day < timeDomain[1]) {
     birthdays.push({ age: i, date: day });
     i++;
     day = d3.utcYear.offset(day);
   }
-  // console.log(birthdays);
 
-  // reduce tick count
-  const spacePerTick = axisWidth.value / size.value / birthdays.length;
-  // 2.0 is a tested guess
-  const steps = Math.ceil(2.0 / spacePerTick);
-  console.log(`space: ${spacePerTick} - steps: ${steps}`);
+  console.log(birthdays);
 
-  // XXX LATER edge case: no tick -> 1 tick at 100% (?)
+  if (birthdays.length > 0) {
+    // reduce tick count
+    const spacePerTick = axisWidth.value / size.value / birthdays.length;
+    // 2.0 is a tested guess
+    const steps = Math.ceil(2.0 / spacePerTick);
+    // add steps extra birthdays, so that there is border line right of last label
+    for (let j = 0; j < steps; j++) {
+      birthdays.push({ age: i, date: day });
+      i++;
+      day = d3.utcYear.offset(day);
+    }
+    // since we added steps elements, there will be enough to calculate width
+    const width =
+      props.scale(birthdays[steps].date) - props.scale(birthdays[0].date);
 
-  return birthdays
-    .filter((_, index) => index % steps === steps - 1)
-    .map((d) => {
-      return {
-        label: d.age.toString(),
-        style: {
-          // the 1px width of the border is substracted here
-          right: `calc(${100 - props.scale(d.date)}% - 1px)`,
-        },
-      };
-    });
+    console.log(`space ${spacePerTick}px - steps ${steps} - width ${width}%`);
+
+    return birthdays
+      .filter((_, index) => index % steps === steps - 1)
+      .map((d, i) => {
+        return {
+          label: d.age.toString(),
+          style: {
+            left: `${props.scale(d.date) - width}%`,
+            width: `calc(${width}% - 2px)`,
+            "border-left": i > 0 ? "1px solid black" : "",
+          },
+        };
+      });
+  } else {
+    // edge case: no tick -> 1 tick at 100% -- maybe needs testing(?)
+    return [
+      {
+        label: i.toString(),
+        style: { left: "0%", width: "calc(100% - 2px)" },
+      },
+    ];
+  }
 });
 </script>
 
@@ -158,15 +178,16 @@ div.substrate {
 
 .tick {
   position: absolute;
+  height: 1.4rem;
 }
 
 .tick.year {
   border-left: 1px solid black;
   padding-left: 2px;
+  overflow: hidden;
 }
 
 .tick.age {
-  border-right: 1px solid black;
-  padding-right: 2px;
+  text-align: right;
 }
 </style>
