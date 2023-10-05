@@ -230,8 +230,7 @@ export default {
       newEvent.isOpenEnd = this.newEventDetails.isOpenEnd;
       store.commit("data/addEvent", newEvent);
       //@ts-ignore
-      //this.$router.go(0);
-      console.log(dimId, this.newEventDetails.dimension)
+      this.$router.go(0);
       //@ts-ignore
       this.newEventDetails = {};
     },
