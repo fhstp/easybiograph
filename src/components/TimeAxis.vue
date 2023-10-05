@@ -1,7 +1,7 @@
 <template>
   <div class="axis">
     <div class="head year">Jahr</div>
-    <div class="head age">Alter</div>
+    <div class="headAge age">Alter</div>
     <div class="substrate" ref="substrateRef">
       <div
         class="tick year"
@@ -146,10 +146,11 @@ const ageTicks = computed(() => {
 <style scoped lang="scss">
 div.axis {
   // margin-top: 3.25rem;
-  background: lightgoldenrodyellow; /* TODO JB beautify backgrounds & borders */
+  background: #edf6f9; /* TODO JB beautify & borders */
   width: 100%;
-  height: 3em;
+  height: 5.5em;
   position: relative;
+  padding-top: 2.5em;
 }
 
 div.substrate {
@@ -162,11 +163,11 @@ div.substrate {
 
 /* TODO JB vertically style scale, check font-size (e.g. with Michaela's mockups) */
 .year {
-  top: 2px;
+  top: 0px;
 }
 
 .age {
-  top: 1.4em;
+  top: 1.5em;
 }
 
 .head {
@@ -174,11 +175,19 @@ div.substrate {
   left: 0;
   width: $dimensionWidth;
   text-align: center;
+  top: 40px;
+}
+.headAge {
+  position: absolute;
+  left: 0;
+  width: $dimensionWidth;
+  text-align: center;
+  top: 65px;
 }
 
 .tick {
   position: absolute;
-  height: 1.4em;
+  height: 1.5em;
 }
 
 .tick.year {

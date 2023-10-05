@@ -1,5 +1,6 @@
 <template>
   <div class="pane">
+    <PersonInfo />
     <TimeAxis :scale="timeScale" />
     <div class="dim" v-for="dim in layout" :key="dim.id">
       <div class="dlabel">
@@ -23,7 +24,8 @@ import type { ZBEvent } from "@/data/ZBEvent";
 import * as d3 from "d3";
 import { DimensionA } from "@/data/Dimension";
 import TimeAxis from "./TimeAxis.vue";
-import { germanTimeFormat } from "@/assets/util";
+import { germanTimeFormat } from "../assets/util";
+import PersonInfo from "@/components/PersonInfo.vue";
 
 interface EventMark {
   datum: ZBEvent;
