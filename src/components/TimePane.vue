@@ -1,13 +1,15 @@
 <template>
   <div class="pane">
     <TimeAxis :scale="timeScale" />
-    <div>hallo welt</div>
-    <div v-for="dim in layout" :key="dim.id">
-      <div>
+    <div class="dim" v-for="dim in layout" :key="dim.id">
+      <div class="dlabel">
         {{ dim.label }}
       </div>
-      <div v-for="mark in dim.marks" :key="mark.datum.eventId">
-        &nbsp; {{ mark.datum.description }} - {{ mark.x1 }}
+      <div class="substrate" ref="substrateRef">
+        <div v-for="mark in dim.marks" :key="mark.datum.eventId" class="event"
+          :style="`left: ${mark.x1}%; width: ${mark.x2}%; top: ${mark.row * 1.5}rem`">
+          {{ mark.datum.description }}
+        </div>
       </div>
     </div>
   </div>
@@ -28,7 +30,7 @@ interface EventMark {
   x1: number;
   x2: number;
   row: number;
-  collapsed: boolean;
+  // collapsed: boolean;
 }
 
 interface DimensionLayout {
@@ -58,12 +60,14 @@ const timeScale = computed(() => {
 
 // n.b. d3.axisTop() does not work because it renders in SVG
 
+// TODO update the general layout manually (by resizing dimensions) or on demand
+
 const layout = computed((): Array<DimensionLayout> => {
   // prepare data structure based on given dimensions
   const buffer = DimensionA.map((d, i): DimensionLayout => {
     return { id: i, label: d, marks: [], rows: 0, fullRows: 0 };
   });
-  console.log(buffer);
+  // console.log(buffer);
 
   // sort & group
   // TODO filter visible events (possibly as a vuex getter)
@@ -76,10 +80,12 @@ const layout = computed((): Array<DimensionLayout> => {
     // store.state.data.events,
     (d) => d.dimensionId
   );
-  console.log(visibleEvents);
+  // console.log(visibleEvents);
 
   buffer.forEach((dim) => {
     const eventsInDim = visibleEvents.get(dim.id) || [];
+    // keep track how far rows inside a dimension are occupied
+    const rowOccup: number[] = [];
     eventsInDim.forEach((datum) => {
       const leftDate = new Date(datum.startDate);
       const nextDate = new Date(datum.endDate);
@@ -89,12 +95,30 @@ const layout = computed((): Array<DimensionLayout> => {
         nextDate.setDate(nextDate.getDate() + 1);
       }
 
+      const leftX = timeScale.value(leftDate);
+      const rightX = timeScale.value(nextDate);
+      // in case of short events --> make space at least for 2% of substrate width (guessed minimum)
+      const rightCorrX = leftX + Math.max(rightX - leftX, 2);
+      let eventRow = 0;
+
+      for (;;) {
+        if (rowOccup.length == eventRow) {
+          rowOccup.push(rightCorrX);
+          break;
+        } else if (rowOccup[eventRow] <= leftX) {
+          rowOccup[eventRow] = rightCorrX;
+          break;
+        } else {
+          eventRow++;
+        }
+      }
+
       dim.marks.push({
         datum,
-        x1: timeScale.value(leftDate),
-        x2: timeScale.value(nextDate),
-        row: 0,
-        collapsed: false,
+        x1: leftX,
+        x2: rightX - leftX,
+        row: eventRow,
+        // collapsed: false,
       });
     });
   });
@@ -105,7 +129,42 @@ const layout = computed((): Array<DimensionLayout> => {
 
 <style scoped lang="scss">
 div.pane {
-  margin-top: 3.25rem; /* TODO handle top panels better */
-  background: antiquewhite;
+  // margin-top: 3.25rem; /* TODO handle top panels better */
+  flex-grow: 1;
+  background: lightpink;
+  // bottom: 0px;
+}
+
+div.dim {
+  width: 100%;
+  height: 14.2%;
+  position: relative;
+  display: inline-block;
+}
+
+div.dlabel {
+  // flex: auto 0 0 ;
+  position: relative;
+  top: calc(50% - 0.5rem);
+  width: $dimensionWidth;
+  text-align: center;
+}
+
+div.substrate {
+  // flex: auto 1 1;
+  top: 0;
+  left: $dimensionWidth;
+  right: 0;
+  height: 100%;
+  position: absolute;
+  border-left: 1px solid black;
+  background: lightcyan;
+}
+
+div.event {
+  position: absolute;
+  height: 1.5rem;
+  border: 1px solid orange;
+  overflow: hidden;
 }
 </style>

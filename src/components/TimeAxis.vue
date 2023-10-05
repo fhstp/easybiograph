@@ -100,7 +100,7 @@ const ageTicks = computed(() => {
     day = d3.utcYear.offset(day);
   }
 
-  console.log(birthdays);
+  // console.log(birthdays);
 
   if (birthdays.length > 0) {
     // reduce tick count
@@ -117,7 +117,7 @@ const ageTicks = computed(() => {
     const width =
       props.scale(birthdays[steps].date) - props.scale(birthdays[0].date);
 
-    console.log(`space ${spacePerTick}px - steps ${steps} - width ${width}%`);
+    // console.log(`space ${spacePerTick}px - steps ${steps} - width ${width}%`);
 
     return birthdays
       .filter((_, index) => index % steps === steps - 1)
@@ -132,7 +132,7 @@ const ageTicks = computed(() => {
         };
       });
   } else {
-    // edge case: no tick -> 1 tick at 100% -- maybe needs testing(?)
+    // edge case: no birthday -> 1 tick at 100% -- maybe needs testing(?)
     return [
       {
         label: i.toString(),
@@ -166,7 +166,7 @@ div.substrate {
 }
 
 .age {
-  top: 1.2em;
+  top: 1.4em;
 }
 
 .head {
@@ -178,7 +178,7 @@ div.substrate {
 
 .tick {
   position: absolute;
-  height: 1.4rem;
+  height: 1.4em;
 }
 
 .tick.year {
