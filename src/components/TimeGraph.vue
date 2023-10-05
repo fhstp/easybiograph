@@ -1,6 +1,5 @@
 <template>
   <!-- <TimeTable v-if="!showCreateBiograph && !showIntro" /> -->
-  <TimePane v-if="!showCreateBiograph && !showIntro" />
 
   <EventDialogue v-show="showDialogue" @close="showDialogue = false" />
 
@@ -24,8 +23,9 @@
     v-if="!newPerson"
   />
 
+  <div class="ebcontainer">
   <nav
-    class="navbar is-fixed-top is-black"
+    class="navbar is-black"
     style="background-color: #488193"
     v-show="!showCreateBiograph"
   >
@@ -117,7 +117,7 @@
       </div>
     </div>
   </nav>
-  <br />
+  <TimePane v-if="!showCreateBiograph && !showIntro" />
 
   <!-- Intro for easybiograph -->
   <div class="welcome" v-if="showIntro">
@@ -127,6 +127,7 @@
       Erstellen Sie einen neuen Zeitbalken oder öffnen Sie einen bestehenden
       Zeitbalken, um fortzufahren.
     </p>
+  </div>
   </div>
 
   <!-- Modal for Pop-Up message-->
@@ -336,5 +337,12 @@ export default {
 
 .welcome {
   text-align: center;
+}
+
+.ebcontainer {
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 </style>

@@ -12,10 +12,12 @@ import { RouterView } from "vue-router";
   padding: 0;
 }
 
+/*
 html,
 body {
   height: 100vh;
   width: 100vw;
   overflow: hidden;
 }
+*/
 </style>
