@@ -129,6 +129,14 @@
     </div>
     <br />
     <button
+        v-if="!newDia"
+        class="button is-danger is-light"
+        @click="removeEvent"
+        style="margin-right: 1vw; right: 0vw; margin-top: -20px"
+    >
+      Löschen
+    </button>
+    <button
       class="button is-white"
       style="margin-right: 1vw; right: -20vw; margin-top: -20px"
       v-on:click="close"
@@ -136,9 +144,18 @@
       Abbrechen
     </button>
     <button
+        v-if="newDia"
       class="button is-link"
       style="right: -20vw; margin-top: -20px"
       v-on:click="addEvent"
+    >
+      Fertig
+    </button>
+    <button
+        v-if="!newDia"
+        class="button is-link"
+        style="right: -20vw; margin-top: -20px"
+        v-on:click="editEvent"
     >
       Fertig
     </button>
@@ -158,13 +175,9 @@ export default {
   props: {
     event: Object,
     title: String,
+    newDia: Boolean,
   },
   setup() {
-    /*const dimensionOptions = Object.keys(Dimension).filter((v) =>
-      isNaN(Number(v))
-    );
-     */
-
     const dimensionOptions = ref(DimensionA);
 
     return {
@@ -234,8 +247,34 @@ export default {
       //@ts-ignore
       this.newEventDetails = {};
     },
+    removeEvent() {
+      store.commit("data/removeEvent", this.selectedEvent.eventId);
+      this.$router.go(0);
+      this.$emit("close");
+    },
+    editEvent() {
+      // safe to send currentEvent because it is a clone
+      if(this.disableCheck == true){
+        this.currentEvent.endDate = store.state.data.person.endDate
+      }
+      const payload = this.currentEvent;
+      const dimId = DimensionA.indexOf(this.newEventDetails.dimension);
+      payload.dimensionId = dimId;
+      console.table(payload);
+      store.commit("data/editEvents", payload);
+      this.$emit("reload");
+      this.$router.go(0);
+      this.$emit("close");
+    },
     close() {
       this.$emit("close");
+    },
+  },
+  watch: {
+    selectedEvent: function () {
+      // shallow clone event data when opening the dialog
+      this.currentEvent = Object.assign({}, this.selectedEvent);
+      this.selectedDimension = Dimension[this.selectedEvent.dimensionId];
     },
   },
 };

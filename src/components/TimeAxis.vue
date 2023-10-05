@@ -1,7 +1,7 @@
 <template>
   <div class="axis">
     <div class="head year">Jahr</div>
-    <div class="head age">Alter</div>
+    <div class="headAge age">Alter</div>
     <div class="substrate" ref="substrateRef">
       <div
         class="tick year"
@@ -140,11 +140,11 @@ div.substrate {
 
 /* TODO JB vertically style scale */
 .year {
-  top: 2px;
+  top: 0px;
 }
 
 .age {
-  top: 1.2em;
+  top: 1.5em;
 }
 
 .head {
@@ -152,6 +152,14 @@ div.substrate {
   left: 0;
   width: $dimensionWidth;
   text-align: center;
+  top: 40px;
+}
+.headAge {
+  position: absolute;
+  left: 0;
+  width: $dimensionWidth;
+  text-align: center;
+  top: 65px;
 }
 
 .tick {
