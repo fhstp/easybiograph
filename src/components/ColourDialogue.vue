@@ -1,5 +1,7 @@
 <template>
-
+  <br />
+  <h1 id="edit" class="title block">Farben bearbeiten</h1>
+  <br />
 </template>
 
 <script>

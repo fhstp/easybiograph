@@ -120,11 +120,9 @@
     </div>
   </div>
     <div id="Dimensionen" class="tabcontent" style="display: none">
-      <h3>Dimensionen bearbeiten</h3>
       <DimensionDialogue />
     </div>
     <div id="Farben" class="tabcontent" style="display: none">
-      <h3>Farben</h3>
       <ColourDialogue />
     </div>
   </div>
