@@ -4,14 +4,31 @@
   <br />
   <div>
     <div v-for="(dimension, index) in DimensionA" :key="index" class="checkbox-container">
-      <label>
-        <input type="checkbox" v-model="selectedDimensions[index]"> {{ dimension }}
+      <label v-if="!isEditing[index]">
+        <input type="checkbox" v-model="selectedDimensions[index]" checked> {{ dimension }}
       </label>
-      <button class="is-small" @click="editDimension(index)">
+      <input v-if="isEditing[index]" v-model="editedDimension" @blur="cancelEdit(index)" @keyup.enter="saveEdit(index)" />
+      <button class="button is-small" @click="editDimension(index)">
         <font-awesome-icon icon="pencil-alt" />
       </button>
-      <input v-if="isEditing[index]" v-model="editedDimension" @blur="cancelEdit(index)" @keyup.enter="saveEdit(index)" />
     </div>
+  </div>
+  <br />
+  <div class="field is-horizontal">
+    <div class="field-body">
+      <div class="field">
+        <div class="control">
+          <input
+              class="input"
+              type="text"
+              placeholder="Titel der neuen Dimension"
+          />
+        </div>
+      </div>
+    </div>
+    <button class="button is-link is-light">
+      Dimension hinzufügen
+    </button>
   </div>
 </template>
 
@@ -22,10 +39,11 @@ export default {
   name: "DimensionDialogue",
   data() {
     return {
-      DimensionA, // Import the array
-      selectedDimensions: Array(DimensionA.length).fill(false), // Initialize an array for tracking checkbox states
-      isEditing: Array(DimensionA.length).fill(false), // Initialize an array to track editing state
-      editedDimension: "", // Store the edited value
+      DimensionA,
+      selectedDimensions: Array(DimensionA.length).fill(false),
+      isEditing: Array(DimensionA.length).fill(false),
+      editedDimension: "",
+      dimensionString: [],
     };
   },
   methods: {
@@ -45,10 +63,9 @@ export default {
 </script>
 
 <style scoped>
-/* Add CSS to style the checkboxes and buttons */
 label {
-  display: block; /* Make each checkbox appear on a new line */
-  margin-bottom: 10px; /* Add some spacing between checkboxes */
+  display: block;
+  margin-bottom: 10px;
 }
 
 .checkbox-container {

@@ -51,6 +51,9 @@ import {
   // faUnlink,
   faPlus,
   faArrowsAlt,
+  faPalette,
+  faSliders,
+  faTableList,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -89,7 +92,10 @@ library.add(
   // faLink,
   // faUnlink,
   faPlus,
-  faArrowsAlt
+  faArrowsAlt,
+  faPalette,
+  faSliders,
+  faTableList
 );
 
 app.component("font-awesome-icon", FontAwesomeIcon);

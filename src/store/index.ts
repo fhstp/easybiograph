@@ -32,6 +32,9 @@ const getters = {
   getTimeline(state: IStoreState): Array<any> {
     return state.data.timeline;
   },
+  getDimensions(state: IStoreState): Array<any> {
+    return state.data.dimensions;
+  },
   getPersonCreated(state: IStoreState): boolean {
     return typeof state.data.person != "undefined";
   },
@@ -40,6 +43,7 @@ const getters = {
       person: state.data.person,
       timeline: state.data.timeline,
       events: state.data.events,
+      dimensions: state.data.dimensions,
     };
     return downloadObject;
   },

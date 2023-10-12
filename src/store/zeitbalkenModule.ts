@@ -59,6 +59,10 @@ const mutations = {
     state.timeline = timeline;
   },
 
+  addDimensions(state: Zeitbalken, dimensions: Array<string>): void {
+    state.dimensions = dimensions;
+  },
+
   addPerson(state: Zeitbalken, initialValues: Partial<ZBPerson> = {}): void {
     // TODO: practically the same as "editPerson" because "newZeitbalken" should come first
     const newPerson = {
