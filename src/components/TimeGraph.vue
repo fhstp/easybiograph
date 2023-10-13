@@ -153,7 +153,7 @@
 </template>
 
 <script lang="ts">
-import { Dimension } from "@/data/Dimension";
+import {Dimension, initDimension} from "@/data/Dimension";
 import { store } from "@/store";
 import PersonDialogue from "@/components/PersonDialogue.vue";
 import PopUpNew from "@/components/PopUpNew.vue";
@@ -281,6 +281,15 @@ export default {
       this.temporaryPerson = Object.assign({}, store.state.data.person); // shallow clone (ok for ZBPerson)
       //@ts-ignore
       this.showCreateBiograph = true;
+      let defaultDims = ["Familie", "Wohnen", "Bildung", "Arbeit", "Gesundheit" , "Behandlung" , "Sonstiges"] ;
+      //@ts-ignore
+      for (var i=0; i < defaultDims.length ; i++) {
+        const newDim = initDimension();
+        newDim.title = defaultDims[i];
+        newDim.position = i + 1
+        //@ts-ignore
+        store.commit("data/addDimension", newDim)
+      }
     },
     downloadData() {
       // TODO move to utils.ts (consistent with easynwk)

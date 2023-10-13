@@ -19,6 +19,7 @@
       <div class="field">
         <div class="control">
           <input
+              v-model="newDimDetails.title"
               class="input"
               type="text"
               placeholder="Titel der neuen Dimension"
@@ -26,15 +27,16 @@
         </div>
       </div>
     </div>
-    <button class="button is-link is-light">
+    <button class="button is-link is-light" @click="addDimension">
       Dimension hinzufügen
     </button>
   </div>
 </template>
 
 <script>
-import { DimensionA} from "@/data/Dimension";
+import {DimensionA, initDimension} from "@/data/Dimension";
 import {store} from "@/store";
+import {initEvent} from "@/data/ZBEvent";
 
 export default {
   name: "DimensionDialogue",
@@ -45,12 +47,21 @@ export default {
       isEditing: Array(DimensionA.length).fill(false),
       editedDimension: "",
       dimensionString: [],
+      newDimDetails: {
+        title: "",
+      }
     };
   },
   methods: {
     editDimension(index) {
       this.isEditing[index] = true;
       this.editedDimension = this.DimensionA[index];
+    },
+    addDimension() {
+      const newDim = initDimension();
+      newDim.title = this.newDimDetails.title;
+      newDim.position = 0;
+      store.commit("data/addDimension", newDim)
     },
     cancelEdit(index) {
       this.isEditing[index] = false;

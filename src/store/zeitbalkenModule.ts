@@ -6,6 +6,8 @@ import { initZeitbalkenAsJSON, loadZeitbalken } from "@/data/Zeitbalken";
 import { initPerson } from "@/data/ZBPerson";
 
 import { loadZeitbalkenFromStore } from "./localStoragePlugin";
+import { initDimension } from "@/data/Dimension";
+import type { Dim } from "@/data/Dimension";
 //import type { IStoreState } from "@/store/index";
 
 // module state object.
@@ -59,9 +61,22 @@ const mutations = {
     state.timeline = timeline;
   },
 
-  //payload: { index: number; dimensions: Array<string> }
-  addDimensions(state: Zeitbalken, dimensions: Array<string>): void {
-    state.dimensions = dimensions;
+  //dimensions: Array<string>
+  /*addDimensions(state: Zeitbalken, payload: { index: number; dimensions: Array<string> } ): void {
+    state.dimensions.push(payload)
+  },
+   */
+
+  addDimension(state: Zeitbalken, initialValues: Partial<Dim> = {}): void {
+    const newDim = {
+      ...initDimension(),
+      ...initialValues,
+    };
+    newDim.id =
+      state.dimensions.length > 0
+        ? Math.max(...state.dimensions.map((v) => (v.id ? v.id : 1))) + 1
+        : 1;
+    state.dimensions.unshift(newDim);
   },
 
   addPerson(state: Zeitbalken, initialValues: Partial<ZBPerson> = {}): void {
