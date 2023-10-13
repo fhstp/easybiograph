@@ -59,6 +59,7 @@ const mutations = {
     state.timeline = timeline;
   },
 
+  //payload: { index: number; dimensions: Array<string> }
   addDimensions(state: Zeitbalken, dimensions: Array<string>): void {
     state.dimensions = dimensions;
   },

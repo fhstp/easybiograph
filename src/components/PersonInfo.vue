@@ -1,7 +1,11 @@
 <template>
   <div class="personInfo">
+    <!-- TODO: Aktuelles Datum statt Erstellungsdatum -->
     <p class="same interviewee">
-      {{ $store.state.data.person.name }}, geboren am
+      {{ $store.state.data.person.name }}
+      ({{ $store.state.data.person.birthDate.substring(5, 7) > $store.state.data.person.creationDate.substring(5, 7) ?
+        ($store.state.data.person.creationDate.substring(0, 4) - $store.state.data.person.birthDate.substring(0, 4)) - 1
+      : ($store.state.data.person.creationDate.substring(0, 4) - $store.state.data.person.birthDate.substring(0, 4))}}a), geboren am
       {{ $store.state.data.person.birthDate.substring(8, 10) }}.{{
         $store.state.data.person.birthDate.substring(5, 7)
       }}.{{ $store.state.data.person.birthDate.substring(0, 4) }}

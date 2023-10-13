@@ -5,7 +5,7 @@ export interface Zeitbalken {
   person: ZBPerson;
   events: Array<ZBEvent>;
   timeline: Array<number>;
-  dimensions: Array<string>;
+  dimensions: Array<any>;
 }
 
 export function initZeitbalkenAsJSON(): string {

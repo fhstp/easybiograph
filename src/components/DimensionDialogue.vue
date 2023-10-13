@@ -34,6 +34,7 @@
 
 <script>
 import { DimensionA} from "@/data/Dimension";
+import {store} from "@/store";
 
 export default {
   name: "DimensionDialogue",
@@ -57,6 +58,8 @@ export default {
     saveEdit(index) {
       this.DimensionA[index] = this.editedDimension;
       this.isEditing[index] = false;
+      //@ts-ignore
+      store.commit("data/addDimensions", this.DimensionA);
     },
   },
 };
