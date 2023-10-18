@@ -65,10 +65,15 @@ const timeScale = computed(() => {
 // TODO update the general layout manually (by resizing dimensions) or on demand
 
 const layout = computed((): Array<DimensionLayout> => {
-  // prepare data structure based on given dimensions
-  const buffer = DimensionA.map((d, i): DimensionLayout => {
-    return { id: i, label: d, marks: [], rows: 0, fullRows: 0 };
+  const dimensions = store.state.data.dimensions;
+
+  // Create a sorted copy of the dimensions array
+  const sortedDimensions = [...dimensions].sort((a, b) => a.position - b.position);
+
+  const buffer = sortedDimensions.map((dim, i): DimensionLayout => {
+    return { id: dim.id, label: dim.title, marks: [], rows: 0, fullRows: 0 };
   });
+
   // console.log(buffer);
 
   // sort & group

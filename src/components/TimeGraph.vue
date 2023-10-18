@@ -286,7 +286,6 @@ export default {
       for (var i=0; i < defaultDims.length ; i++) {
         const newDim = initDimension();
         newDim.title = defaultDims[i];
-        newDim.position = i + 1
         //@ts-ignore
         store.commit("data/addDimension", newDim)
       }

@@ -76,6 +76,7 @@ const mutations = {
       state.dimensions.length > 0
         ? Math.max(...state.dimensions.map((v) => (v.id ? v.id : 1))) + 1
         : 1;
+    newDim.position = state.dimensions.length + 1;
     state.dimensions.unshift(newDim);
   },
 

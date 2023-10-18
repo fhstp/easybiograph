@@ -3,9 +3,9 @@
   <h1 id="edit" class="title block">Dimension bearbeiten</h1>
   <br />
   <div>
-    <div v-for="(dimension, index) in DimensionA" :key="index" class="checkbox-container">
+    <div v-for="(dimension, index) in Dimension" :key="index" class="checkbox-container">
       <label v-if="!isEditing[index]">
-        <input type="checkbox" v-model="selectedDimensions[index]" checked> {{ dimension }}
+        <input type="checkbox" v-model="selectedDimensions[index]" checked> {{ dimension.title }}
       </label>
       <input v-if="isEditing[index]" v-model="editedDimension" @blur="cancelEdit(index)" @keyup.enter="saveEdit(index)" />
       <button class="button is-small" @click="editDimension(index)">
@@ -41,15 +41,17 @@ import {initEvent} from "@/data/ZBEvent";
 export default {
   name: "DimensionDialogue",
   data() {
+    const dimensions = store.state.data.dimensions;
     return {
+      Dimension: [...dimensions].sort((a, b) => a.position - b.position),
       DimensionA,
-      selectedDimensions: Array(DimensionA.length).fill(false),
+      selectedDimensions: Array(DimensionA.length).fill(true),
       isEditing: Array(DimensionA.length).fill(false),
       editedDimension: "",
       dimensionString: [],
       newDimDetails: {
         title: "",
-      }
+      },
     };
   },
   methods: {
