@@ -80,6 +80,31 @@ const mutations = {
     state.dimensions.unshift(newDim);
   },
 
+  editDimension(
+    state: Zeitbalken,
+    payload: { index: number; changes: Partial<ZBEvent> }
+  ): void {
+    // based oen vuex\examples\composition\todomvc\store\mutations.js
+    // const index = state.alteri.indexOf(payload.alter);
+
+    // lookup does not work for 2 parallel mutations (form change & map click)
+    if (
+      payload.index != null &&
+      payload.index >= 0 &&
+      payload.index < state.dimensions.length
+    ) {
+      // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
+      const changedDimension = {
+        ...state.dimensions[payload.index],
+        ...payload.changes,
+      };
+      // applyAdaptiveNWKDefaults(changedAlter, payload.changes);
+      state.events.splice(payload.index, 1, changedDimension);
+    } else {
+      console.warn("dimension index out of bounds: " + payload.index);
+    }
+  },
+
   addPerson(state: Zeitbalken, initialValues: Partial<ZBPerson> = {}): void {
     // TODO: practically the same as "editPerson" because "newZeitbalken" should come first
     const newPerson = {

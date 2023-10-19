@@ -8,9 +8,17 @@
         <input type="checkbox" v-model="selectedDimensions[index]" checked> {{ dimension.title }}
       </label>
       <input v-if="isEditing[index]" v-model="editedDimension" @blur="cancelEdit(index)" @keyup.enter="saveEdit(index)" />
+      <div class="buttons">
       <button class="button is-small" @click="editDimension(index)">
         <font-awesome-icon icon="pencil-alt" />
       </button>
+      <button class="button is-small" @click="moveUp(index)">
+        ^
+      </button>
+        <button class="button is-small">
+          v
+        </button>
+      </div>
     </div>
   </div>
   <br />
@@ -44,7 +52,6 @@ export default {
     const dimensions = store.state.data.dimensions;
     return {
       Dimension: [...dimensions].sort((a, b) => a.position - b.position),
-      DimensionA,
       selectedDimensions: Array(DimensionA.length).fill(true),
       isEditing: Array(DimensionA.length).fill(false),
       editedDimension: "",
@@ -57,7 +64,7 @@ export default {
   methods: {
     editDimension(index) {
       this.isEditing[index] = true;
-      this.editedDimension = this.DimensionA[index];
+      this.editedDimension = this.Dimension[index];
     },
     addDimension() {
       const newDim = initDimension();
@@ -69,11 +76,32 @@ export default {
       this.isEditing[index] = false;
     },
     saveEdit(index) {
-      this.DimensionA[index] = this.editedDimension;
+      this.Dimension[index] = this.editedDimension;
       this.isEditing[index] = false;
       //@ts-ignore
       store.commit("data/addDimensions", this.DimensionA);
     },
+    moveUp(index) {
+      if (index > 0) {
+        // Swap positions of the current dimension and the one above it
+        const currentPosition = this.Dimension[index].position;
+        const newPosition = this.Dimension[index - 1].position;
+
+        // Update the positions of the dimensions
+        this.Dimension[index].position = newPosition;
+        this.Dimension[index - 1].position = currentPosition;
+
+        // Commit the updated dimension positions to the store
+        store.commit("editDimension", {
+          index: index,
+          changes: { position: newPosition },
+        });
+      }
+    }
+
+
+
+
   },
 };
 </script>
