@@ -5,7 +5,7 @@
   <div>
     <div v-for="(dimension, index) in Dimension" :key="index" class="checkbox-container">
       <label v-if="!isEditing[index]">
-        <input type="checkbox" v-model="selectedDimensions[index]" checked> {{ dimension.title }}
+        <input type="checkbox" v-model="selectedDimensions[index]" @click="toggleDimensionVisibility"> {{ dimension.title }}
       </label>
       <input v-if="isEditing[index]" v-model="editedDimension" @blur="cancelEdit(index)" @keyup.enter="saveEdit(index)" />
       <div class="buttons">
@@ -70,6 +70,7 @@ export default {
       const newDim = initDimension();
       newDim.title = this.newDimDetails.title;
       newDim.position = 0;
+      newDim.visible = true;
       store.commit("data/addDimension", newDim)
     },
     cancelEdit(index) {
@@ -97,8 +98,18 @@ export default {
           changes: { position: newPosition },
         });
       }
-    }
+    },
+    toggleDimensionVisibility(index) {
+      const dimension = this.Dimension[index];
+      const isVisible = this.selectedDimensions[index];
+      dimension.visible = isVisible;
 
+      // Update the dimension in the store
+      store.commit("editDimension", {
+        index: index,
+        changes: { visible: isVisible },
+      });
+    },
 
 
 
