@@ -79,6 +79,27 @@ const mutations = {
     state.dimensions.unshift(newDim);
   },
 
+  //because the Dims are reversed - own function here to change the name
+  editDimName(
+    state: Zeitbalken,
+    payload: { id: number; changes: Partial<Dim> }
+  ) {
+    const dimension = state.dimensions.find((dim) => dim.id === payload.id);
+    if (dimension) {
+      dimension.title = payload.changes.title;
+    }
+  },
+
+  toggleDimVisi(
+    state: Zeitbalken,
+    payload: { id: number; changes: Partial<Dim> }
+  ) {
+    const dimension = state.dimensions.find((dim) => dim.id === payload.id);
+    if (dimension) {
+      dimension.visible = !dimension.visible;
+    }
+  },
+
   editDimension(
     state: Zeitbalken,
     payload: { index: number; changes: Partial<Dim> }

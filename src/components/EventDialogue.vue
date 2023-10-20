@@ -83,7 +83,7 @@
             <div class="select is-fullwidth">
               <select v-model="newEventDetails.dimension">
                 <option v-for="value in dimensionOptions" :key="value">
-                  {{ value }}
+                  {{ value.title }}
                 </option>
               </select>
             </div>
@@ -178,10 +178,10 @@ export default {
     newDia: Boolean,
   },
   setup() {
-    const dimensionOptions = ref(DimensionA);
+    const dimensions = store.state.data.dimensions;
 
     return {
-      dimensionOptions
+      dimensionOptions: [...dimensions].reverse(),
     };
   },
   computed: {

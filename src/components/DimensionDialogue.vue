@@ -3,15 +3,18 @@
   <h1 id="edit" class="title block">Dimension bearbeiten</h1>
   <br />
   <div>
-    <div v-for="(dimension, index) in Dimension" :key="index" class="checkbox-container">
+    <div v-for="(dimension, index) in Dimension" :key="dimension.id" class="checkbox-container">
       <label v-if="!isEditing[index]">
-        <input type="checkbox" @click="toggleDim(index)"> {{ dimension.title }}
+        <input type="checkbox" @click="toggleDim(dimension.id)"> {{ dimension.title }}
       </label>
       <input v-if="isEditing[index]" v-model="editedDimension" @blur="cancelEdit(index)" @keyup.enter="saveEdit(index)" />
       <div class="buttons">
-      <button class="button is-small" @click="editDimension(index)">
+      <button class="button is-small" v-if="!isEditing[index]" @click="editDimension(index)">
         <font-awesome-icon icon="pencil-alt" />
       </button>
+        <button class="button is-small" v-if="isEditing[index]" @click="cancelEdit(index)">
+          <font-awesome-icon icon="pencil-alt" />
+        </button>
       <button class="button is-small" @click="moveUp(index)">
         ^
       </button>
@@ -44,8 +47,6 @@
 <script>
 import {DimensionA, initDimension} from "@/data/Dimension";
 import {store} from "@/store";
-import {initEvent} from "@/data/ZBEvent";
-import {initCustomFormatter} from "vue";
 
 export default {
   name: "DimensionDialogue",
@@ -65,24 +66,29 @@ export default {
   methods: {
     editDimension(index) {
       this.isEditing[index] = true;
-      this.editedDimension = this.Dimension[index];
+      this.editedDimension = this.Dimension[index].title;
     },
     addDimension() {
       const newDim = initDimension();
       newDim.title = this.newDimDetails.title;
       newDim.position = 0;
       newDim.visible = true;
-      store.commit("data/addDimension", newDim)
+      store.commit("data/addDimension", newDim);
     },
     cancelEdit(index) {
       this.isEditing[index] = false;
     },
     saveEdit(index) {
-      this.Dimension[index] = this.editedDimension;
-      this.isEditing[index] = false;
-      //@ts-ignore
-      store.commit("data/addDimensions", this.DimensionA);
+      const dimension = this.Dimension[index];
+      if (dimension) {
+        const editedDimension = { ...dimension };
+        editedDimension.title = this.editedDimension;
+
+        store.commit("data/editDimName", { id: dimension.id, changes: editedDimension });
+        this.isEditing[index] = false;
+      }
     },
+
     moveUp(index) {
       if (index > 0) {
         const dimensionOne = this.Dimension[index];
@@ -107,13 +113,16 @@ export default {
       }
     },
 
-    toggleDim(index) {
-      const isVisible = this.Dimension[index].visible;
-      this.$store.commit("data/editDimension", {
-        index: index,
-        changes: { visible: !isVisible },
-      });
-    }
+    toggleDim(id) {
+      const dimension = this.Dimension.find(dim => dim.id === id);
+      if (dimension) {
+        const isVisible = dimension.visible;
+        store.commit("data/toggleDimVisi", {
+          id: dimension.id,
+          changes: { visible: !isVisible },
+        });
+      }
+    },
 
 
   },
