@@ -68,7 +68,7 @@ const layout = computed((): Array<DimensionLayout> => {
   const dimensions = store.state.data.dimensions;
 
   // Create a sorted copy of the dimensions array
-  const sortedDimensions = [...dimensions].sort((a, b) => a.position - b.position);
+  const sortedDimensions = [...dimensions].reverse();
 
   const buffer = sortedDimensions.map((dim, i): DimensionLayout => {
     return { id: dim.id, label: dim.title, marks: [], rows: 0, fullRows: 0 };

@@ -11,7 +11,6 @@ export const DimensionA = [
 export interface Dim {
   id: number;
   title: string;
-  position: number;
   visible: boolean;
 }
 
@@ -19,7 +18,6 @@ export function initDimension(): Dim {
   return {
     id: -1,
     title: "",
-    position: -1,
     visible: true,
   };
 }

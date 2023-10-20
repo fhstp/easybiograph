@@ -76,13 +76,12 @@ const mutations = {
       state.dimensions.length > 0
         ? Math.max(...state.dimensions.map((v) => (v.id ? v.id : 1))) + 1
         : 1;
-    newDim.position = state.dimensions.length + 1;
     state.dimensions.unshift(newDim);
   },
 
   editDimension(
     state: Zeitbalken,
-    payload: { index: number; changes: Partial<ZBEvent> }
+    payload: { index: number; changes: Partial<Dim> }
   ): void {
     // based oen vuex\examples\composition\todomvc\store\mutations.js
     // const index = state.alteri.indexOf(payload.alter);
@@ -102,6 +101,21 @@ const mutations = {
       state.events.splice(payload.index, 1, changedDimension);
     } else {
       console.warn("dimension index out of bounds: " + payload.index);
+    }
+  },
+
+  switchDimensions(
+    state: Zeitbalken,
+    payload: { dimensionOne: number; dimensionTwo: number }
+  ) {
+    const indexToMoveUp = state.dimensions.indexOf(payload.dimensionOne);
+    const indexToMoveDown = state.dimensions.indexOf(payload.dimensionTwo);
+
+    if (indexToMoveUp !== -1 && indexToMoveDown !== -1) {
+      [state.dimensions[indexToMoveUp], state.dimensions[indexToMoveDown]] = [
+        state.dimensions[indexToMoveDown],
+        state.dimensions[indexToMoveUp],
+      ];
     }
   },
 

@@ -5,7 +5,7 @@
   <div>
     <div v-for="(dimension, index) in Dimension" :key="index" class="checkbox-container">
       <label v-if="!isEditing[index]">
-        <input type="checkbox" v-model="selectedDimensions[index]" @click="toggleDimensionVisibility"> {{ dimension.title }}
+        <input type="checkbox" @click="toggleDim(index)"> {{ dimension.title }}
       </label>
       <input v-if="isEditing[index]" v-model="editedDimension" @blur="cancelEdit(index)" @keyup.enter="saveEdit(index)" />
       <div class="buttons">
@@ -15,7 +15,7 @@
       <button class="button is-small" @click="moveUp(index)">
         ^
       </button>
-        <button class="button is-small">
+        <button class="button is-small" @click="moveDown(index)">
           v
         </button>
       </div>
@@ -45,17 +45,18 @@
 import {DimensionA, initDimension} from "@/data/Dimension";
 import {store} from "@/store";
 import {initEvent} from "@/data/ZBEvent";
+import {initCustomFormatter} from "vue";
 
 export default {
   name: "DimensionDialogue",
   data() {
     const dimensions = store.state.data.dimensions;
     return {
-      Dimension: [...dimensions].sort((a, b) => a.position - b.position),
-      selectedDimensions: Array(DimensionA.length).fill(true),
+      Dimension: [...dimensions].reverse(),
       isEditing: Array(DimensionA.length).fill(false),
       editedDimension: "",
       dimensionString: [],
+      currentDim: {},
       newDimDetails: {
         title: "",
       },
@@ -84,33 +85,35 @@ export default {
     },
     moveUp(index) {
       if (index > 0) {
-        // Swap positions of the current dimension and the one above it
-        const currentPosition = this.Dimension[index].position;
-        const newPosition = this.Dimension[index - 1].position;
+        const dimensionOne = this.Dimension[index];
+        const dimensionTwo = this.Dimension[index - 1];
 
-        // Update the positions of the dimensions
-        this.Dimension[index].position = newPosition;
-        this.Dimension[index - 1].position = currentPosition;
-
-        // Commit the updated dimension positions to the store
-        store.commit("editDimension", {
-          index: index,
-          changes: { position: newPosition },
+        store.commit("data/switchDimensions", {
+          dimensionOne,
+          dimensionTwo,
         });
       }
     },
-    toggleDimensionVisibility(index) {
-      const dimension = this.Dimension[index];
-      const isVisible = this.selectedDimensions[index];
-      dimension.visible = isVisible;
 
-      // Update the dimension in the store
-      store.commit("editDimension", {
-        index: index,
-        changes: { visible: isVisible },
-      });
+    moveDown(index) {
+      if (index < this.Dimension.length) {
+        const dimensionOne = this.Dimension[index];
+        const dimensionTwo = this.Dimension[index + 1];
+
+        store.commit("data/switchDimensions", {
+          dimensionOne,
+          dimensionTwo,
+        });
+      }
     },
 
+    toggleDim(index) {
+      const isVisible = this.Dimension[index].visible;
+      this.$store.commit("data/editDimension", {
+        index: index,
+        changes: { visible: !isVisible },
+      });
+    }
 
 
   },
