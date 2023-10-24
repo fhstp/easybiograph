@@ -72,10 +72,13 @@ const timeScale = computed(() => {
 const layout = computed((): Array<DimensionLayout> => {
   const dimensions = store.state.data.dimensions;
 
-  // Create a sorted copy of the dimensions array
-  const sortedDimensions = [...dimensions].reverse();
+  // Filter dimensions with visible set to true
+  const filteredDimensions = dimensions.filter(dim => dim.visible);
 
-  const buffer = sortedDimensions.map((dim, i): DimensionLayout => {
+  // Create a sorted copy of the filtered dimensions array
+  const sortedDimensions = [...filteredDimensions].reverse();
+
+  const buffer = sortedDimensions.map((dim, i) => {
     return { id: dim.id, label: dim.title, marks: [], rows: 0, fullRows: 0 };
   });
 

@@ -5,7 +5,7 @@
   <div>
     <div v-for="(dimension, index) in Dimension" :key="dimension.id" class="checkbox-container">
       <label v-if="!isEditing[index]">
-        <input type="checkbox" @click="toggleDim(dimension.id)"> {{ dimension.title }}
+        <input type="checkbox" @click="toggleDim(dimension.id)" :checked="dimension.visible"> {{ dimension.title }}
       </label>
       <input v-if="isEditing[index]" v-model="editedDimension" @blur="cancelEdit(index)" @keyup.enter="saveEdit(index)" />
       <div class="buttons">
@@ -15,11 +15,11 @@
         <button class="button is-small" v-if="isEditing[index]" @click="cancelEdit(index)">
           <font-awesome-icon icon="pencil-alt" />
         </button>
-      <button class="button is-small" @click="moveUp(index)">
-        ^
+      <button class="button is-small" @click="moveUp(index)" :disabled="index === 0">
+        <font-awesome-icon icon="arrow-up" />
       </button>
-        <button class="button is-small" @click="moveDown(index)">
-          v
+        <button class="button is-small" @click="moveDown(index)" :disabled="index === Dimension.length - 1">
+          <font-awesome-icon icon="arrow-down" />
         </button>
       </div>
     </div>
@@ -74,6 +74,8 @@ export default {
       newDim.position = 0;
       newDim.visible = true;
       store.commit("data/addDimension", newDim);
+      this.updateDimensionList();
+          this.newDimDetails.title = "";
     },
     cancelEdit(index) {
       this.isEditing[index] = false;
@@ -86,6 +88,7 @@ export default {
 
         store.commit("data/editDimName", { id: dimension.id, changes: editedDimension });
         this.isEditing[index] = false;
+        this.updateDimensionList()
       }
     },
 
@@ -98,6 +101,7 @@ export default {
           dimensionOne,
           dimensionTwo,
         });
+        this.updateDimensionList();
       }
     },
 
@@ -110,7 +114,13 @@ export default {
           dimensionOne,
           dimensionTwo,
         });
+        this.updateDimensionList();
       }
+    },
+
+    updateDimensionList() {
+      const dimensions = store.state.data.dimensions;
+      this.Dimension = [...dimensions].reverse();
     },
 
     toggleDim(id) {

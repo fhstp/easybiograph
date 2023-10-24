@@ -119,12 +119,22 @@
       </div>
     </div>
     <br />
+  </div>
+    <div id="Dimensionen" class="tabcontent" style="display: none">
+      <DimensionDialogue />
+    </div>
+    <div id="Farben" class="tabcontent" style="display: none">
+      <ColourDialogue />
+    </div>
+    <br/>
+    <br/>
+    <br/>
     <div class="buttons">
       <button
 
-        class="button is-white"
-        style="margin-right: 1vw; right: -20vw"
-        @click="abort"
+          class="button is-white"
+          style="margin-right: 1vw; right: -20vw"
+          @click="abort"
       >
         <!-- v-show="showButtons" -->
         Abbrechen
@@ -132,13 +142,6 @@
       <button class="button is-link" style="right: -20vw" @click="savePerson">
         Fertig
       </button>
-    </div>
-  </div>
-    <div id="Dimensionen" class="tabcontent" style="display: none">
-      <DimensionDialogue />
-    </div>
-    <div id="Farben" class="tabcontent" style="display: none">
-      <ColourDialogue />
     </div>
   </div>
 </template>
