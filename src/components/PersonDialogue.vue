@@ -118,7 +118,6 @@
         </div>
       </div>
     </div>
-    <br />
   </div>
     <div id="Dimensionen" class="tabcontent" style="display: none">
       <DimensionDialogue />

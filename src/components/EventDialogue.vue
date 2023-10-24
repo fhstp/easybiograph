@@ -180,8 +180,10 @@ export default {
   setup() {
     const dimensions = store.state.data.dimensions;
 
+    const dimensionOptions = ref([...dimensions].reverse().filter(dim => dim.visible));
+
     return {
-      dimensionOptions: [...dimensions].reverse(),
+      dimensionOptions,
     };
   },
   computed: {
@@ -199,7 +201,7 @@ export default {
         isInterval: true,
         description: "",
         note: "",
-        dimension: DimensionA[0], // XXX: might solve bug with uninitialized dimension
+        dimension: this.dimensionOptions[0], // XXX: might solve bug with uninitialized dimension
         startDate: "2020-01",
         endDate: "2020-12",
         isOpenEnd: false,
@@ -213,10 +215,13 @@ export default {
       // TODO: should be safe to pass newEventDetails as payload because it is cloned in mutation
       const newEvent = initEvent();
       // Find the position (index) of the selected dimension in the DimensionA array
-      const dimId = DimensionA.indexOf(this.newEventDetails.dimension);
+      const dimensionOptionsArray = Array.from(this.dimensionOptions);
+      const selectedDimension = dimensionOptionsArray.find(dim => dim.title === this.newEventDetails.dimension);
+
+      console.log(selectedDimension.id)
 
       // Assign the dimensionId to the found index
-      newEvent.dimensionId = dimId;
+      newEvent.dimensionId = selectedDimension.id;
       //@ts-ignore
       console.log(
         `dimension: |${this.newEventDetails.dimension}| -> |${newEvent.dimensionId}|`
@@ -231,7 +236,7 @@ export default {
       newEvent.startDate = this.newEventDetails.startDate;
 
 
-      if(this.newEventDetails.isOpenEnd){
+      if(this.newEventDetails.description){
         //@ts-ignore
         newEvent.endDate = store.state.data.person.endDate
       }else{
@@ -241,9 +246,11 @@ export default {
 
       //@ts-ignore
       newEvent.isOpenEnd = this.newEventDetails.isOpenEnd;
+      console.log(newEvent)
+      console.log(this.newEventDetails.isInterval)
       store.commit("data/addEvent", newEvent);
       //@ts-ignore
-      this.$router.go(0);
+      //this.$router.go(0);
       //@ts-ignore
       this.newEventDetails = {};
     },

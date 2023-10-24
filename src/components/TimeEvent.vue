@@ -1,6 +1,6 @@
 <template>
   <div class="ttParent">
-    <span class="tooltiptext" style="z-index: 6"
+    <span class="tooltiptext" style="z-index: 7"
       >{{ event.description }}
       <br />
       {{
