@@ -212,45 +212,25 @@ export default {
   },
   methods: {
     addEvent() {
-      // TODO: should be safe to pass newEventDetails as payload because it is cloned in mutation
       const newEvent = initEvent();
-      // Find the position (index) of the selected dimension in the DimensionA array
-      const dimensionOptionsArray = Array.from(this.dimensionOptions);
-      const selectedDimension = dimensionOptionsArray.find(dim => dim.title === this.newEventDetails.dimension);
+      const selectedDimension = this.dimensionOptions.find(dim => dim.title === this.newEventDetails.dimension);
 
-      console.log(selectedDimension.id)
-
-      // Assign the dimensionId to the found index
       newEvent.dimensionId = selectedDimension.id;
-      //@ts-ignore
-      console.log(
-        `dimension: |${this.newEventDetails.dimension}| -> |${newEvent.dimensionId}|`
-      );
-      //@ts-ignore
-      newEvent.description = this.newEventDetails.description;
-      //@ts-ignore
+      newEvent.description = this.event.description;  // Use event.description from the component's data
       newEvent.notes = this.newEventDetails.note;
-      //@ts-ignore
       newEvent.isInterval = this.newEventDetails.isInterval;
-      //@ts-ignore
       newEvent.startDate = this.newEventDetails.startDate;
 
-
-      if(this.newEventDetails.description){
-        //@ts-ignore
-        newEvent.endDate = store.state.data.person.endDate
-      }else{
-        //@ts-ignore
+      if (this.newEventDetails.isInterval) {
         newEvent.endDate = this.newEventDetails.endDate;
+      } else {
+        newEvent.endDate = newEvent.startDate; // Set the same as start date for non-interval events
       }
 
-      //@ts-ignore
       newEvent.isOpenEnd = this.newEventDetails.isOpenEnd;
-      console.log(newEvent)
-      console.log(this.newEventDetails.isInterval)
       store.commit("data/addEvent", newEvent);
       //@ts-ignore
-      //this.$router.go(0);
+      this.$router.go(0);
       //@ts-ignore
       this.newEventDetails = {};
     },
