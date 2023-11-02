@@ -28,9 +28,6 @@
 </template>
 
 <script>
-import TimeEvent from "./TimeEvent";
-import EventDisplay from "./EventDisplay";
-import EventDialogue from "./EventDialogue";
 import {store} from "../store";
 import {DimensionA} from "../data/Dimension";
 import {ref} from "vue";
@@ -38,9 +35,6 @@ import {ref} from "vue";
 export default {
   name: "EventPopUp",
   components: {
-    TimeEvent,
-    EventDisplay,
-    EventDialogue,
   },
   data() {
     return {

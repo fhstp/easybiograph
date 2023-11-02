@@ -147,7 +147,7 @@
         v-if="newDia"
       class="button is-link"
       style="right: -20vw; margin-top: -20px"
-      v-on:click="addEvent"
+        v-on:click="addEvent(title)"
     >
       Fertig
     </button>
@@ -211,23 +211,23 @@ export default {
     };
   },
   methods: {
-    addEvent() {
+    addEvent(title) {
       const newEvent = initEvent();
       const selectedDimension = this.dimensionOptions.find(dim => dim.title === this.newEventDetails.dimension);
 
       newEvent.dimensionId = selectedDimension.id;
       newEvent.description = this.event.description;  // Use event.description from the component's data
-      newEvent.notes = this.newEventDetails.note;
-      newEvent.isInterval = this.newEventDetails.isInterval;
-      newEvent.startDate = this.newEventDetails.startDate;
+      newEvent.notes = this.event.note;
+      newEvent.isInterval = this.event.isInterval;
+      newEvent.startDate = this.event.startDate;
 
-      if (this.newEventDetails.isInterval) {
-        newEvent.endDate = this.newEventDetails.endDate;
+      if (this.event.isInterval) {
+        newEvent.endDate = this.event.endDate;
       } else {
         newEvent.endDate = newEvent.startDate; // Set the same as start date for non-interval events
       }
 
-      newEvent.isOpenEnd = this.newEventDetails.isOpenEnd;
+      newEvent.isOpenEnd = this.event.isOpenEnd;
       store.commit("data/addEvent", newEvent);
       //@ts-ignore
       this.$router.go(0);

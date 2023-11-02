@@ -23,7 +23,7 @@
                   event.startDate.substring(0, 4)
       }}
     </span>
-    <div :class="[event.isInterval && event.isOpenEnd ? 'openEnd sel' : event.isInterval ? 'period sel' : 'event sel']">
+    <div :class="[event.isInterval && event.isOpenEnd ? 'openEnd sel' : event.isInterval ? 'period sel' : 'event sel']" @click="handleTimeEventClick">
       <p class="eventText">
         {{ event.description }}
       </p>
@@ -63,6 +63,9 @@ export default {
     this.setHeight();
   },
   methods: {
+    handleTimeEventClick() {
+      this.$emit('timeEventClick', this.event); // Emit a custom event with the event data
+    },
     setHeight() {
       const notesEvent = document.querySelector(".sel");
 

@@ -14,9 +14,11 @@
           class="event"
           :style="`left: ${mark.x1}%; width: ${mark.x2}%; top: ${mark.row * 1.5}rem`"
           @click="$emit('displayEvent', mark.datum)"
+          @timeEventClick="openEventPopUp"
         />
       </div>
     </div>
+    <EventPopUp v-if="showEventPopUp" :selectedEvent="selectedEvent" />
   </div>
 </template>
 
@@ -31,6 +33,7 @@ import TimeAxis from "./TimeAxis.vue";
 import { germanTimeFormat } from "../assets/util";
 import PersonInfo from "@/components/PersonInfo.vue";
 import TimeEvent from "@/components/TimeEvent.vue";
+import EventPopUp from "@/components/EventPopUp.vue";
 
 interface EventMark {
   datum: ZBEvent;
@@ -65,6 +68,15 @@ const timeScale = computed(() => {
   return d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
 });
 
+const showEventPopUp = ref(false);
+const selectedEvent = ref(null);
+
+const openEventPopUp = (event: any) => {
+  selectedEvent.value = event;
+  showEventPopUp.value = true;
+};
+
+
 // n.b. d3.axisTop() does not work because it renders in SVG
 
 // TODO update the general layout manually (by resizing dimensions) or on demand
@@ -79,8 +91,9 @@ const layout = computed((): Array<DimensionLayout> => {
   const sortedDimensions = [...filteredDimensions].reverse();
 
   const buffer = sortedDimensions.map((dim, i) => {
-    return { id: dim.id, label: dim.title, marks: [], rows: 0, fullRows: 0 };
+    return { id: dim.id, label: dim.title, marks: [] as EventMark[], rows: 0, fullRows: 0 };
   });
+
 
   // console.log(buffer);
 
