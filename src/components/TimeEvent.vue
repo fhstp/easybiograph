@@ -23,7 +23,7 @@
                   event.startDate.substring(0, 4)
       }}
     </span>
-    <div :class="[event.isInterval && event.isOpenEnd ? 'openEnd sel' : event.isInterval ? 'period sel' : 'event sel']" @click="handleTimeEventClick">
+    <div :class="[event.isInterval && event.isOpenEnd ? 'openEnd sel' : event.isInterval ? 'period sel' : 'event sel']" @click="handleTimeEventClick, $emit('timeEventClick', event)">
       <p class="eventText">
         {{ event.description }}
       </p>
@@ -109,6 +109,7 @@ export default {
   margin: 5px 0;
   border-radius: 3px;
   z-index: 1;
+  width: 50px;
 }
 
 .period {

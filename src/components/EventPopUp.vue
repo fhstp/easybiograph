@@ -8,14 +8,13 @@
       title="Eintrag bearbeiten"
       @reload="loadEvents"/>
 
-
   <!-- Modal to edit Events-->
   <div id="modal-event" class="modal">
     <div class="modal-background" @click="closeModal"></div>
 
     <div class="modal-content">
       <div class="box">
-        <EventDisplay :event="clickedEvent" @open-edit="editDiv" />
+        <EventDisplay :selectedEvent="selectedEvent" @open-edit="editDiv" />
       </div>
     </div>
 
@@ -31,10 +30,17 @@
 import {store} from "../store";
 import {DimensionA} from "../data/Dimension";
 import {ref} from "vue";
+import EventDialogue from "@/components/EventDialogue.vue";
+import EventDisplay from "@/components/EventDisplay.vue";
 
 export default {
   name: "EventPopUp",
   components: {
+    EventDialogue,
+    EventDisplay,
+  },
+  props: {
+    selectedEvent: Object,
   },
   data() {
     return {

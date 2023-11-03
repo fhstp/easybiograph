@@ -11,10 +11,9 @@
           v-for="mark in dim.marks"
           :key="mark.datum.eventId"
           :event="mark.datum"
-          class="event"
+          class="events"
           :style="`left: ${mark.x1}%; width: ${mark.x2}%; top: ${mark.row * 1.5}rem`"
-          @click="$emit('displayEvent', mark.datum)"
-          @timeEventClick="openEventPopUp"
+          @click="$emit('displayEvent', mark.datum), openEventPopUp(mark.datum)"
         />
       </div>
     </div>
@@ -72,9 +71,12 @@ const showEventPopUp = ref(false);
 const selectedEvent = ref(null);
 
 const openEventPopUp = (event: any) => {
+  console.log("Event clicked", event);
   selectedEvent.value = event;
   showEventPopUp.value = true;
+  console.log(selectedEvent.value)
 };
+
 
 
 // n.b. d3.axisTop() does not work because it renders in SVG
@@ -189,7 +191,7 @@ div.substrate {
   background: lightcyan;
 }
 
-div.event {
+div.events {
   position: absolute;
 
   // from TimeTable

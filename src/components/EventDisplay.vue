@@ -4,7 +4,7 @@
       <div class="media">
         <div class="media-content">
           <p class="title is-4">
-            {{ event.description }}
+            {{ selectedEvent.description }}
             <button @click="$emit('open-edit')" class="button is-link is-small">
               <span class="icon is-small">
                 <font-awesome-icon icon="pencil-alt" />
@@ -13,7 +13,7 @@
           </p>
 
           <p class="subtitle is-6">
-            {{ event.isInterval ? "Zeitraum" : "Zeitpunkt" }}
+            {{ selectedEvent.isInterval ? "Zeitraum" : "Zeitpunkt" }}
           </p>
         </div>
       </div>
@@ -26,10 +26,10 @@
           <div class="field-body">
             <div class="field">
               {{
-                event.isOpenEnd ? event.startDate + " bis Offenes Ende"
-                : event.isInterval
-                  ? event.startDate + " bis " + event.endDate
-                  : event.startDate
+                selectedEvent.isOpenEnd ? selectedEvent.startDate + " bis Offenes Ende"
+                : selectedEvent.isInterval
+                  ? selectedEvent.startDate + " bis " + selectedEvent.endDate
+                  : selectedEvent.startDate
               }}
             </div>
           </div>
@@ -41,7 +41,7 @@
           </div>
           <div class="field-body">
             <div class="field">
-              {{ event.notes }}
+              {{ selectedEvent.notes }}
             </div>
           </div>
         </div>
@@ -54,7 +54,7 @@
 export default {
   name: "EventDisplay",
   props: {
-    event: Object,
+    selectedEvent: Object,
   },
 };
 </script>
