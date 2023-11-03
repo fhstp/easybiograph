@@ -12,7 +12,7 @@
 
     <div class="modal-content">
       <div class="box">
-        <EventDisplay :event="clickedEvent" @open-edit="editDiv" />
+        <EventDisplay :selectedEvent="clickedEvent" @open-edit="editDiv" />
       </div>
     </div>
 

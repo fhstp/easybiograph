@@ -150,7 +150,24 @@
     <button
       class="modal-close is-large"
       aria-label="close"
-      @click="closeModal"
+      @click="closeModalEvent"
+    ></button>
+  </div>
+
+
+  <div id="modal-event" class="modal">
+    <div class="modal-background" @click="closeModalEvent"></div>
+
+    <div class="modal-content">
+      <div class="box">
+        <EventDisplay :selectedEvent="event" @open-edit="editDiv" @abort-new="closeModal" />
+      </div>
+    </div>
+
+    <button
+        class="modal-close is-large"
+        aria-label="close"
+        @click="closeModal"
     ></button>
   </div>
 </template>
@@ -161,6 +178,8 @@ import { store } from "@/store";
 import PersonDialogue from "@/components/PersonDialogue.vue";
 import PopUpNew from "@/components/PopUpNew.vue";
 import EventDialogue from "@/components/EventDialogue.vue";
+import EventPopUp from "@/components/EventPopUp.vue";
+import EventDisplay from "@/components/EventDisplay.vue";
 // import TimeTable from "@/components/TimeTable.vue";
 import TimePane from "@/components/TimePane.vue";
 import type { ZBEvent } from "@/data/ZBEvent";
@@ -172,6 +191,8 @@ export default {
     EventDialogue,
     PopUpNew,
     PersonDialogue,
+    EventPopUp,
+    EventDisplay
   },
 
   props: {
@@ -184,6 +205,8 @@ export default {
     return {
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       newPerson: true,
+      showEventPopUp: false,
+      selectedEvent: {},
       showDialogue: false,
       personYears: store.getters.getTimeline,
       showEventDisplay: false,
@@ -239,6 +262,10 @@ export default {
       const modalPopUp = document.querySelector("#modal-popUp");
       if (modalPopUp) modalPopUp.classList.remove("is-active");
     },
+    closeModalEvent(){
+      const modalPopUp = document.querySelector("#modal-event");
+      if (modalPopUp) modalPopUp.classList.remove("is-active");
+    },
     closePerson() {
       //@ts-ignore
       this.personYears = store.getters.getTimeline;
@@ -249,9 +276,13 @@ export default {
       //@ts-ignore
       this.$forceUpdate();
     },
+
     openEventDisplay(event: ZBEvent) {
       console.log(event);
       console.log(event.eventId);
+
+      const modal = document.querySelector("#modal-event");
+      if (modal) modal.classList.add("is-active");
       // TODO JB show event display modal
     },
     displayPersonYears(): object {
@@ -298,6 +329,9 @@ export default {
         //@ts-ignore
         store.commit("data/addDimension", newDim)
       }
+    },
+    editDiv(){
+      this.closeModalEvent();
     },
     downloadData() {
       // TODO move to utils.ts (consistent with easynwk)

@@ -13,11 +13,10 @@
           :event="mark.datum"
           class="events"
           :style="`left: ${mark.x1}%; width: ${mark.x2}%; top: ${mark.row * 1.5}rem`"
-          @click="$emit('displayEvent', mark.datum), openEventPopUp(mark.datum)"
+          @click="$emit('displayEvent', mark.datum)"
         />
       </div>
     </div>
-    <EventPopUp v-if="showEventPopUp" :selectedEvent="selectedEvent" />
   </div>
 </template>
 
@@ -32,7 +31,6 @@ import TimeAxis from "./TimeAxis.vue";
 import { germanTimeFormat } from "../assets/util";
 import PersonInfo from "@/components/PersonInfo.vue";
 import TimeEvent from "@/components/TimeEvent.vue";
-import EventPopUp from "@/components/EventPopUp.vue";
 
 interface EventMark {
   datum: ZBEvent;
@@ -66,18 +64,6 @@ const timeScale = computed(() => {
   const rightDate = new Date(store.state.data.person.endDate);
   return d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
 });
-
-const showEventPopUp = ref(false);
-const selectedEvent = ref(null);
-
-const openEventPopUp = (event: any) => {
-  console.log("Event clicked", event);
-  selectedEvent.value = event;
-  showEventPopUp.value = true;
-  console.log(selectedEvent.value)
-};
-
-
 
 // n.b. d3.axisTop() does not work because it renders in SVG
 

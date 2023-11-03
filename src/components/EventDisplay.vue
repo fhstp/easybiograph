@@ -27,9 +27,9 @@
             <div class="field">
               {{
                 selectedEvent.isOpenEnd ? selectedEvent.startDate + " bis Offenes Ende"
-                : selectedEvent.isInterval
-                  ? selectedEvent.startDate + " bis " + selectedEvent.endDate
-                  : selectedEvent.startDate
+                    : selectedEvent.isInterval
+                        ? selectedEvent.startDate + " bis " + selectedEvent.endDate
+                        : selectedEvent.startDate
               }}
             </div>
           </div>
