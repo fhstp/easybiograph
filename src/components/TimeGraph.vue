@@ -160,7 +160,7 @@
 
     <div class="modal-content">
       <div class="box">
-        <EventDisplay :selectedEvent="event" @open-edit="editDiv" @abort-new="closeModal" />
+        <EventDisplay :selectedEvent="selectedEvent" @open-edit="editDiv" @abort-new="closeModal" />
       </div>
     </div>
 
@@ -200,13 +200,16 @@ export default {
       type: Object,
       required: true,
     },
+      selectedEvent: {
+        type: Object,
+        required: false, // Adjust this based on your requirements
+      },
   },
   data() {
     return {
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       newPerson: true,
       showEventPopUp: false,
-      selectedEvent: {},
       showDialogue: false,
       personYears: store.getters.getTimeline,
       showEventDisplay: false,
@@ -277,13 +280,13 @@ export default {
       this.$forceUpdate();
     },
 
-    openEventDisplay(event: ZBEvent) {
-      console.log(event);
-      console.log(event.eventId);
+    openEventDisplay(event: any) {
+      // Store the selected event data in the component's selectedEvent property
+      event = {};
 
+      // Show the event display modal
       const modal = document.querySelector("#modal-event");
       if (modal) modal.classList.add("is-active");
-      // TODO JB show event display modal
     },
     displayPersonYears(): object {
       let displayedArray: number[] = [];

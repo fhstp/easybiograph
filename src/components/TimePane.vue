@@ -8,12 +8,12 @@
       </div>
       <div class="substrate" ref="substrateRef">
         <TimeEvent
-          v-for="mark in dim.marks"
-          :key="mark.datum.eventId"
-          :event="mark.datum"
-          class="events"
-          :style="`left: ${mark.x1}%; width: ${mark.x2}%; top: ${mark.row * 1.5}rem`"
-          @click="$emit('displayEvent', mark.datum)"
+            v-for="mark in dim.marks"
+            :key="mark.datum.eventId"
+            :event="mark.datum"
+            class="events"
+            :style="`left: ${mark.x1}%; width: ${mark.x2}%; top: ${mark.row * 1.5}rem`"
+            @click="$emit('displayEvent', mark.datum)"
         />
       </div>
     </div>
