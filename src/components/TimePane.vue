@@ -22,11 +22,10 @@
 
 <script setup lang="ts">
 // import { scaleLinear } from "d3-scale";
-import { computed, ref, watch, onMounted } from "vue";
+import { computed } from "vue";
 import { useStore } from "@/store";
 import type { ZBEvent } from "@/data/ZBEvent";
 import * as d3 from "d3";
-import { DimensionA } from "@/data/Dimension";
 import TimeAxis from "./TimeAxis.vue";
 import { germanTimeFormat } from "../assets/util";
 import PersonInfo from "@/components/PersonInfo.vue";
