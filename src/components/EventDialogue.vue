@@ -81,7 +81,7 @@
         <div class="field is-narrow">
           <div class="control">
             <div class="select is-fullwidth">
-              <select v-model="newEventDetails.dimension">
+              <select v-model="event.dimensionId">
                 <option v-for="value in dimensionOptions" :key="value">
                   {{ value.title }}
                 </option>
@@ -119,7 +119,7 @@
           <div class="control">
             <textarea
               class="textarea"
-              v-model="event.note"
+              v-model="event.notes"
               placeholder="Notizen zum Event"
               id="noteId"
             ></textarea>
@@ -235,7 +235,7 @@ export default {
       this.newEventDetails = {};
     },
     removeEvent() {
-      store.commit("data/removeEvent", this.selectedEvent.eventId);
+      store.commit("data/removeEvent", this.event.eventId);
       this.$router.go(0);
       this.$emit("close");
     },

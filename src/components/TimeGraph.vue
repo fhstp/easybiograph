@@ -2,6 +2,7 @@
   <!-- <TimeTable v-if="!showCreateBiograph && !showIntro" /> -->
 
   <EventDialogue v-show="showDialogue" @close="showDialogue = false" :new-dia="true" :event="newEventDetails" title="Eintrag erstellen" />
+  <EventDialogue v-show="showEditDialogue" @close="showEditDialogue = false" :new-dia="false" :event="selectedEvent" title="Eintrag bearbeiten" />
 
   <PersonDialogue
     v-show="showCreateBiograph"
@@ -160,7 +161,10 @@
 
     <div class="modal-content">
       <div class="box">
-        <EventDisplay :selectedEvent="selectedEvent" @open-edit="editDiv" @abort-new="closeModal" />
+        <EventDisplay
+            :selectedEvent="selectedEvent"
+            @open-edit="editDiv"
+            @abort-new="closeModal" />
       </div>
     </div>
 
@@ -199,18 +203,21 @@ export default {
     event: {
       type: Object,
       required: true,
-    },
-      selectedEvent: {
+    }
+      /*selectedEvent: {
         type: Object,
         required: false, // Adjust this based on your requirements
       },
+       */
   },
   data() {
     return {
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       newPerson: true,
+      selectedEvent: {},
       showEventPopUp: false,
       showDialogue: false,
+      showEditDialogue: false,
       personYears: store.getters.getTimeline,
       showEventDisplay: false,
       deleteDia: false,
@@ -281,9 +288,10 @@ export default {
     },
 
     openEventDisplay(event: any) {
-      // Store the selected event data in the component's selectedEvent property
-      event = {};
+      //@ts-ignore
+      this.selectedEvent = event;
 
+      console.log(event)
       // Show the event display modal
       const modal = document.querySelector("#modal-event");
       if (modal) modal.classList.add("is-active");
@@ -334,6 +342,8 @@ export default {
       }
     },
     editDiv(){
+      //@ts-ignore
+      this.showEditDialogue = true;
       this.closeModalEvent();
     },
     downloadData() {

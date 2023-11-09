@@ -146,7 +146,7 @@ const layout = computed((): Array<DimensionLayout> => {
 div.pane {
   // margin-top: 3.25rem; /* TODO handle top panels better */
   flex-grow: 1;
-  background: lightpink;
+  background: #edf6f9;
   // bottom: 0px;
 }
 

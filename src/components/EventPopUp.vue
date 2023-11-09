@@ -14,7 +14,7 @@
 
     <div class="modal-content">
       <div class="box">
-        <EventDisplay :selectedEvent="selectedEvent" @open-edit="editDiv" />
+        <!-- <EventDisplay :selectedEvent="selectedEvent" @open-edit="editDiv" /> -->
       </div>
     </div>
 
