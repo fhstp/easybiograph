@@ -8,7 +8,7 @@
       height: 93vh;
       left: 10vw;
       width: 40vw;
-      z-index: 5;
+      z-index: 10;
     "
   >
     <h1 class="title block">{{ title }}</h1>
@@ -81,7 +81,8 @@
         <div class="field is-narrow">
           <div class="control">
             <div class="select is-fullwidth">
-              <select v-model="event.dimensionId">
+              <!-- <select v-model="event.dimensionId"> -->
+              <select v-model="newEventDetails.dimension">
                 <option v-for="value in dimensionOptions" :key="value">
                   {{ value.title }}
                 </option>
@@ -245,12 +246,12 @@ export default {
         this.currentEvent.endDate = store.state.data.person.endDate
       }
       const payload = this.currentEvent;
-      const dimId = DimensionA.indexOf(this.newEventDetails.dimension);
+      const dimId = this.dimensionOptions.find(dim => dim.title === this.newEventDetails.dimension);
       payload.dimensionId = dimId;
       console.table(payload);
       store.commit("data/editEvents", payload);
       this.$emit("reload");
-      this.$router.go(0);
+      //this.$router.go(0);
       this.$emit("close");
     },
     close() {

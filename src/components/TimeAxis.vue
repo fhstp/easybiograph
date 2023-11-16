@@ -146,7 +146,7 @@ const ageTicks = computed(() => {
 <style scoped lang="scss">
 div.axis {
   // margin-top: 3.25rem;
-  background: #edf6f9; /* TODO JB beautify & borders */
+  background: #fcfcfc; /* TODO JB beautify & borders */
   width: 100%;
   height: 5.5em;
   position: relative;

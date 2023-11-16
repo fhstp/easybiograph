@@ -1,12 +1,18 @@
 <template>
   <div class="pane">
     <PersonInfo />
-    <TimeAxis :scale="timeScale" />
-    <div class="dim" v-for="dim in layout" :key="dim.id">
+    <TimeAxis :scale="timeScale" style="z-index: 2" />
+    <div
+        v-for="(dim, index) in layout"
+        :key="dim.id"
+        :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
+    >
       <div class="dlabel">
         {{ dim.label }}
       </div>
-      <div class="substrate" ref="substrateRef">
+      <div class="substrate"
+           :class="{ 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
+           ref="substrateRef">
         <TimeEvent
             v-for="mark in dim.marks"
             :key="mark.datum.eventId"
@@ -143,6 +149,48 @@ const layout = computed((): Array<DimensionLayout> => {
 </script>
 
 <style scoped lang="scss">
+
+.grey-background {
+  background-color: #f2f2f2;
+}
+
+.white-background {
+  background-color: #fcfcfc;
+}
+
+div.events {
+  position: absolute;
+  cursor: pointer !important;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: -100vh;
+    bottom: 1vh;
+    width: 2px;
+    background-color: transparent;
+    transition: background-color 0.3s ease; /* Transition effect for color change */
+    z-index: 1;
+  }
+
+  /* Left line */
+  &::before {
+    left: -1px;
+  }
+
+  /* Right line */
+  &::after {
+    right: -0.5px;
+  }
+
+  &:hover::before,
+  &:hover::after {
+    background-color: forestgreen;
+  }
+}
+
+
 div.pane {
   // margin-top: 3.25rem; /* TODO handle top panels better */
   flex-grow: 1;
@@ -173,7 +221,6 @@ div.substrate {
   height: 100%;
   position: absolute;
   border-left: 1px solid black;
-  background: lightcyan;
 }
 
 div.events {
