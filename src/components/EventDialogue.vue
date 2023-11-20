@@ -53,11 +53,10 @@
       </div>
     </div>
     <div class="field is-horizontal" v-show="event.isInterval">
-
       <div class="field-label is-normal">
         <label class="label" style="text-align: left">bis</label>
       </div>
-      <div class="field-body" >
+      <div class="field-body">
         <MonthChooser
           v-model="event.endDate"
           :min="birthDate"
@@ -67,11 +66,24 @@
       </div>
     </div>
 
-    <label class="checkbox is-small" v-show="event.isInterval" style="float: right; text-align: right; margin-right: 1%; font-size: smaller">
-      <input type="checkbox" v-model="event.isOpenEnd" @change="isChecked = !isChecked">
+    <label
+      class="checkbox is-small"
+      v-show="event.isInterval"
+      style="
+        float: right;
+        text-align: right;
+        margin-right: 1%;
+        font-size: smaller;
+      "
+    >
+      <input
+        type="checkbox"
+        v-model="event.isOpenEnd"
+        @change="isChecked = !isChecked"
+      />
       Offenes Ende
     </label>
-    <br>
+    <br />
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
@@ -130,10 +142,10 @@
     </div>
     <br />
     <button
-        v-if="!newDia"
-        class="button is-danger is-light"
-        @click="removeEvent"
-        style="margin-right: 1vw; right: 0vw; margin-top: -20px"
+      v-if="!newDia"
+      class="button is-danger is-light"
+      @click="removeEvent"
+      style="margin-right: 1vw; right: 0vw; margin-top: -20px"
     >
       Löschen
     </button>
@@ -145,18 +157,18 @@
       Abbrechen
     </button>
     <button
-        v-if="newDia"
+      v-if="newDia"
       class="button is-link"
       style="right: -20vw; margin-top: -20px"
-        v-on:click="addEvent(title)"
+      v-on:click="addEvent(title)"
     >
       Fertig
     </button>
     <button
-        v-if="!newDia"
-        class="button is-link"
-        style="right: -20vw; margin-top: -20px"
-        v-on:click="editEvent"
+      v-if="!newDia"
+      class="button is-link"
+      style="right: -20vw; margin-top: -20px"
+      v-on:click="editEvent"
     >
       Fertig
     </button>
@@ -168,7 +180,7 @@ import MonthChooser from "./MonthChooser.vue";
 import { store } from "../store";
 import { Dimension, DimensionA } from "../data/Dimension";
 import { initEvent } from "../data/ZBEvent";
-import {ref} from "vue";
+import { ref } from "vue";
 
 export default {
   name: "EventDialogue",
@@ -181,7 +193,9 @@ export default {
   setup() {
     const dimensions = store.state.data.dimensions;
 
-    const dimensionOptions = ref([...dimensions].reverse().filter(dim => dim.visible));
+    const dimensionOptions = ref(
+      [...dimensions].reverse().filter((dim) => dim.visible)
+    );
 
     return {
       dimensionOptions,
@@ -214,10 +228,12 @@ export default {
   methods: {
     addEvent(title) {
       const newEvent = initEvent();
-      const selectedDimension = this.dimensionOptions.find(dim => dim.title === this.newEventDetails.dimension);
+      const selectedDimension = this.dimensionOptions.find(
+        (dim) => dim.title === this.newEventDetails.dimension
+      );
 
       newEvent.dimensionId = selectedDimension.id;
-      newEvent.description = this.event.description;  // Use event.description from the component's data
+      newEvent.description = this.event.description; // Use event.description from the component's data
       newEvent.notes = this.event.note;
       newEvent.isInterval = this.event.isInterval;
       newEvent.startDate = this.event.startDate;
@@ -242,11 +258,13 @@ export default {
     },
     editEvent() {
       // safe to send currentEvent because it is a clone
-      if(this.disableCheck == true){
-        this.currentEvent.endDate = store.state.data.person.endDate
+      if (this.disableCheck == true) {
+        this.currentEvent.endDate = store.state.data.person.endDate;
       }
       const payload = this.currentEvent;
-      const dimId = this.dimensionOptions.find(dim => dim.title === this.newEventDetails.dimension);
+      const dimId = this.dimensionOptions.find(
+        (dim) => dim.title === this.newEventDetails.dimension
+      );
       payload.dimensionId = dimId;
       console.table(payload);
       store.commit("data/editEvents", payload);

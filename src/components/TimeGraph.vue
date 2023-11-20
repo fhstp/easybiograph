@@ -1,8 +1,20 @@
 <template>
   <!-- <TimeTable v-if="!showCreateBiograph && !showIntro" /> -->
 
-  <EventDialogue v-show="showDialogue" @close="showDialogue = false" :new-dia="true" :event="newEventDetails" title="Eintrag erstellen" />
-  <EventDialogue v-show="showEditDialogue" @close="showEditDialogue = false" :new-dia="false" :event="selectedEvent" title="Eintrag bearbeiten" />
+  <EventDialogue
+    v-show="showDialogue"
+    @close="showDialogue = false"
+    :new-dia="true"
+    :event="newEventDetails"
+    title="Eintrag erstellen"
+  />
+  <EventDialogue
+    v-show="showEditDialogue"
+    @close="showEditDialogue = false"
+    :new-dia="false"
+    :event="selectedEvent"
+    title="Eintrag bearbeiten"
+  />
 
   <PersonDialogue
     v-show="showCreateBiograph"
