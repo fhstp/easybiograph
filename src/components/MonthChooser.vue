@@ -99,6 +99,8 @@ const setFromProperties = (newModelValue: string | undefined) => {
       month.value = parseInt(match[2]) - 1;
       if (match[3]) {
         day.value = match[3];
+      } else {
+        day.value = UNSET_DAY;
       }
       // TODO insert error handling
       //console.log(`parsed as ${match[1]} - ${AVAIL_MONTHS[month.value]}`);
