@@ -52,7 +52,7 @@ const minDay = computed(() => {
  */
 
 const age = computed(() => {
-  if (minYear.value && minMonth.value) {
+  if (minYear.value && minMonth.value !== undefined) {
     const ageMon =
       (year.value - minYear.value) * 12 + (month.value - minMonth.value);
 
