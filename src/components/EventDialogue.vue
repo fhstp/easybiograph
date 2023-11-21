@@ -181,8 +181,6 @@ import { initEvent } from "../data/ZBEvent";
 import type { ZBEvent } from "../data/ZBEvent";
 import { ref, computed } from "vue";
 import type { PropType } from "vue";
-import type { ZBDimension } from "@/data/Dimension";
-import type { ZBPerson } from "@/data/ZBPerson";
 
 export default {
   name: "EventDialogue",
@@ -194,9 +192,7 @@ export default {
     const dimensionOptions = computed(() =>
       [...store.state.data.dimensions].reverse().filter((dim) => dim.visible)
     );
-    const tempEvent = ref(
-      initEventPlausibly(dimensionOptions.value, store.state.data.person)
-    );
+    const tempEvent = ref(initEvent());
 
     return {
       tempEvent,
@@ -229,10 +225,6 @@ export default {
       }
 
       store.commit("data/addEvent", this.tempEvent);
-      this.tempEvent = initEventPlausibly(
-        this.dimensionOptions,
-        store.state.data.person
-      );
       this.$emit("close");
     },
     removeEvent() {
@@ -262,41 +254,15 @@ export default {
   },
   watch: {
     event: function () {
-      if (!this.event) {
-        console.log("new event init ...");
-        this.tempEvent = initEventPlausibly(
-          this.dimensionOptions,
-          store.state.data.person
-        );
-
-        this.isNewEvent = true;
-      } else {
-        console.log("existing event assigned for edit ..." + this.event);
+      if (this.event) {
+        console.log("prepare EventDialogue for ..." + this.event);
         // shallow clone event data when opening the dialog
         this.tempEvent = Object.assign({}, this.event);
-        this.isNewEvent = false;
+        this.isNewEvent = this.event.eventId === -1;
       }
     },
   },
 };
-
-function initEventPlausibly(
-  dimensionOptions: ZBDimension[],
-  person: ZBPerson
-): ZBEvent {
-  const tempEvent = initEvent();
-
-  // init some plausible defaults
-  tempEvent.dimensionId = dimensionOptions[0].id;
-
-  const endYear = person.endDate.substring(0, 4);
-  const defaultYear = (Number(endYear) - 1).toString();
-  tempEvent.startDate = defaultYear + "-01";
-  tempEvent.endDate = defaultYear + "-12";
-
-  console.table(tempEvent);
-  return tempEvent;
-}
 </script>
 
 <style scoped>

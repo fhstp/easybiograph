@@ -189,6 +189,7 @@ import EventPopUp from "@/components/EventPopUp.vue";
 import EventDisplay from "@/components/EventDisplay.vue";
 // import TimeTable from "@/components/TimeTable.vue";
 import TimePane from "@/components/TimePane.vue";
+import { initEvent, type ZBEvent } from "@/data/ZBEvent";
 
 export default {
   name: "TimeGraph",
@@ -206,7 +207,7 @@ export default {
     return {
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       newPerson: true,
-      selectedEvent: null,
+      selectedEvent: null as ZBEvent | null,
       showEventPopUp: false,
       showEventDialogue: false,
       personYears: store.getters.getTimeline,
@@ -234,12 +235,26 @@ export default {
   },
   methods: {
     showAddEventDialogue() {
-      // TODO: use self-explaining function name, which <div>? add event dialog
-      //@ts-ignore
-      this.selectedEvent = null; // informs dialogue that a new event is created
+      const tempEvent = initEvent();
+
+      // plausible defaults for dimension top-most visible
+      const dimIds = store.state.data.dimensions
+        .filter((d) => d.visible)
+        .map((d) => d.id);
+      tempEvent.dimensionId = dimIds[dimIds.length - 1];
+
+      // plausible defaults for time: the year before the end of Zeitbalken
+      const endYear = store.state.data.person.endDate.substring(0, 4);
+      const defaultYear = (Number(endYear) - 1).toString();
+      tempEvent.startDate = defaultYear + "-01";
+      tempEvent.endDate = defaultYear + "-12";
+
+      console.table(tempEvent);
+
+      this.selectedEvent = tempEvent;
+      // event.id = -1 therefore dialogue is informed that a new event is created
+
       this.showEventDialogue = true;
-      //@ts-ignore
-      // this.deleteDia = true;
     },
     removeEvent() {
       store.commit("data/removeEvent", 0);
