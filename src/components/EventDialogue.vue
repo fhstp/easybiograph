@@ -22,7 +22,7 @@
             <label class="radio">
               <input
                 type="radio"
-                v-model="event.isInterval"
+                v-model="tempEvent.isInterval"
                 v-bind:value="true"
               />
               Zeitraum
@@ -30,7 +30,7 @@
             <label class="radio">
               <input
                 type="radio"
-                v-model="event.isInterval"
+                v-model="tempEvent.isInterval"
                 v-bind:value="false"
               />
               Zeitpunkt
@@ -45,30 +45,30 @@
       </div>
       <div class="field-body">
         <MonthChooser
-          v-model="event.startDate"
+          v-model="tempEvent.startDate"
           :min="birthDate"
           :max="endDate"
-          :disable-check="false"
+          :disabled="false"
         />
       </div>
     </div>
-    <div class="field is-horizontal" v-show="event.isInterval">
+    <div class="field is-horizontal" v-show="tempEvent.isInterval">
       <div class="field-label is-normal">
         <label class="label" style="text-align: left">bis</label>
       </div>
       <div class="field-body">
         <MonthChooser
-          v-model="event.endDate"
+          v-model="tempEvent.endDate"
           :min="birthDate"
           :max="endDate"
-          :disable-check="isChecked"
+          :disabled="tempEvent.isOpenEnd"
         />
       </div>
     </div>
 
     <label
       class="checkbox is-small"
-      v-show="event.isInterval"
+      v-show="tempEvent.isInterval"
       style="
         float: right;
         text-align: right;
@@ -76,11 +76,7 @@
         font-size: smaller;
       "
     >
-      <input
-        type="checkbox"
-        v-model="event.isOpenEnd"
-        @change="isChecked = !isChecked"
-      />
+      <input type="checkbox" v-model="tempEvent.isOpenEnd" />
       Offenes Ende
     </label>
     <br />
@@ -93,10 +89,13 @@
         <div class="field is-narrow">
           <div class="control">
             <div class="select is-fullwidth">
-              <!-- <select v-model="event.dimensionId"> -->
-              <select v-model="newEventDetails.dimension">
-                <option v-for="value in dimensionOptions" :key="value">
-                  {{ value.title }}
+              <select v-model="tempEvent.dimensionId">
+                <option
+                  v-for="dim in dimensionOptions"
+                  :key="dim.id"
+                  :value="dim.id"
+                >
+                  {{ dim.title }}
                 </option>
               </select>
             </div>
@@ -113,7 +112,7 @@
           <div class="control">
             <input
               class="input"
-              v-model="event.description"
+              v-model="tempEvent.description"
               type="text"
               placeholder="Anzeigename des Events"
               id="eventNameId"
@@ -132,7 +131,7 @@
           <div class="control">
             <textarea
               class="textarea"
-              v-model="event.notes"
+              v-model="tempEvent.notes"
               placeholder="Notizen zum Event"
               id="noteId"
             ></textarea>
@@ -142,7 +141,7 @@
     </div>
     <br />
     <button
-      v-if="!newDia"
+      v-if="!isNewEvent"
       class="button is-danger is-light"
       @click="removeEvent"
       style="margin-right: 1vw; right: 0vw; margin-top: -20px"
@@ -157,15 +156,15 @@
       Abbrechen
     </button>
     <button
-      v-if="newDia"
+      v-if="isNewEvent"
       class="button is-link"
       style="right: -20vw; margin-top: -20px"
-      v-on:click="addEvent(title)"
+      v-on:click="addEvent"
     >
       Fertig
     </button>
     <button
-      v-if="!newDia"
+      v-if="!isNewEvent"
       class="button is-link"
       style="right: -20vw; margin-top: -20px"
       v-on:click="editEvent"
@@ -175,29 +174,32 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import MonthChooser from "./MonthChooser.vue";
 import { store } from "../store";
-import { Dimension, DimensionA } from "../data/Dimension";
 import { initEvent } from "../data/ZBEvent";
-import { ref } from "vue";
+import type { ZBEvent } from "../data/ZBEvent";
+import { ref, computed } from "vue";
+import type { PropType } from "vue";
+import type { ZBDimension } from "@/data/Dimension";
+import type { ZBPerson } from "@/data/ZBPerson";
 
 export default {
   name: "EventDialogue",
   components: { MonthChooser },
   props: {
-    event: Object,
-    title: String,
-    newDia: Boolean,
+    event: { type: Object as PropType<ZBEvent | null> },
   },
   setup() {
-    const dimensions = store.state.data.dimensions;
-
-    const dimensionOptions = ref(
-      [...dimensions].reverse().filter((dim) => dim.visible)
+    const dimensionOptions = computed(() =>
+      [...store.state.data.dimensions].reverse().filter((dim) => dim.visible)
+    );
+    const tempEvent = ref(
+      initEventPlausibly(dimensionOptions.value, store.state.data.person)
     );
 
     return {
+      tempEvent,
       dimensionOptions,
     };
   },
@@ -208,68 +210,50 @@ export default {
     endDate() {
       return store.state.data.person.endDate;
     },
+    title() {
+      return this.isNewEvent ? "Eintrag erstellen" : "Eintrag bearbeiten";
+    },
   },
   data() {
     return {
-      isChecked: false,
-      newEventDetails: {
-        isInterval: true,
-        description: "",
-        note: "",
-        dimension: this.dimensionOptions[0], // XXX: might solve bug with uninitialized dimension
-        startDate: "2020-01",
-        endDate: "2020-12",
-        isOpenEnd: false,
-      },
-      currentEvent: {},
-      selectedDimension: DimensionA[0],
+      isNewEvent: true,
     };
   },
   methods: {
-    addEvent(title) {
-      const newEvent = initEvent();
-      const selectedDimension = this.dimensionOptions.find(
-        (dim) => dim.title === this.newEventDetails.dimension
-      );
-
-      newEvent.dimensionId = selectedDimension.id;
-      newEvent.description = this.event.description; // Use event.description from the component's data
-      newEvent.notes = this.event.note;
-      newEvent.isInterval = this.event.isInterval;
-      newEvent.startDate = this.event.startDate;
-
-      if (this.event.isInterval) {
-        newEvent.endDate = this.event.endDate;
-      } else {
-        newEvent.endDate = newEvent.startDate; // Set the same as start date for non-interval events
+    addEvent() {
+      if (!this.tempEvent.isInterval) {
+        this.tempEvent.endDate = this.tempEvent.startDate; // Set the same as start date for non-interval events
+      }
+      if (this.tempEvent.isOpenEnd) {
+        this.tempEvent.endDate = store.state.data.person.endDate;
       }
 
-      newEvent.isOpenEnd = this.event.isOpenEnd;
-      store.commit("data/addEvent", newEvent);
-      //@ts-ignore
-      this.$router.go(0);
-      //@ts-ignore
-      this.newEventDetails = {};
+      store.commit("data/addEvent", this.tempEvent);
+      this.tempEvent = initEventPlausibly(
+        this.dimensionOptions,
+        store.state.data.person
+      );
+      this.$emit("close");
     },
     removeEvent() {
-      store.commit("data/removeEvent", this.event.eventId);
-      this.$router.go(0);
+      if (this.event) {
+        store.commit("data/removeEvent", this.event.eventId);
+      } else {
+        console.warn("try to remove newly added event");
+      }
       this.$emit("close");
     },
     editEvent() {
-      // safe to send currentEvent because it is a clone
-      if (this.disableCheck == true) {
-        this.currentEvent.endDate = store.state.data.person.endDate;
+      if (!this.tempEvent.isInterval) {
+        this.tempEvent.endDate = this.tempEvent.startDate; // Set the same as start date for non-interval events
       }
-      const payload = this.currentEvent;
-      const dimId = this.dimensionOptions.find(
-        (dim) => dim.title === this.newEventDetails.dimension
-      );
-      payload.dimensionId = dimId;
-      console.table(payload);
-      store.commit("data/editEvents", payload);
-      this.$emit("reload");
-      //this.$router.go(0);
+      if (this.tempEvent.isOpenEnd) {
+        this.tempEvent.endDate = store.state.data.person.endDate;
+      }
+
+      console.table(this.tempEvent);
+      // safe to send currentEvent because it is a clone
+      store.commit("data/editEvents", this.tempEvent);
       this.$emit("close");
     },
     close() {
@@ -277,13 +261,42 @@ export default {
     },
   },
   watch: {
-    selectedEvent: function () {
-      // shallow clone event data when opening the dialog
-      this.currentEvent = Object.assign({}, this.selectedEvent);
-      this.selectedDimension = Dimension[this.selectedEvent.dimensionId];
+    event: function () {
+      if (!this.event) {
+        console.log("new event init ...");
+        this.tempEvent = initEventPlausibly(
+          this.dimensionOptions,
+          store.state.data.person
+        );
+
+        this.isNewEvent = true;
+      } else {
+        console.log("existing event assigned for edit ..." + this.event);
+        // shallow clone event data when opening the dialog
+        this.tempEvent = Object.assign({}, this.event);
+        this.isNewEvent = false;
+      }
     },
   },
 };
+
+function initEventPlausibly(
+  dimensionOptions: ZBDimension[],
+  person: ZBPerson
+): ZBEvent {
+  const tempEvent = initEvent();
+
+  // init some plausible defaults
+  tempEvent.dimensionId = dimensionOptions[0].id;
+
+  const endYear = person.endDate.substring(0, 4);
+  const defaultYear = (Number(endYear) - 1).toString();
+  tempEvent.startDate = defaultYear + "-01";
+  tempEvent.endDate = defaultYear + "-12";
+
+  console.table(tempEvent);
+  return tempEvent;
+}
 </script>
 
 <style scoped>

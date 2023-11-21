@@ -4,7 +4,7 @@
       <div class="media">
         <div class="media-content">
           <p class="title is-4">
-            {{ selectedEvent.description }}
+            {{ description }}
             <button @click="$emit('open-edit')" class="button is-link is-small">
               <span class="icon is-small">
                 <font-awesome-icon icon="pencil-alt" />
@@ -13,7 +13,7 @@
           </p>
 
           <p class="subtitle is-6">
-            {{ selectedEvent.isInterval ? "Zeitraum" : "Zeitpunkt" }}
+            {{ eventTypeAsString }}
           </p>
         </div>
       </div>
@@ -25,12 +25,7 @@
           </div>
           <div class="field-body">
             <div class="field">
-              {{
-                selectedEvent.isOpenEnd ? selectedEvent.startDate + " bis Offenes Ende"
-                    : selectedEvent.isInterval
-                        ? selectedEvent.startDate + " bis " + selectedEvent.endDate
-                        : selectedEvent.startDate
-              }}
+              {{ timeInfo }}
             </div>
           </div>
         </div>
@@ -41,7 +36,7 @@
           </div>
           <div class="field-body">
             <div class="field">
-              {{ selectedEvent.notes }}
+              {{ notes }}
             </div>
           </div>
         </div>
@@ -50,13 +45,41 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "EventDisplay",
-  props: {
-    selectedEvent: Object,
-  },
-};
+<script setup lang="ts">
+import type { ZBEvent } from "@/data/ZBEvent";
+import { computed } from "vue";
+
+const props = defineProps<{
+  selectedEvent: ZBEvent | null;
+}>();
+
+const description = computed(() =>
+  props.selectedEvent ? props.selectedEvent.description : ""
+);
+
+const notes = computed(() =>
+  props.selectedEvent ? props.selectedEvent.notes : ""
+);
+
+const eventTypeAsString = computed(() => {
+  if (props.selectedEvent) {
+    return props.selectedEvent.isInterval ? "Zeitraum" : "Zeitpunkt";
+  } else {
+    return "";
+  }
+});
+
+const timeInfo = computed(() => {
+  if (props.selectedEvent) {
+    return props.selectedEvent.isOpenEnd
+      ? props.selectedEvent.startDate + " bis Offenes Ende"
+      : props.selectedEvent.isInterval
+      ? props.selectedEvent.startDate + " bis " + props.selectedEvent.endDate
+      : props.selectedEvent.startDate;
+  } else {
+    return "";
+  }
+});
 </script>
 
 <style scoped></style>

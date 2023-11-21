@@ -1,3 +1,4 @@
+import type { ZBDimension } from "./Dimension";
 import type { ZBEvent } from "./ZBEvent";
 import { initPerson, type ZBPerson } from "./ZBPerson";
 
@@ -5,7 +6,7 @@ export interface Zeitbalken {
   person: ZBPerson;
   events: Array<ZBEvent>;
   timeline: Array<number>;
-  dimensions: Array<any>;
+  dimensions: Array<ZBDimension>;
 }
 
 export function initZeitbalkenAsJSON(): string {

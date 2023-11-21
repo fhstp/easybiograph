@@ -44,7 +44,7 @@
           v-model="currentEvent.startDate"
           :min="birthDate"
           :max="endDate"
-          :disable-check="false"
+          :disabled="false"
         />
       </div>
     </div>
@@ -57,7 +57,7 @@
           v-model="currentEvent.endDate"
           :min="birthDate"
           :max="endDate"
-          :disable-check="disableCheck"
+          :disabled="disableCheck"
         />
       </div>
     </div>

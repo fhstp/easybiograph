@@ -46,7 +46,7 @@
         <label class="label" style="text-align: left">Geburtsdatum</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.birthDate" require-day :disable-check="false" />
+        <MonthChooser v-model="newPersonDetails.birthDate" require-day :disabled="false" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -54,7 +54,7 @@
         <label class="label" style="text-align: left">Zeitbalken bis</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.endDate" require-day :disable-check="false" />
+        <MonthChooser v-model="newPersonDetails.endDate" require-day :disabled="false" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -62,7 +62,7 @@
         <label class="label" style="text-align: left">Erstellt am</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.creationDate" require-day :disable-check="false" />
+        <MonthChooser v-model="newPersonDetails.creationDate" require-day :disabled="false" />
       </div>
     </div>
     <div class="field is-horizontal">

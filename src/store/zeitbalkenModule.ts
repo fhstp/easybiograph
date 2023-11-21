@@ -7,7 +7,7 @@ import { initPerson } from "@/data/ZBPerson";
 
 import { loadZeitbalkenFromStore } from "./localStoragePlugin";
 import { initDimension } from "@/data/Dimension";
-import type { Dim } from "@/data/Dimension";
+import type { ZBDimension } from "@/data/Dimension";
 //import type { IStoreState } from "@/store/index";
 
 // module state object.
@@ -57,6 +57,7 @@ const mutations = {
     });
   },
 
+  // TODO check if still needed
   addTimeline(state: Zeitbalken, timeline: Array<number>): void {
     state.timeline = timeline;
   },
@@ -67,7 +68,7 @@ const mutations = {
   },
    */
 
-  addDimension(state: Zeitbalken, initialValues: Partial<Dim> = {}): void {
+  addDimension(state: Zeitbalken, initialValues: Partial<ZBDimension> = {}): void {
     const newDim = {
       ...initDimension(),
       ...initialValues,
@@ -82,7 +83,7 @@ const mutations = {
   //because the Dims are reversed - own function here to change the name
   editDimName(
     state: Zeitbalken,
-    payload: { id: number; changes: Partial<Dim> }
+    payload: { id: number; changes: Partial<ZBDimension> }
   ) {
     const dimension = state.dimensions.find((dim) => dim.id === payload.id);
     if (dimension) {
@@ -92,7 +93,7 @@ const mutations = {
 
   toggleDimVisi(
     state: Zeitbalken,
-    payload: { id: number; changes: Partial<Dim> }
+    payload: { id: number; changes: Partial<ZBDimension> }
   ) {
     const dimension = state.dimensions.find((dim) => dim.id === payload.id);
     if (dimension) {
@@ -102,7 +103,7 @@ const mutations = {
 
   editDimension(
     state: Zeitbalken,
-    payload: { index: number; changes: Partial<Dim> }
+    payload: { index: number; changes: Partial<ZBDimension> }
   ): void {
     // based oen vuex\examples\composition\todomvc\store\mutations.js
     // const index = state.alteri.indexOf(payload.alter);

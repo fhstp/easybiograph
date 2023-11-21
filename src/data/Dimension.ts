@@ -8,13 +8,13 @@ export const DimensionA = [
   "Sonstiges", //6
 ];
 
-export interface Dim {
+export interface ZBDimension {
   id: number;
   title: string;
   visible: boolean;
 }
 
-export function initDimension(): Dim {
+export function initDimension(): ZBDimension {
   return {
     id: -1,
     title: "",

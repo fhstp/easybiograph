@@ -9,7 +9,7 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: TimeGraph,
-      props: { event: {} },
+      props: {},
     },
     {
       path: "/setup",

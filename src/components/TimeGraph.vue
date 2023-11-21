@@ -2,18 +2,9 @@
   <!-- <TimeTable v-if="!showCreateBiograph && !showIntro" /> -->
 
   <EventDialogue
-    v-show="showDialogue"
-    @close="showDialogue = false"
-    :new-dia="true"
-    :event="newEventDetails"
-    title="Eintrag erstellen"
-  />
-  <EventDialogue
-    v-show="showEditDialogue"
-    @close="showEditDialogue = false"
-    :new-dia="false"
+    v-show="showEventDialogue"
+    @close="showEventDialogue = false"
     :event="selectedEvent"
-    title="Eintrag bearbeiten"
   />
 
   <PersonDialogue
@@ -101,7 +92,7 @@
 
             <a
               class="button is-dark"
-              @click="showDiv()"
+              @click="showAddEventDialogue()"
               v-show="!showIntro"
               style="background-color: #36626f"
             >
@@ -163,10 +154,9 @@
     <button
       class="modal-close is-large"
       aria-label="close"
-      @click="closeModalEvent"
+      @click="closeModal"
     ></button>
   </div>
-
 
   <div id="modal-event" class="modal">
     <div class="modal-background" @click="closeModalEvent"></div>
@@ -174,16 +164,17 @@
     <div class="modal-content">
       <div class="box">
         <EventDisplay
-            :selectedEvent="selectedEvent"
-            @open-edit="editDiv"
-            @abort-new="closeModal" />
+          :selectedEvent="selectedEvent"
+          @open-edit="showEditEventDialogue"
+          @abort-new="closeModalEvent"
+        />
       </div>
     </div>
 
     <button
-        class="modal-close is-large"
-        aria-label="close"
-        @click="closeModal"
+      class="modal-close is-large"
+      aria-label="close"
+      @click="closeModalEvent"
     ></button>
   </div>
 </template>
@@ -198,7 +189,6 @@ import EventPopUp from "@/components/EventPopUp.vue";
 import EventDisplay from "@/components/EventDisplay.vue";
 // import TimeTable from "@/components/TimeTable.vue";
 import TimePane from "@/components/TimePane.vue";
-import type { ZBEvent } from "@/data/ZBEvent";
 
 export default {
   name: "TimeGraph",
@@ -208,42 +198,21 @@ export default {
     PopUpNew,
     PersonDialogue,
     EventPopUp,
-    EventDisplay
+    EventDisplay,
   },
 
-  props: {
-    event: {
-      type: Object,
-      required: true,
-    }
-      /*selectedEvent: {
-        type: Object,
-        required: false, // Adjust this based on your requirements
-      },
-       */
-  },
+  props: {},
   data() {
     return {
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       newPerson: true,
-      selectedEvent: {},
+      selectedEvent: null,
       showEventPopUp: false,
-      showDialogue: false,
-      showEditDialogue: false,
+      showEventDialogue: false,
       personYears: store.getters.getTimeline,
       showEventDisplay: false,
-      deleteDia: false,
       showCreateBiograph: !store.getters.getPersonCreated,
-      // TODO: without refresh it will be necessary to reset newEventDetails
-      newEventDetails: {
-        isInterval: true,
-        description: "",
-        note: "",
-        dimension: Dimension[Dimension.Familie], // XXX: might solve bug with uninitialized dimension
-        startDate: "2020-01",
-        endDate: "2020-12",
-      },
-      events: store.getters.getEvents,
+      // events: store.getters.getEvents,
     };
   },
   computed: {
@@ -264,12 +233,13 @@ export default {
     },
   },
   methods: {
-    showDiv() {
+    showAddEventDialogue() {
       // TODO: use self-explaining function name, which <div>? add event dialog
       //@ts-ignore
-      this.showDialogue = true;
+      this.selectedEvent = null; // informs dialogue that a new event is created
+      this.showEventDialogue = true;
       //@ts-ignore
-      this.deleteDia = true;
+      // this.deleteDia = true;
     },
     removeEvent() {
       store.commit("data/removeEvent", 0);
@@ -284,7 +254,7 @@ export default {
       const modalPopUp = document.querySelector("#modal-popUp");
       if (modalPopUp) modalPopUp.classList.remove("is-active");
     },
-    closeModalEvent(){
+    closeModalEvent() {
       const modalPopUp = document.querySelector("#modal-event");
       if (modalPopUp) modalPopUp.classList.remove("is-active");
     },
@@ -303,7 +273,7 @@ export default {
       //@ts-ignore
       this.selectedEvent = event;
 
-      console.log(event)
+      console.log(event);
       // Show the event display modal
       const modal = document.querySelector("#modal-event");
       if (modal) modal.classList.add("is-active");
@@ -353,9 +323,9 @@ export default {
         store.commit("data/addDimension", newDim)
       }
     },
-    editDiv(){
-      //@ts-ignore
-      this.showEditDialogue = true;
+    showEditEventDialogue() {
+      // this.selectedEvent has already been set before opening the modal event display
+      this.showEventDialogue = true;
       this.closeModalEvent();
     },
     downloadData() {
