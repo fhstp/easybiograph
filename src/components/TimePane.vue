@@ -12,7 +12,11 @@
       </div>
       <div class="substrate"
            :class="{ 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
-           ref="substrateRef">
+           ref="substrateRef"
+           @mousedown="($event) => handleMousePress($event, dim)"
+           @mouseup="handleMouseRelease"
+           @contextmenu.prevent="($event) => handleRightClick($event, dim)"
+      >
         <TimeEvent
             v-for="mark in dim.marks"
             :key="mark.datum.eventId"
@@ -69,6 +73,49 @@ const timeScale = computed(() => {
   const rightDate = new Date(store.state.data.person.endDate);
   return d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
 });
+
+const calculateDateFromClick = (clickX: number, axisWidth: number): Date | null => {
+  const percentClicked = (clickX / axisWidth) * 100; // Calculate percentage clicked on the TimeAxis
+
+  const leftDate = new Date(store.state.data.person.birthDate);
+  const rightDate = new Date(store.state.data.person.endDate);
+
+  const timeScale = d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
+
+  const clickedDate = timeScale.invert(percentClicked);
+  return clickedDate;
+};
+
+let isMouseDown = false;
+
+const handleMousePress = (event: MouseEvent, dimension: DimensionLayout) => {
+  isMouseDown = true;
+  handleRightClick(event, dimension);
+};
+
+const handleMouseRelease = () => {
+  isMouseDown = false;
+};
+
+const handleRightClick = (event: MouseEvent, dimension: DimensionLayout) => {
+  event.preventDefault();
+
+  const timePane = document.querySelector('.pane');
+  const rect = timePane?.getBoundingClientRect();
+
+  if (rect) {
+    const clickX = event.clientX - rect.left;
+    const timeAxisWidth = rect.width;
+
+    const clickedDate = calculateDateFromClick(clickX, timeAxisWidth);
+    if (isMouseDown) {
+      console.log('Pressed date:', clickedDate);
+    } else {
+      console.log('Released date:', clickedDate);
+      console.log('Clicked dimension:', dimension.label);
+    }
+  }
+};
 
 // n.b. d3.axisTop() does not work because it renders in SVG
 
