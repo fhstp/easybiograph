@@ -124,6 +124,7 @@
     <TimePane
       v-if="!showCreateBiograph && !showIntro"
       @display-event="openEventDisplay"
+      @open-edit="showEditEventDialogue"
     />
 
   <!-- Intro for easybiograph -->

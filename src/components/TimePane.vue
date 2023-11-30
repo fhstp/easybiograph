@@ -10,13 +10,24 @@
       <div class="dlabel">
         {{ dim.label }}
       </div>
+      <div
+          class="line"
+          v-if="isMouseDown"
+          :style="{
+              top: linePosition.y + 'px',
+              left: linePosition.x + 'px',
+              height: lineLength + 'px',
+              transform: 'rotate(' + lineRotation + 'deg)'
+          }"
+      ></div>
       <div class="substrate"
            :class="{ 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
            ref="substrateRef"
            @mousedown="($event) => handleMousePress($event, dim)"
-           @mouseup="handleMouseRelease"
+           @mouseup="handleMouseRelease, $emit('open-edit')"
            @contextmenu.prevent="($event) => handleRightClick($event, dim)"
       >
+
         <TimeEvent
             v-for="mark in dim.marks"
             :key="mark.datum.eventId"
@@ -64,6 +75,7 @@ interface DimensionLayout {
 
 const store = useStore();
 
+
 // tell d3 to use German months in the time axis
 // @ts-ignore
 d3.timeFormatDefaultLocale(germanTimeFormat);
@@ -74,24 +86,66 @@ const timeScale = computed(() => {
   return d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
 });
 
-const calculateDateFromClick = (clickX: number, axisWidth: number): Date | null => {
-  const percentClicked = (clickX / axisWidth) * 100; // Calculate percentage clicked on the TimeAxis
+const calculateDateFromClick = (clickX: number, axisWidth: number): string | null => {
+  const percentClicked = (clickX / axisWidth) * 100;
 
-  const leftDate = new Date(store.state.data.person.birthDate);
-  const rightDate = new Date(store.state.data.person.endDate);
+  const clickedDate = timeScale.value.invert(percentClicked);
 
-  const timeScale = d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
+  if (clickedDate instanceof Date) {
+    const formattedDate = `${clickedDate.getFullYear()}-${String(clickedDate.getMonth() + 1).padStart(2, '0')}-${String(clickedDate.getDate()).padStart(2, '0')}`;
+    return formattedDate;
+  }
 
-  const clickedDate = timeScale.invert(percentClicked);
-  return clickedDate;
+  return null;
 };
 
 let isMouseDown = false;
 
+const linePosition = { x: 0, y: 0 };
+let lineLength = 0;
+let lineRotation = 0;
+
+const handleMouseMove = (event: MouseEvent) => {
+  if (isMouseDown) {
+    const timePane = document.querySelector('.pane');
+    const rect = timePane?.getBoundingClientRect();
+
+    if (rect) {
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+
+      lineLength = Math.sqrt(
+          Math.pow(mouseX - linePosition.x, 2) + Math.pow(mouseY - linePosition.y, 2)
+      );
+
+      lineRotation = Math.atan2(mouseY - linePosition.y, mouseX - linePosition.x) * (180 / Math.PI);
+    }
+  }
+};
+
+window.addEventListener('mousemove', handleMouseMove as EventListener);
+
 const handleMousePress = (event: MouseEvent, dimension: DimensionLayout) => {
   isMouseDown = true;
+  const timePane = document.querySelector('.pane');
+  const rect = timePane?.getBoundingClientRect();
+
+  if (rect) {
+    linePosition.x = event.clientX - rect.left;
+    linePosition.y = event.clientY - rect.top;
+  }
+
   handleRightClick(event, dimension);
 };
+
+window.addEventListener('mouseup', () => {
+  if (isMouseDown) {
+    isMouseDown = false;
+    lineLength = 0;
+
+    handleMouseRelease();
+  }
+});
 
 const handleMouseRelease = () => {
   isMouseDown = false;
@@ -276,4 +330,12 @@ div.events {
   // from TimeTable
   cursor: pointer !important;
 }
+
+div.line {
+  position: absolute;
+  border-left: 2px solid red;
+  pointer-events: none;
+  z-index: 10;
+}
+
 </style>
