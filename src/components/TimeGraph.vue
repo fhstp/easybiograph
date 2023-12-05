@@ -121,10 +121,16 @@
       </div>
     </div>
   </nav>
-    <TimePane
+    <!-- <TimePane
       v-if="!showCreateBiograph && !showIntro"
       @display-event="openEventDisplay"
       @open-edit="showEditEventDialogue"
+    /> -->
+
+    <TimePane
+      v-if="!showCreateBiograph && !showIntro"
+      @display-event="openEventDisplay"
+      @open-edit="setSelectedEvent"
     />
 
   <!-- Intro for easybiograph -->
@@ -235,6 +241,36 @@ export default {
     },
   },
   methods: {
+    setSelectedEvent({ startDate, endDate, dimensionId }: any) {
+      if(startDate == endDate) {
+        const tempEvent = initEvent();
+
+        tempEvent.isInterval = false;
+        tempEvent.dimensionId = dimensionId;
+        tempEvent.startDate = startDate;
+        tempEvent.endDate = endDate;
+
+        console.table(tempEvent);
+
+        this.selectedEvent = tempEvent;
+
+        this.showEventDialogue = true;
+      }else {
+          const tempEvent = initEvent();
+
+          tempEvent.isInterval = true;
+          tempEvent.dimensionId = dimensionId;
+          tempEvent.startDate = startDate;
+          tempEvent.endDate = endDate;
+
+          console.table(tempEvent);
+
+          this.selectedEvent = tempEvent;
+
+          this.showEventDialogue = true;
+        }
+    },
+
     showAddEventDialogue() {
       const tempEvent = initEvent();
 

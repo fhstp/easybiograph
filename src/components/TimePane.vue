@@ -1,5 +1,16 @@
 <template>
-  <div class="pane">
+  <div class="pane"
+       @mousedown="handleMousePress"
+       @mouseup="handleMouseRelease"
+       @mousemove="handleMouseMove">
+    <div class="line"
+         :style="{
+              top: linePosition.y + 'px',
+              left: linePosition.x + 'px',
+              height: lineLength + 'px',
+              transform: 'rotate(' + lineRotation + 'deg)'
+            }">
+    </div>
     <PersonInfo />
     <TimeAxis :scale="timeScale" style="z-index: 2" />
     <div
@@ -10,21 +21,12 @@
       <div class="dlabel">
         {{ dim.label }}
       </div>
-      <div
-          class="line"
-          v-if="isMouseDown"
-          :style="{
-              top: linePosition.y + 'px',
-              left: linePosition.x + 'px',
-              height: lineLength + 'px',
-              transform: 'rotate(' + lineRotation + 'deg)'
-          }"
-      ></div>
+
       <div class="substrate"
            :class="{ 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
            ref="substrateRef"
            @mousedown="($event) => handleMousePress($event, dim)"
-           @mouseup="handleMouseRelease, $emit('open-edit')"
+           @mouseup="handleMouseRelease"
            @contextmenu.prevent="($event) => handleRightClick($event, dim)"
       >
 
@@ -43,7 +45,7 @@
 
 <script setup lang="ts">
 // import { scaleLinear } from "d3-scale";
-import { computed } from "vue";
+import {computed, getCurrentInstance} from "vue";
 import { useStore } from "@/store";
 import type { ZBEvent } from "@/data/ZBEvent";
 import * as d3 from "d3";
@@ -119,9 +121,18 @@ const handleMouseMove = (event: MouseEvent) => {
       );
 
       lineRotation = Math.atan2(mouseY - linePosition.y, mouseX - linePosition.x) * (180 / Math.PI);
+
+      console.log('lineLength:', lineLength);
+      console.log('lineRotation:', lineRotation);
+
+      lineLength = lineLength;
+      lineRotation = lineRotation;
     }
   }
 };
+
+
+
 
 window.addEventListener('mousemove', handleMouseMove as EventListener);
 
@@ -151,6 +162,11 @@ const handleMouseRelease = () => {
   isMouseDown = false;
 };
 
+const emits = defineEmits(["open-edit"]);
+
+let pressedDate: string | null = null;
+let releasedDate: string | null = null;
+
 const handleRightClick = (event: MouseEvent, dimension: DimensionLayout) => {
   event.preventDefault();
 
@@ -162,11 +178,24 @@ const handleRightClick = (event: MouseEvent, dimension: DimensionLayout) => {
     const timeAxisWidth = rect.width;
 
     const clickedDate = calculateDateFromClick(clickX, timeAxisWidth);
+
     if (isMouseDown) {
-      console.log('Pressed date:', clickedDate);
+      pressedDate = clickedDate;
     } else {
-      console.log('Released date:', clickedDate);
-      console.log('Clicked dimension:', dimension.label);
+      releasedDate = clickedDate;
+
+      if (pressedDate && releasedDate) {
+        console.log('startDate:', pressedDate);
+        console.log('endDate:', releasedDate);
+
+        emits("open-edit", {
+          startDate: pressedDate,
+          endDate: releasedDate,
+          dimensionId: dimension.id,
+        });
+        pressedDate = null;
+        releasedDate = null;
+      }
     }
   }
 };
@@ -337,5 +366,6 @@ div.line {
   pointer-events: none;
   z-index: 10;
 }
+
 
 </style>
