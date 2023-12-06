@@ -1,16 +1,13 @@
 <template>
-  <div class="pane"
-       @mousedown="handleMousePress"
-       @mouseup="handleMouseRelease"
-       @mousemove="handleMouseMove">
-    <div class="line"
+  <div class="pane">
+    <!-- <div class="line"
          :style="{
               top: linePosition.y + 'px',
               left: linePosition.x + 'px',
               height: lineLength + 'px',
               transform: 'rotate(' + lineRotation + 'deg)'
             }">
-    </div>
+    </div>  -->
     <PersonInfo />
     <TimeAxis :scale="timeScale" style="z-index: 2" />
     <div
@@ -22,13 +19,20 @@
         {{ dim.label }}
       </div>
 
-      <div class="substrate"
-           :class="{ 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
-           ref="substrateRef"
-           @mousedown="($event) => handleMousePress($event, dim)"
-           @mouseup="handleMouseRelease"
-           @contextmenu.prevent="($event) => handleRightClick($event, dim)"
+      <div
+          class="substrate"
+          :class="{
+          'white-background': index % 2 !== 0,
+          'grey-background': index % 2 === 0
+        }"
+          ref="substrateRef"
+          @mousedown="($event) => handleMousePress($event, dim)"
+          @mouseup="handleMouseRelease"
+          @contextmenu.prevent="($event) => handleRightClick($event, dim)"
       >
+        <!-- SVG container for brushing -->
+        <svg :id="'dataviz_brushing1D_' + dim.id" class="brush-container" style="width: 100%"></svg>
+
 
         <TimeEvent
             v-for="mark in dim.marks"
@@ -45,7 +49,7 @@
 
 <script setup lang="ts">
 // import { scaleLinear } from "d3-scale";
-import {computed, getCurrentInstance} from "vue";
+import {computed, getCurrentInstance, onMounted} from "vue";
 import { useStore } from "@/store";
 import type { ZBEvent } from "@/data/ZBEvent";
 import * as d3 from "d3";
@@ -53,6 +57,7 @@ import TimeAxis from "./TimeAxis.vue";
 import { germanTimeFormat } from "../assets/util";
 import PersonInfo from "@/components/PersonInfo.vue";
 import TimeEvent from "@/components/TimeEvent.vue";
+import {brushX} from "d3";
 
 interface EventMark {
   datum: ZBEvent;
@@ -77,8 +82,31 @@ interface DimensionLayout {
 
 const store = useStore();
 
+onMounted(() => {
+  initializeBrushing();
+});
 
-// tell d3 to use German months in the time axis
+const initializeBrushing = () => {
+  const dimensions = store.state.data.dimensions;
+
+  dimensions.forEach((dim) => {
+    const brushingElement = document.getElementById(
+        `dataviz_brushing1D_${dim.id}`
+    ) as SVGSVGElement | null;
+
+    if (brushingElement) {
+
+      const brush = d3
+          .brushX<SVGSVGElement>()
+          .extent([[0, 0], [2000, 300]])
+          .on('brush', () => {
+          });
+
+      d3.select<SVGSVGElement, unknown>(brushingElement).call(brush as any);
+    }
+  });
+};
+
 // @ts-ignore
 d3.timeFormatDefaultLocale(germanTimeFormat);
 
@@ -103,6 +131,7 @@ const calculateDateFromClick = (clickX: number, axisWidth: number): string | nul
 
 let isMouseDown = false;
 
+/*
 const linePosition = { x: 0, y: 0 };
 let lineLength = 0;
 let lineRotation = 0;
@@ -132,19 +161,19 @@ const handleMouseMove = (event: MouseEvent) => {
 };
 
 
-
-
 window.addEventListener('mousemove', handleMouseMove as EventListener);
-
+ */
 const handleMousePress = (event: MouseEvent, dimension: DimensionLayout) => {
   isMouseDown = true;
-  const timePane = document.querySelector('.pane');
-  const rect = timePane?.getBoundingClientRect();
+  //const timePane = document.querySelector('.pane');
+  //const rect = timePane?.getBoundingClientRect();
 
-  if (rect) {
+  /*if (rect) {
     linePosition.x = event.clientX - rect.left;
     linePosition.y = event.clientY - rect.top;
   }
+
+   */
 
   handleRightClick(event, dimension);
 };
@@ -152,7 +181,7 @@ const handleMousePress = (event: MouseEvent, dimension: DimensionLayout) => {
 window.addEventListener('mouseup', () => {
   if (isMouseDown) {
     isMouseDown = false;
-    lineLength = 0;
+    //lineLength = 0;
 
     handleMouseRelease();
   }
