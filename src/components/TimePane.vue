@@ -1,13 +1,5 @@
 <template>
   <div class="pane">
-    <!-- <div class="line"
-         :style="{
-              top: linePosition.y + 'px',
-              left: linePosition.x + 'px',
-              height: lineLength + 'px',
-              transform: 'rotate(' + lineRotation + 'deg)'
-            }">
-    </div>  -->
     <PersonInfo />
     <TimeAxis :scale="timeScale" style="z-index: 2" />
     <div
@@ -26,9 +18,6 @@
           'grey-background': index % 2 === 0
         }"
           ref="substrateRef"
-          @mousedown="($event) => handleMousePress($event, dim)"
-          @mouseup="handleMouseRelease"
-          @contextmenu.prevent="($event) => handleRightClick($event, dim)"
       >
         <!-- SVG container for brushing -->
         <svg :id="'dataviz_brushing1D_' + dim.id" class="brush-container" style="width: 100%"></svg>
@@ -99,8 +88,40 @@ const initializeBrushing = () => {
       const brush = d3
           .brushX<SVGSVGElement>()
           .extent([[0, 0], [2000, 300]])
-          .on('brush', () => {
+          .on('start brush end', (event) => {
+            if (event.sourceEvent.type === 'mousedown') {
+              const timePane = document.querySelector('.pane');
+              const rect = timePane?.getBoundingClientRect();
+              if (rect) {
+                const clickX = event.sourceEvent.clientX - rect.left;
+                const timeAxisWidth = rect.width;
+                pressedDate = calculateDateFromClick(clickX, timeAxisWidth);
+              }
+            } else if (event.sourceEvent.type === 'mouseup') {
+              const timePane = document.querySelector('.pane');
+              const rect = timePane?.getBoundingClientRect();
+              if (rect) {
+                const clickX = event.sourceEvent.clientX - rect.left;
+                const timeAxisWidth = rect.width;
+                releasedDate = calculateDateFromClick(clickX, timeAxisWidth);
+
+                if (pressedDate && releasedDate) {
+                  console.log('startDate:', pressedDate);
+                  console.log('endDate:', releasedDate);
+
+                  emits("open-edit", {
+                    startDate: pressedDate,
+                    endDate: releasedDate,
+                    dimensionId: dim.id,
+                  });
+
+                  pressedDate = null;
+                  releasedDate = null;
+                }
+              }
+            }
           });
+
 
       d3.select<SVGSVGElement, unknown>(brushingElement).call(brush as any);
     }
@@ -117,7 +138,14 @@ const timeScale = computed(() => {
 });
 
 const calculateDateFromClick = (clickX: number, axisWidth: number): string | null => {
+
+  clickX = clickX - 130
+  axisWidth = axisWidth - 130
+
   const percentClicked = (clickX / axisWidth) * 100;
+
+  console.log("clickX " + clickX);
+  console.log("axisWidth " + axisWidth)
 
   const clickedDate = timeScale.value.invert(percentClicked);
 
@@ -131,52 +159,6 @@ const calculateDateFromClick = (clickX: number, axisWidth: number): string | nul
 
 let isMouseDown = false;
 
-/*
-const linePosition = { x: 0, y: 0 };
-let lineLength = 0;
-let lineRotation = 0;
-
-const handleMouseMove = (event: MouseEvent) => {
-  if (isMouseDown) {
-    const timePane = document.querySelector('.pane');
-    const rect = timePane?.getBoundingClientRect();
-
-    if (rect) {
-      const mouseX = event.clientX - rect.left;
-      const mouseY = event.clientY - rect.top;
-
-      lineLength = Math.sqrt(
-          Math.pow(mouseX - linePosition.x, 2) + Math.pow(mouseY - linePosition.y, 2)
-      );
-
-      lineRotation = Math.atan2(mouseY - linePosition.y, mouseX - linePosition.x) * (180 / Math.PI);
-
-      console.log('lineLength:', lineLength);
-      console.log('lineRotation:', lineRotation);
-
-      lineLength = lineLength;
-      lineRotation = lineRotation;
-    }
-  }
-};
-
-
-window.addEventListener('mousemove', handleMouseMove as EventListener);
- */
-const handleMousePress = (event: MouseEvent, dimension: DimensionLayout) => {
-  isMouseDown = true;
-  //const timePane = document.querySelector('.pane');
-  //const rect = timePane?.getBoundingClientRect();
-
-  /*if (rect) {
-    linePosition.x = event.clientX - rect.left;
-    linePosition.y = event.clientY - rect.top;
-  }
-
-   */
-
-  handleRightClick(event, dimension);
-};
 
 window.addEventListener('mouseup', () => {
   if (isMouseDown) {
@@ -196,38 +178,6 @@ const emits = defineEmits(["open-edit"]);
 let pressedDate: string | null = null;
 let releasedDate: string | null = null;
 
-const handleRightClick = (event: MouseEvent, dimension: DimensionLayout) => {
-  event.preventDefault();
-
-  const timePane = document.querySelector('.pane');
-  const rect = timePane?.getBoundingClientRect();
-
-  if (rect) {
-    const clickX = event.clientX - rect.left;
-    const timeAxisWidth = rect.width;
-
-    const clickedDate = calculateDateFromClick(clickX, timeAxisWidth);
-
-    if (isMouseDown) {
-      pressedDate = clickedDate;
-    } else {
-      releasedDate = clickedDate;
-
-      if (pressedDate && releasedDate) {
-        console.log('startDate:', pressedDate);
-        console.log('endDate:', releasedDate);
-
-        emits("open-edit", {
-          startDate: pressedDate,
-          endDate: releasedDate,
-          dimensionId: dimension.id,
-        });
-        pressedDate = null;
-        releasedDate = null;
-      }
-    }
-  }
-};
 
 // n.b. d3.axisTop() does not work because it renders in SVG
 
