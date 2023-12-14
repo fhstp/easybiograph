@@ -2,9 +2,9 @@
   <div class="pane">
     <PersonInfo />
     <TimeAxis :scale="timeScale" style="z-index: 2" />
-    <div class="pane2">
+    <div class="dimpane" ref="verticalRef">
     <div
-        v-for="(dim, index) in layout"
+        v-for="(dim, index) in packedLayout"
         :key="dim.id"
         :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
     >
@@ -29,23 +29,23 @@
             :key="mark.datum.eventId"
             :event="mark.datum"
             class="events"
-            :style="`left: ${mark.x1}%; width: ${mark.x2}%; top: ${mark.row * 1.5}rem`"
+            :style="`left: ${mark.x1}%; width: ${mark.x2}%; top: ${mark.row * ROW_HEIGHT}px`"
             @click="$emit('displayEvent', mark.datum)"
         />
       </div>
     </div>
-    </div>
+    </div>{{layout.length}}
   </div>
 </template>
 
 <script setup lang="ts">
 // import { scaleLinear } from "d3-scale";
-import {computed, getCurrentInstance, onMounted} from "vue";
+import {computed, ref, getCurrentInstance, onMounted, onBeforeUnmount} from "vue";
 import { useStore } from "@/store";
 import type { ZBEvent } from "@/data/ZBEvent";
 import * as d3 from "d3";
 import TimeAxis from "./TimeAxis.vue";
-import { germanTimeFormat } from "../assets/util";
+import { debounce, germanTimeFormat } from "../assets/util";
 import PersonInfo from "@/components/PersonInfo.vue";
 import TimeEvent from "@/components/TimeEvent.vue";
 import {brushX} from "d3";
@@ -61,15 +61,20 @@ interface EventMark {
 interface DimensionLayout {
   id: number;
   label: string;
+  /** events with position, sorted by their start */
   marks: EventMark[];
-  rows: number;
+  /** how many rows are needed to show all events without overlapping  */
+  minRows: number;
   fullRows: number;
+  height: number;
 }
 
 // interface Layout {
 //   marks: Map<string, EventMark[]>;
 //   rows
 // }
+
+const ROW_HEIGHT = 24;
 
 const store = useStore();
 
@@ -161,7 +166,7 @@ const calculateDateFromClick = (clickX: number, axisWidth: number): string | nul
 
 let isMouseDown = false;
 
-
+// TODO move into onMounted ; remove in onBeforeUnmount ?
 window.addEventListener('mouseup', () => {
   if (isMouseDown) {
     isMouseDown = false;
@@ -185,7 +190,7 @@ let releasedDate: string | null = null;
 
 // TODO update the general layout manually (by resizing dimensions) or on demand
 
-const layout = computed((): Array<DimensionLayout> => {
+const packedLayout = computed((): Array<DimensionLayout> => {
   const dimensions = store.state.data.dimensions;
 
   // Filter dimensions with visible set to true
@@ -195,27 +200,23 @@ const layout = computed((): Array<DimensionLayout> => {
   const sortedDimensions = [...filteredDimensions].reverse();
 
   const buffer = sortedDimensions.map((dim, i) => {
-    return { id: dim.id, label: dim.title, marks: [] as EventMark[], rows: 0, fullRows: 0 };
+    return { id: dim.id, label: dim.title, marks: [] as EventMark[], minRows: 0, fullRows: 0, height: 0 };
   });
 
 
   // console.log(buffer);
 
   // sort & group
-  // TODO filter visible events (possibly as a vuex getter)
+  // TODO filter visible events (possibly as a vuex getter)? not filter, in order to keep layout more stable
   // TODO use interval tree for filter and sort <https://www.npmjs.com/package/@flatten-js/interval-tree> or <https://github.com/ieg-vienna/TimeBench/blob/master/src/timeBench/data/util/IntervalTree.java>
-  const visibleEvents = d3.group(
-    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-    store.state.data.events.sort((a, b) =>
-      a.startDate.localeCompare(b.startDate)
-    ),
-    // store.state.data.events,
-    (d) => d.dimensionId
-  );
+  const eventsByDim = d3.group(store.state.data.events, (d) => d.dimensionId);
   // console.log(visibleEvents);
 
   buffer.forEach((dim) => {
-    const eventsInDim = visibleEvents.get(dim.id) || [];
+    const eventsInDim = eventsByDim.get(dim.id) || [];
+    // TODO assume sorted array?
+    eventsInDim.sort((a, b) => a.startDate.localeCompare(b.startDate));
+
     // keep track how far to the right rows inside a dimension are occupied
     const rowOccup: number[] = [];
     eventsInDim.forEach((datum) => {
@@ -229,8 +230,8 @@ const layout = computed((): Array<DimensionLayout> => {
 
       const leftX = timeScale.value(leftDate);
       const rightX = timeScale.value(nextDate);
-      // in case of short events --> make space at least for 2% of substrate width (guessed minimum)
-      const rightCorrX = leftX + Math.max(rightX - leftX, 2);
+      // in case of short events --> make space at least for 1% of substrate width (guessed minimum)
+      const rightCorrX = leftX + Math.max(rightX - leftX, 1);
       let eventRow = 0;
 
       for (;;) {
@@ -246,7 +247,7 @@ const layout = computed((): Array<DimensionLayout> => {
       }
 
       // remember the maximum row
-      dim.rows = Math.max(dim.rows, eventRow);
+      dim.minRows = Math.max(dim.minRows, eventRow + 1);
 
       dim.marks.push({
         datum,
@@ -257,6 +258,38 @@ const layout = computed((): Array<DimensionLayout> => {
       });
     });
   });
+
+  console.log("packed layout: complete");
+  return buffer;
+});
+
+// make row layout reactive to window height
+const axisHeight = ref(400);
+const verticalRef = ref<InstanceType<typeof HTMLDivElement> | null>(null);
+const handleResize = debounce(() => {
+  axisHeight.value = verticalRef.value ? verticalRef.value.clientHeight : 800;
+}, 500);
+onMounted(() => {
+  window.addEventListener("resize", handleResize);
+  handleResize();
+});
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", handleResize);
+});
+
+const layout = computed((): Array<DimensionLayout> => {
+  let buffer = [] as DimensionLayout[];
+
+  const rowSupply = Math.floor(axisHeight.value / 24);
+  const rowMin = packedLayout.value.length * 2;
+  const rowReal = d3.sum(packedLayout.value.map((d) => d.minRows));
+  const rowDefault = d3.sum(
+    packedLayout.value.map((d) => Math.max(d.minRows, 2))
+  );
+
+  console.log(`supply: ${rowSupply} -- min: ${rowMin} -- data: ${rowReal} -- default: ${rowDefault}`);
+
+  // buffer = structuredClone(packedLayout.value);
 
   return buffer;
 });
@@ -314,7 +347,7 @@ div.pane {
   flex-direction: column;
 }
 
-div.pane2 {
+div.dimpane {
   flex-grow: 1;
 }
 

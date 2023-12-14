@@ -35,7 +35,7 @@ const props = defineProps<{
 
 const store = useStore();
 
-// make time axis reactive to screen width
+// make time axis reactive to window width
 const axisWidth = ref(800);
 const substrateRef = ref<InstanceType<typeof HTMLDivElement> | null>(null);
 const handleResize = debounce(() => {
