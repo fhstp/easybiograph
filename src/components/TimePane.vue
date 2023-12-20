@@ -2,6 +2,7 @@
   <div class="pane">
     <PersonInfo />
     <TimeAxis :scale="timeScale" style="z-index: 2" />
+    <div class="pane2">
     <div
         v-for="(dim, index) in layout"
         :key="dim.id"
@@ -32,6 +33,7 @@
             @click="$emit('displayEvent', mark.datum)"
         />
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -214,7 +216,7 @@ const layout = computed((): Array<DimensionLayout> => {
 
   buffer.forEach((dim) => {
     const eventsInDim = visibleEvents.get(dim.id) || [];
-    // keep track how far rows inside a dimension are occupied
+    // keep track how far to the right rows inside a dimension are occupied
     const rowOccup: number[] = [];
     eventsInDim.forEach((datum) => {
       const leftDate = new Date(datum.startDate);
@@ -242,6 +244,9 @@ const layout = computed((): Array<DimensionLayout> => {
           eventRow++;
         }
       }
+
+      // remember the maximum row
+      dim.rows = Math.max(dim.rows, eventRow);
 
       dim.marks.push({
         datum,
@@ -305,6 +310,12 @@ div.pane {
   flex-grow: 1;
   background: #edf6f9;
   // bottom: 0px;
+  display: flex;
+  flex-direction: column;
+}
+
+div.pane2 {
+  flex-grow: 1;
 }
 
 div.dim {
