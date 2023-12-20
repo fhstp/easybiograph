@@ -2,6 +2,7 @@
   <div class="axis">
     <div class="head year">Jahr</div>
     <div class="headAge age">Alter</div>
+    <div class="brush" ref="brushRef">
     <div class="substrate" ref="substrateRef">
       <div
         class="tick year"
@@ -21,6 +22,7 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -28,6 +30,41 @@ import { computed, ref, onMounted, onBeforeUnmount } from "vue";
 import * as d3 from "d3";
 import { debounce } from "@/assets/util";
 import { useStore } from "@/store";
+
+const brushRef = ref<InstanceType<typeof HTMLDivElement> | null>(null);
+let brush: any = null;
+
+onMounted(() => {
+  // Create the brush
+  const svg = d3.select('.axis')
+      .append('svg')
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .attr('pointer-events', 'none');
+
+  brush = d3.brushX()
+      .extent([[0, 0], [2000, 300]])
+      .on('brush', brushed);
+
+  svg.append('g')
+      .attr('class', 'brush')
+      .call(brush);
+
+  d3.select('.brush')
+      .attr('pointer-events', 'all')
+      .selectAll('rect')
+      .attr('height', '100%');
+
+  function brushed(event: any) {
+    if (!event.selection) return;
+
+    const [x0, x1] = event.selection;
+  }
+});
+
+onBeforeUnmount(() => {
+  if (brush) brush.on('brush', null);
+});
 
 const props = defineProps<{
   scale: d3.ScaleTime<number, number, never>;
@@ -159,6 +196,15 @@ div.substrate {
   height: 60%;
   position: absolute;
   border-left: 1px solid black;
+}
+
+.brush {
+  position: absolute;
+  top: 46%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 /* TODO JB vertically style scale, check font-size (e.g. with Michaela's mockups) */
