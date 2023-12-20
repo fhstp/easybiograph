@@ -156,7 +156,7 @@ div.axis {
 div.substrate {
   left: $dimensionWidth;
   right: 0;
-  height: 100%;
+  height: 60%;
   position: absolute;
   border-left: 1px solid black;
 }

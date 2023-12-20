@@ -361,19 +361,25 @@ export default {
     },
     newData() {
       this.closeModal();
+      console.log("jetzt")
       store.commit("data/newZeitbalken");
       //@ts-ignore
       this.temporaryPerson = Object.assign({}, store.state.data.person); // shallow clone (ok for ZBPerson)
-      //@ts-ignore
-      this.showCreateBiograph = true;
       let defaultDims = ["Familie", "Wohnen", "Bildung", "Arbeit", "Gesundheit" , "Behandlung" , "Sonstiges"] ;
+      let count = 0
       //@ts-ignore
       for (var i=0; i < defaultDims.length ; i++) {
         const newDim = initDimension();
         newDim.title = defaultDims[i];
         //@ts-ignore
-        store.commit("data/addDimension", newDim)
+        store.commit("data/addDimension", newDim);
+        count = count + 1
       }
+      if (count = 7){
+        //@ts-ignore
+        this.showCreateBiograph = true;
+      }
+
     },
     showEditEventDialogue() {
       // this.selectedEvent has already been set before opening the modal event display
