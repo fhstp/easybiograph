@@ -55,10 +55,8 @@ onMounted(() => {
       .selectAll('rect')
       .attr('height', '100%');
 
-  function brushed(event: any) {
-    if (!event.selection) return;
+  function brushed() {
 
-    const [x0, x1] = event.selection;
   }
 });
 

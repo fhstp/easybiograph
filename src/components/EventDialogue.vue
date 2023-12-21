@@ -65,7 +65,16 @@
         />
       </div>
     </div>
-
+    <p class="help is-danger"
+       v-if="tempEvent.startDate > tempEvent.endDate"
+       style="
+        float: right;
+        text-align: right;
+        margin-right: 1%;
+        font-size: smaller;
+      ">Ende darf nicht vor dem Start liegen!</p>
+    <br />
+    <br />
     <label
       class="checkbox is-small"
       v-show="tempEvent.isInterval"
@@ -112,10 +121,12 @@
           <div class="control">
             <input
               class="input"
+              :class="{'is-danger': tempEvent.description.length < 1}"
               v-model="tempEvent.description"
               type="text"
               placeholder="Anzeigename des Events"
               id="eventNameId"
+              required
             />
           </div>
         </div>
@@ -160,7 +171,7 @@
       class="button is-link"
       style="right: -20vw; margin-top: -20px"
       v-on:click="addEvent"
-      :disabled="tempEvent.startDate > tempEvent.endDate"
+      :disabled="tempEvent.startDate > tempEvent.endDate || tempEvent.description < 1"
     >
       Fertig
     </button>
@@ -169,7 +180,7 @@
       class="button is-link"
       style="right: -20vw; margin-top: -20px"
       v-on:click="editEvent"
-      :disabled="tempEvent.startDate > tempEvent.endDate"
+      :disabled="tempEvent.startDate > tempEvent.endDate || tempEvent.description < 1"
     >
       Fertig
     </button>

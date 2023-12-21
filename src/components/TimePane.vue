@@ -121,9 +121,12 @@ const initializeBrushing = () => {
                   releasedDate = null;
                 }
               }
+              /*
+              const element = d3.select<SVGSVGElement, unknown>(brushingElement).call(brush as any);
+              brush.move(element as any, null);
+               */
             }
           });
-
 
       d3.select<SVGSVGElement, unknown>(brushingElement).call(brush as any);
     }
