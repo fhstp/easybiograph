@@ -74,7 +74,7 @@
         font-size: smaller;
       ">Ende darf nicht vor dem Start liegen!</p>
     <br />
-    <br />
+    <br v-if="tempEvent.startDate > tempEvent.endDate" />
     <label
       class="checkbox is-small"
       v-show="tempEvent.isInterval"

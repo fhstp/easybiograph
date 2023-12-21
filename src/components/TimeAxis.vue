@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, onBeforeUnmount } from "vue";
 import * as d3 from "d3";
-import { debounce } from "@/assets/util";
+import {debounce, germanTimeFormat} from "@/assets/util";
 import { useStore } from "@/store";
 
 const brushRef = ref<InstanceType<typeof HTMLDivElement> | null>(null);
@@ -44,7 +44,45 @@ onMounted(() => {
 
   brush = d3.brushX()
       .extent([[0, 0], [2000, 300]])
-      .on('brush', brushed);
+      .on('start brush end', (event) => {
+        if (event.sourceEvent.type === 'mousedown') {
+          const timePane = document.querySelector('.pane');
+          const rect = timePane?.getBoundingClientRect();
+          if (rect) {
+            const clickX = event.sourceEvent.clientX - rect.left;
+            const timeAxisWidth = rect.width;
+            pressedDate = calculateDateFromClick(clickX, timeAxisWidth);
+          }
+        }else if (event.sourceEvent.type === 'mouseup') {
+          const timePane = document.querySelector('.pane');
+          const rect = timePane?.getBoundingClientRect();
+          if (rect) {
+            const clickX = event.sourceEvent.clientX - rect.left;
+            const timeAxisWidth = rect.width;
+             releasedDate = calculateDateFromClick(clickX, timeAxisWidth);
+
+            if (pressedDate && releasedDate) {
+              console.log('startDate:', pressedDate);
+              console.log('endDate:', releasedDate);
+
+              /*
+              let brushStart = new Date(pressedDate);
+              let brushEnd = new Date(releasedDate);
+
+              let timeDomain = props.scale.domain([brushStart, brushEnd])
+
+              //console.log("timeDomain", timeDomain)
+
+              //birthUTC.value = new Date(pressedDate);
+
+              //pressedDate = null;
+              //releasedDate = null;
+
+               */
+            }
+          }
+        }
+      });
 
   svg.append('g')
       .attr('class', 'brush')
@@ -55,10 +93,38 @@ onMounted(() => {
       .selectAll('rect')
       .attr('height', '100%');
 
-  function brushed() {
+});
+
+let pressedDate: string | null = null;
+let releasedDate: string | null = null;
+
+// @ts-ignore
+d3.timeFormatDefaultLocale(germanTimeFormat);
+
+const timeScale = computed(() => {
+  const leftDate = new Date(store.state.data.person.birthDate);
+  const rightDate = new Date(store.state.data.person.endDate);
+  return d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
+});
+
+const calculateDateFromClick = (clickX: number, axisWidth: number): string | null => {
+
+  clickX = clickX - 130
+  axisWidth = axisWidth - 130
+
+  const percentClicked = (clickX / axisWidth) * 100;
+
+  const clickedDate = timeScale.value.invert(percentClicked);
+
+  if (clickedDate instanceof Date) {
+    const formattedDate = `${clickedDate.getFullYear()}-${String(clickedDate.getMonth() + 1).padStart(2, '0')}-${String(clickedDate.getDate()).padStart(2, '0')}`;
+
+    return formattedDate;
 
   }
-});
+
+  return null;
+};
 
 onBeforeUnmount(() => {
   if (brush) brush.on('brush', null);
@@ -116,15 +182,16 @@ const yearTicks = computed(() => {
   });
 });
 
-const birthUTC = computed(() => new Date(store.state.data.person.birthDate));
+let birthUTC = ref(new Date(store.state.data.person.birthDate));
 
 // alternatively a birthScale would be possible by building a custom time interval
 // based on <https://github.com/d3/d3-time/blob/main/src/year.js>
 const ageTicks = computed(() => {
-  const timeDomain = props.scale.domain();
+  let timeDomain = props.scale.domain();
   const birthdays = [];
   let i = 0;
   let day = birthUTC.value;
+  console.log(day)
   while (day <= timeDomain[0]) {
     i++;
     day = d3.utcYear.offset(day);
@@ -135,6 +202,8 @@ const ageTicks = computed(() => {
     day = d3.utcYear.offset(day);
   }
 
+  //TODO set to brushed dates
+  console.log("here", props.scale.domain())
   // console.log(birthdays);
 
   if (birthdays.length > 0) {
