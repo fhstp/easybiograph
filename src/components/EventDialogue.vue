@@ -160,6 +160,7 @@
       class="button is-link"
       style="right: -20vw; margin-top: -20px"
       v-on:click="addEvent"
+      :disabled="tempEvent.startDate > tempEvent.endDate"
     >
       Fertig
     </button>
@@ -168,6 +169,7 @@
       class="button is-link"
       style="right: -20vw; margin-top: -20px"
       v-on:click="editEvent"
+      :disabled="tempEvent.startDate > tempEvent.endDate"
     >
       Fertig
     </button>
