@@ -62,23 +62,9 @@ onMounted(() => {
              releasedDate = calculateDateFromClick(clickX, timeAxisWidth);
 
             if (pressedDate && releasedDate) {
-              console.log('startDate:', pressedDate);
-              console.log('endDate:', releasedDate);
 
-              /*
-              let brushStart = new Date(pressedDate);
-              let brushEnd = new Date(releasedDate);
-
-              let timeDomain = props.scale.domain([brushStart, brushEnd])
-
-              //console.log("timeDomain", timeDomain)
-
-              //birthUTC.value = new Date(pressedDate);
-
-              //pressedDate = null;
-              //releasedDate = null;
-
-               */
+              updateScaleDomain();
+              ageTicks.value;
             }
           }
         }
@@ -182,16 +168,27 @@ const yearTicks = computed(() => {
   });
 });
 
+const updateScaleDomain = () => {
+  if (pressedDate && releasedDate) {
+    let brushStart = new Date(pressedDate);
+    let brushEnd = new Date(releasedDate);
+
+    props.scale.domain([brushStart, brushEnd]);
+    console.log("HEREEEEE", props.scale.domain)
+  }
+};
+
 let birthUTC = ref(new Date(store.state.data.person.birthDate));
 
 // alternatively a birthScale would be possible by building a custom time interval
 // based on <https://github.com/d3/d3-time/blob/main/src/year.js>
 const ageTicks = computed(() => {
+  updateScaleDomain();
   let timeDomain = props.scale.domain();
+  console.log("here check", timeDomain)
   const birthdays = [];
   let i = 0;
   let day = birthUTC.value;
-  console.log(day)
   while (day <= timeDomain[0]) {
     i++;
     day = d3.utcYear.offset(day);
@@ -203,7 +200,7 @@ const ageTicks = computed(() => {
   }
 
   //TODO set to brushed dates
-  console.log("here", props.scale.domain())
+  //console.log("here", props.scale.domain())
   // console.log(birthdays);
 
   if (birthdays.length > 0) {
