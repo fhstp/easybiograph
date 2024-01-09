@@ -115,6 +115,7 @@
               <span class="icon">
                 <font-awesome-icon icon="pencil-alt" />
               </span>
+              <span>Zeitbalken bearbeiten</span>
             </a>
           </div>
         </div>
