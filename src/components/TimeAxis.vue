@@ -62,7 +62,6 @@ onMounted(() => {
              releasedDate = calculateDateFromClick(clickX, timeAxisWidth);
 
             if (pressedDate && releasedDate) {
-
               updateScaleDomain();
               ageTicks.value;
             }
@@ -173,8 +172,11 @@ const updateScaleDomain = () => {
     let brushStart = new Date(pressedDate);
     let brushEnd = new Date(releasedDate);
 
+    console.log("HERE1", props.scale.domain())
+
     props.scale.domain([brushStart, brushEnd]);
-    console.log("HEREEEEE", props.scale.domain)
+    console.log("HEREEEEE", props.scale.domain())
+    ageTicks.value;
   }
 };
 
@@ -198,10 +200,6 @@ const ageTicks = computed(() => {
     i++;
     day = d3.utcYear.offset(day);
   }
-
-  //TODO set to brushed dates
-  //console.log("here", props.scale.domain())
-  // console.log(birthdays);
 
   if (birthdays.length > 0) {
     // reduce tick count
