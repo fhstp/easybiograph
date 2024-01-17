@@ -51,7 +51,7 @@ onMounted(() => {
           if (rect) {
             const clickX = event.sourceEvent.clientX - rect.left;
             const timeAxisWidth = rect.width;
-            pressedDate = calculateDateFromClick(clickX, timeAxisWidth);
+            pressedDateZoom = calculateDateFromClick(clickX, timeAxisWidth);
           }
         }else if (event.sourceEvent.type === 'mouseup') {
           const timePane = document.querySelector('.pane');
@@ -59,11 +59,18 @@ onMounted(() => {
           if (rect) {
             const clickX = event.sourceEvent.clientX - rect.left;
             const timeAxisWidth = rect.width;
-             releasedDate = calculateDateFromClick(clickX, timeAxisWidth);
+             releasedDateZoom = calculateDateFromClick(clickX, timeAxisWidth);
 
-            if (pressedDate && releasedDate) {
-              updateScaleDomain();
-              ageTicks.value;
+            if (pressedDateZoom && releasedDateZoom) {
+              const temporaryPerson = {
+                birthDate: pressedDateZoom,
+                endDate: releasedDateZoom,
+              };
+
+              store.commit("data/addPerson", temporaryPerson);
+
+              pressedDateZoom = null;
+              releasedDateZoom = null;
             }
           }
         }
@@ -80,17 +87,19 @@ onMounted(() => {
 
 });
 
-let pressedDate: string | null = null;
-let releasedDate: string | null = null;
+let pressedDateZoom: string | null = null;
+let releasedDateZoom: string | null = null;
 
 // @ts-ignore
 d3.timeFormatDefaultLocale(germanTimeFormat);
 
 const timeScale = computed(() => {
-  const leftDate = new Date(store.state.data.person.birthDate);
-  const rightDate = new Date(store.state.data.person.endDate);
+  const leftDate = pressedDateZoom ? new Date(pressedDateZoom) : new Date(store.state.data.person.birthDate);
+  const rightDate = releasedDateZoom ? new Date(releasedDateZoom) : new Date(store.state.data.person.endDate);
   return d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
 });
+
+const emits = defineEmits(['zoomed']);
 
 const calculateDateFromClick = (clickX: number, axisWidth: number): string | null => {
 
@@ -168,9 +177,9 @@ const yearTicks = computed(() => {
 });
 
 const updateScaleDomain = () => {
-  if (pressedDate && releasedDate) {
-    let brushStart = new Date(pressedDate);
-    let brushEnd = new Date(releasedDate);
+  if (pressedDateZoom && releasedDateZoom) {
+    let brushStart = new Date(pressedDateZoom);
+    let brushEnd = new Date(releasedDateZoom);
 
     console.log("HERE1", props.scale.domain())
 

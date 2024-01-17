@@ -89,7 +89,7 @@ const initializeBrushing = () => {
 
       const brush = d3
           .brushX<SVGSVGElement>()
-          .extent([[0, 0], [2000, 300]])
+          .extent([[0, 0], [5000, 300]])
           .on('start brush end', (event) => {
             if (event.sourceEvent.type === 'mousedown') {
               const timePane = document.querySelector('.pane');

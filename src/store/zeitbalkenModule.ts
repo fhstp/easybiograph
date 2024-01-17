@@ -68,7 +68,10 @@ const mutations = {
   },
    */
 
-  addDimension(state: Zeitbalken, initialValues: Partial<ZBDimension> = {}): void {
+  addDimension(
+    state: Zeitbalken,
+    initialValues: Partial<ZBDimension> = {}
+  ): void {
     const newDim = {
       ...initDimension(),
       ...initialValues,
@@ -194,24 +197,6 @@ const mutations = {
       const eventB = new Date(b.startDate);
       return eventA.getTime() - eventB.getTime();
     });
-  },
-
-  editEventById(
-    state: Zeitbalken,
-    payload: { id: number; changes: Partial<ZBEvent> }
-  ): void {
-    const index = state.events.findIndex((a) => a.eventId === payload.id);
-    // const index = state.alteri.map((a) => a.id).indexOf(payload.id);
-    if (index >= 0) {
-      const changedEvent = {
-        ...state.events[index],
-        ...payload.changes,
-      };
-      // applyAdaptiveNWKDefaults(changedAlter, payload.changes);
-      state.events.splice(index, 1, changedEvent);
-    } else {
-      console.warn("event id not found: " + payload.id);
-    }
   },
 
   removeEvent(state: Zeitbalken, eventIndex: number): void {

@@ -320,6 +320,9 @@ export default {
       this.displayYears = this.displayPersonYears();
       //@ts-ignore
       this.$forceUpdate();
+
+      // Refresh the page after zooming
+      window.location.reload();
     },
 
     openEventDisplay(event: any) {
