@@ -8,6 +8,8 @@ import { initPerson } from "@/data/ZBPerson";
 import { loadZeitbalkenFromStore } from "./localStoragePlugin";
 import { initDimension } from "@/data/Dimension";
 import type { ZBDimension } from "@/data/Dimension";
+import type { ZBZoom } from "@/data/ZBZoom";
+import { initZoom } from "@/data/ZBZoom";
 //import type { IStoreState } from "@/store/index";
 
 // module state object.
@@ -151,6 +153,14 @@ const mutations = {
       ...initialValues,
     };
     state.person = newPerson;
+  },
+
+  addZoom(state: Zeitbalken, initialValues: Partial<ZBZoom> = {}): void {
+    const newZoom = {
+      ...initZoom(),
+      ...initialValues,
+    };
+    state.zoom = newZoom;
   },
 
   editEvent(

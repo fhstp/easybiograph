@@ -43,7 +43,7 @@ onMounted(() => {
       .attr('pointer-events', 'none');
 
   brush = d3.brushX()
-      .extent([[0, 0], [2000, 300]])
+      .extent([[0, 0], [5000, 300]])
       .on('start brush end', (event) => {
         if (event.sourceEvent.type === 'mousedown') {
           const timePane = document.querySelector('.pane');
@@ -62,15 +62,20 @@ onMounted(() => {
              releasedDateZoom = calculateDateFromClick(clickX, timeAxisWidth);
 
             if (pressedDateZoom && releasedDateZoom) {
-              const temporaryPerson = {
+              const temporaryZoom = {
                 birthDate: pressedDateZoom,
                 endDate: releasedDateZoom,
               };
 
-              store.commit("data/addPerson", temporaryPerson);
+              store.commit("data/addZoom", temporaryZoom);
+
+              console.log("Zoom commited - temporary");
 
               pressedDateZoom = null;
               releasedDateZoom = null;
+
+              updateAfterZoom();
+
             }
           }
         }
@@ -99,7 +104,10 @@ const timeScale = computed(() => {
   return d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
 });
 
-const emits = defineEmits(['zoomed']);
+function updateAfterZoom() {
+  // @ts-ignore
+  window.location.reload()
+};
 
 const calculateDateFromClick = (clickX: number, axisWidth: number): string | null => {
 

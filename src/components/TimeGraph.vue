@@ -117,6 +117,19 @@
               </span>
               <span>Zeitbalken bearbeiten</span>
             </a>
+            <a
+                class="button is-dark"
+                @click="
+                zoomUndo
+              "
+                v-show="$store.state.data.zoom.birthDate.length >= 1"
+                style="background-color: #36626f"
+            >
+              <!-- TODO edit instead of new -->
+              <span class="icon">
+                <font-awesome-icon icon="pencil-alt" />
+              </span>
+            </a>
           </div>
         </div>
       </div>
@@ -216,7 +229,6 @@ export default {
       personYears: store.getters.getTimeline,
       showEventDisplay: false,
       showCreateBiograph: !store.getters.getPersonCreated,
-      // events: store.getters.getEvents,
     };
   },
   computed: {
@@ -270,6 +282,20 @@ export default {
 
           this.showEventDialogue = true;
       }
+    },
+
+    zoomUndo(){
+      const originalZoom = {
+        birthDate: "",
+        endDate: "",
+      };
+
+      store.commit("data/addZoom", originalZoom);
+
+      console.log("Zoom commited - original");
+
+      // @ts-ignore
+      this.$router.go(0);
     },
 
     showAddEventDialogue() {

@@ -135,7 +135,6 @@
           style="margin-right: 1vw; right: -20vw"
           @click="abort"
       >
-        <!-- v-show="showButtons" -->
         Abbrechen
       </button>
       <button class="button is-link" style="right: -20vw" @click="savePerson">
@@ -188,6 +187,7 @@ export default {
 
       //@ts-ignore
       store.commit("data/addPerson", this.newPersonDetails);
+
       //@ts-ignore
       this.$router.go(0);
       this.close();

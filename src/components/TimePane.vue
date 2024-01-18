@@ -136,11 +136,24 @@ const initializeBrushing = () => {
 // @ts-ignore
 d3.timeFormatDefaultLocale(germanTimeFormat);
 
-const timeScale = computed(() => {
-  const leftDate = new Date(store.state.data.person.birthDate);
-  const rightDate = new Date(store.state.data.person.endDate);
-  return d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
-});
+let timeScale: any = null;
+
+if(store.state.data.zoom.birthDate.length >= 1){
+  timeScale = computed(() => {
+    const leftDate = new Date(store.state.data.zoom.birthDate);
+    const rightDate = new Date(store.state.data.zoom.endDate);
+    return d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
+  });
+} else {
+  timeScale = computed(() => {
+    const leftDate = new Date(store.state.data.person.birthDate);
+    const rightDate = new Date(store.state.data.person.endDate);
+    return d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
+  });
+};
+
+
+
 
 const calculateDateFromClick = (clickX: number, axisWidth: number): string | null => {
 
