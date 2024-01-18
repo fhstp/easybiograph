@@ -32,18 +32,26 @@
     class="navbar is-black"
     style="background-color: #488193"
     v-show="!showCreateBiograph"
+    role="navigation" aria-label="main navigation"
   >
     <div class="navbar-brand">
       <div class="navbar-item" title="easyBiograph version 2.0.2 beta">
         easyBiograph
       </div>
+
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
     </div>
+
     <div id="navbarBasicExample" class="navbar-menu bar">
       <div class="navbar-start">
-        <div class="navbar-item">
+        <div>
           <div class="buttons">
             <a
-              class="button is-dark"
+              class="button is-dark navbar-item"
               style="background-color: #36626f"
               @click="openPopUp"
               v-if="!showIntro"
@@ -55,7 +63,7 @@
             </a>
 
             <a
-              class="button is-dark"
+              class="button is-dark navbar-item"
               style="background-color: #36626f"
               @click="newData"
               v-if="showIntro"
@@ -66,7 +74,7 @@
               <span>Neu</span>
             </a>
 
-            <a class="file is-dark">
+            <a class="file is-dark navbar-item">
               <label class="file-label">
                 <input class="file-input" type="file" @change="importData" />
                 <span class="file-cta" style="background-color: #36626f">
@@ -79,7 +87,7 @@
             </a>
 
             <a
-              class="button is-dark"
+              class="button is-dark navbar-item"
               @click="downloadData"
               v-show="!showIntro"
               style="background-color: #36626f"
@@ -91,7 +99,7 @@
             </a>
 
             <a
-              class="button is-dark"
+              class="button is-dark navbar-item"
               @click="showAddEventDialogue()"
               v-show="!showIntro"
               style="background-color: #36626f"
@@ -103,7 +111,7 @@
             </a>
 
             <a
-              class="button is-dark"
+              class="button is-dark navbar-item"
               @click="
                 showCreateBiograph = true;
                 newPerson = false;
@@ -118,13 +126,12 @@
               <span>Zeitbalken bearbeiten</span>
             </a>
             <a
-                class="button is-dark"
+                class="button is-dark navbar-item"
                 @click="
                 zoomUndo
               "
                 style="background-color: #36626f"
             >
-              <!-- TODO edit instead of new -->
               <span class="icon">
                 <font-awesome-icon icon="magnifying-glass-minus" />
               </span>

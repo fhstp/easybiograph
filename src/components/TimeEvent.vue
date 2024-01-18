@@ -85,15 +85,16 @@ export default {
 
 .openEnd {
   display: block;
-  background-color: $periodblue;
+  //background-color: $periodblue;
   border: 2px solid $periodborderblue;
+  background: linear-gradient(90deg, rgba(230,242,248,1) 0%, rgba(175,211,227,1) 90%, rgba(137,182,203,1) 100%);
   box-shadow: #2c3e50;
   margin: 5px 0;
   border-radius: 3px;
   z-index: 1;
   margin-right: 1px;
   border-right: none;
-  border-top-right-radius: 60px;
+  border-top-right-radius: 100px;
 
 
 }
