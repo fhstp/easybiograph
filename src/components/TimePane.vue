@@ -8,6 +8,9 @@
         :key="dim.id"
         :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
     >
+      <div class="dimensionlabel" :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }">
+
+      </div>
       <div class="dlabel">
         {{ dim.label }}
       </div>
@@ -347,6 +350,17 @@ div.dlabel {
   top: calc(50% - 0.5rem);
   width: $dimensionWidth;
   text-align: center;
+  z-index: 6;
+}
+
+div.dimensionlabel {
+  top: 0;
+  width: $dimensionWidth;
+  left: 1px;
+  height: 100%;
+  position: absolute;
+  border-right: 1px solid black;
+  z-index: 5;
 }
 
 div.substrate {
@@ -356,7 +370,7 @@ div.substrate {
   right: 0;
   height: 100%;
   position: absolute;
-  border-left: 1px solid black;
+
 }
 
 div.events {

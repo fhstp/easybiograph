@@ -127,7 +127,7 @@
             >
               <!-- TODO edit instead of new -->
               <span class="icon">
-                <font-awesome-icon icon="pencil-alt" />
+                <font-awesome-icon icon="undo" />
               </span>
             </a>
           </div>

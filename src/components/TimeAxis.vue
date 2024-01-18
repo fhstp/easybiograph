@@ -62,20 +62,52 @@ onMounted(() => {
              releasedDateZoom = calculateDateFromClick(clickX, timeAxisWidth);
 
             if (pressedDateZoom && releasedDateZoom) {
-              const temporaryZoom = {
-                birthDate: pressedDateZoom,
-                endDate: releasedDateZoom,
-              };
+              const pressedDate = new Date(pressedDateZoom);
+              const releasedDate = new Date(releasedDateZoom);
 
-              store.commit("data/addZoom", temporaryZoom);
+              // Calculate the difference in months
+              const monthDifference = (releasedDate.getFullYear() - pressedDate.getFullYear()) * 12 +
+                  releasedDate.getMonth() - pressedDate.getMonth();
 
-              console.log("Zoom commited - temporary");
+              if (monthDifference >= 3) {
+                const temporaryZoom = {
+                  birthDate: pressedDateZoom,
+                  endDate: releasedDateZoom,
+                };
 
-              pressedDateZoom = null;
-              releasedDateZoom = null;
+                store.commit("data/addZoom", temporaryZoom);
 
-              updateAfterZoom();
+                console.log("Zoom committed - temporary");
 
+                pressedDateZoom = null;
+                releasedDateZoom = null;
+
+                updateAfterZoom();
+              } else {
+                // Automatically zoom to the 3 closest months
+                const midDate = new Date(
+                    pressedDate.getFullYear(),
+                    pressedDate.getMonth() + Math.floor(monthDifference / 2),
+                    1
+                );
+
+                const startDate = new Date(midDate.getFullYear(), midDate.getMonth() - 1, 1);
+                const endDate = new Date(midDate.getFullYear(), midDate.getMonth() + 2, 0);
+
+                const temporaryZoom = {
+                  birthDate: startDate.toISOString().split("T")[0],
+                  endDate: endDate.toISOString().split("T")[0],
+                };
+
+                store.commit("data/addZoom", temporaryZoom);
+
+                console.log("Automatically zoomed to 3 closest months");
+
+                pressedDateZoom = null;
+                releasedDateZoom = null;
+
+                updateAfterZoom();
+              }
             }
           }
         }
@@ -98,11 +130,23 @@ let releasedDateZoom: string | null = null;
 // @ts-ignore
 d3.timeFormatDefaultLocale(germanTimeFormat);
 
-const timeScale = computed(() => {
-  const leftDate = pressedDateZoom ? new Date(pressedDateZoom) : new Date(store.state.data.person.birthDate);
-  const rightDate = releasedDateZoom ? new Date(releasedDateZoom) : new Date(store.state.data.person.endDate);
-  return d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
-});
+const store = useStore();
+
+let timeScale: any = null;
+
+if(store.state.data.zoom.birthDate.length >= 1){
+  timeScale = computed(() => {
+    const leftDate = new Date(store.state.data.zoom.birthDate);
+    const rightDate = new Date(store.state.data.zoom.endDate);
+    return d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
+  });
+} else {
+  timeScale = computed(() => {
+    const leftDate = new Date(store.state.data.person.birthDate);
+    const rightDate = new Date(store.state.data.person.endDate);
+    return d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
+  });
+};
 
 function updateAfterZoom() {
   // @ts-ignore
@@ -136,7 +180,7 @@ const props = defineProps<{
   scale: d3.ScaleTime<number, number, never>;
 }>();
 
-const store = useStore();
+
 
 // make time axis reactive to screen width
 const axisWidth = ref(800);
