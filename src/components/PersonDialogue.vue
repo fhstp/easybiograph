@@ -188,6 +188,13 @@ export default {
       //@ts-ignore
       store.commit("data/addPerson", this.newPersonDetails);
 
+      const temporaryZoom = {
+        birthDate: "",
+        endDate: "",
+      };
+
+      store.commit("data/addZoom", temporaryZoom);
+
       //@ts-ignore
       this.$router.go(0);
       this.close();

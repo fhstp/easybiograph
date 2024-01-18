@@ -122,12 +122,11 @@
                 @click="
                 zoomUndo
               "
-                v-show="$store.state.data.zoom.birthDate.length >= 1"
                 style="background-color: #36626f"
             >
               <!-- TODO edit instead of new -->
               <span class="icon">
-                <font-awesome-icon icon="undo" />
+                <font-awesome-icon icon="magnifying-glass-minus" />
               </span>
             </a>
           </div>
@@ -432,6 +431,12 @@ export default {
       document.body.removeChild(dlAnchorElem);
     },
     importData(event: any) {
+      const temporaryZoom = {
+        birthDate: "",
+        endDate: "",
+      };
+
+      store.commit("data/addZoom", temporaryZoom);
       // based on https://stackoverflow.com/a/36198572/1140589
       const files = event.target.files;
 
