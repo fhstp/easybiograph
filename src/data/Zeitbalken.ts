@@ -42,5 +42,16 @@ export function compatibilityChecks(loaded: any): Zeitbalken {
     loaded.person.endDate = loaded.person.interviewMonth;
     delete loaded.person.interviewMonth;
   }
+  if (!loaded.dimensions) {
+    loaded.dimensions = [
+      { id: 7, title: "Sonstiges", visible: true },
+      { id: 6, title: "Behandlung", visible: true },
+      { id: 5, title: "Gesundheit", visible: true },
+      { id: 4, title: "Arbeit", visible: true },
+      { id: 3, title: "Bildung", visible: true },
+      { id: 2, title: "Wohnen", visible: true },
+      { id: 1, title: "Familie", visible: true },
+    ];
+  }
   return loaded;
 }

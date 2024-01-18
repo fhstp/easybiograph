@@ -219,7 +219,9 @@ export default {
 
   props: {},
   data() {
+    const dimensions = store.state.data.dimensions;
     return {
+      Dimension: [...dimensions].reverse(),
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       newPerson: true,
       selectedEvent: null as ZBEvent | null,
@@ -228,6 +230,9 @@ export default {
       personYears: store.getters.getTimeline,
       showEventDisplay: false,
       showCreateBiograph: !store.getters.getPersonCreated,
+      newDimDetails: {
+        title: "",
+      },
     };
   },
   computed: {
@@ -435,8 +440,8 @@ export default {
         birthDate: "",
         endDate: "",
       };
-
       store.commit("data/addZoom", temporaryZoom);
+
       // based on https://stackoverflow.com/a/36198572/1140589
       const files = event.target.files;
 
