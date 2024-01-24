@@ -28,26 +28,37 @@
   <!--:showButton="true"-->
 
   <div class="ebcontainer">
-  <nav
-    class="navbar is-black"
-    style="background-color: #488193"
-    v-show="!showCreateBiograph"
-    role="navigation" aria-label="main navigation"
-  >
-    <div class="navbar-brand">
-      <div class="navbar-item" title="easyBiograph version 2.0.2 beta">
-        easyBiograph
+    <nav
+        class="navbar is-black"
+        style="background-color: #488193"
+        v-show="!showCreateBiograph"
+        role="navigation"
+        aria-label="main navigation"
+    >
+      <div class="navbar-brand">
+        <div class="navbar-item" title="easyBiograph version 2.0.2 beta">
+          easyBiograph
+        </div>
+        <a
+            role="button"
+            class="navbar-burger"
+            aria-label="menu"
+            aria-expanded="false"
+            data-target="navbarBasicExample"
+            @click="toggleBurgerMenu"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
       </div>
 
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
-
-    <div id="navbarBasicExample" class="navbar-menu bar">
-      <div class="navbar-start">
+      <div
+          :class="{ 'is-active': burgerMenuActive }"
+          id="navbarBasicExample"
+          class="navbar-menu bar"
+      >
+        <div class="navbar-start">
         <div>
           <div class="buttons">
             <a
@@ -236,6 +247,7 @@ export default {
       showEventDialogue: false,
       personYears: store.getters.getTimeline,
       showEventDisplay: false,
+      burgerMenuActive: false,
       showCreateBiograph: !store.getters.getPersonCreated,
       newDimDetails: {
         title: "",
@@ -260,6 +272,9 @@ export default {
     },
   },
   methods: {
+    toggleBurgerMenu() {
+      this.burgerMenuActive = !this.burgerMenuActive;
+    },
     setSelectedEvent({ startDate, endDate, dimensionId }: any) {
       if(startDate == endDate) {
         const tempEvent = initEvent();
