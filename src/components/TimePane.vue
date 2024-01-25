@@ -25,7 +25,7 @@
           ref="substrateRef"
       >
         <!-- SVG container for brushing -->
-        <svg :id="'dataviz_brushing1D_' + dim.id" class="brush-container" style="width: 100%"></svg>
+        <svg :id="'dataviz_brushing1D_' + dim.id" class="brush-container"></svg>
 
 
         <TimeEvent
@@ -386,5 +386,8 @@ div.line {
   z-index: 10;
 }
 
-
+svg.brush-container {
+  width: 100%;
+  height: 100%;
+}
 </style>
