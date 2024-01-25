@@ -1,6 +1,6 @@
 <template>
-  <div class="box position" style="height: 96vh; width: 40vw">
-    <div class="tabs">
+  <div class="box position" style="height: 96vh; width: 35em">
+    <div class="buttons">
       <button class="button is-primary is-light" @click="openTab($event, 'Allgemein')">
         <span class="icon">
           <font-awesome-icon icon="sliders" />
@@ -13,12 +13,14 @@
         </span>
         <span>Dimensionen</span>
       </button>
+      <!--
       <button class="button is-primary is-light" @click="openTab($event, 'Farben')" disabled>
         <span class="icon">
           <font-awesome-icon icon="palette" />
         </span>
         <span>Farben</span>
       </button>
+      -->
     </div>
     <div id="Allgemein" class="tabcontent">
       <br>
@@ -125,19 +127,12 @@
     <div id="Farben" class="tabcontent" style="display: none">
       <ColourDialogue />
     </div>
-    <br/>
-    <br/>
-    <br/>
-    <div class="buttons">
-      <button
-
-          class="button is-white"
-          style="margin-right: 1vw; right: -20vw; top: -9vh"
-          @click="abort"
-      >
+    <br>
+    <div class="buttons is-right">
+      <button class="button is-white" @click="abort">
         Abbrechen
       </button>
-      <button class="button is-link" style="right: -20vw; top: -9vh" @click="savePerson">
+      <button class="button is-link" @click="savePerson">
         Fertig
       </button>
     </div>

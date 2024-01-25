@@ -25,23 +25,23 @@
     </div>
   </div>
   <br />
-  <div class="field is-horizontal">
-    <div class="field-body">
-      <div class="field">
-        <div class="control">
-          <input
-              v-model="newDimDetails.title"
-              class="input"
-              type="text"
-              placeholder="Titel der neuen Dimension"
-          />
-        </div>
-      </div>
+  <form @submit.prevent="addDimension">
+    <div class="field is-grouped">
+      <p class="control is-expanded">
+        <input
+          v-model="newDimDetails.title"
+          class="input"
+          type="text"
+          placeholder="Titel der neuen Dimension"
+        />
+      </p>
+      <p class="control">
+        <a class="button is-link is-light" @click="addDimension">
+          Dimension hinzufügen
+        </a>
+      </p>
     </div>
-    <button class="button is-link is-light" @click="addDimension">
-      Dimension hinzufügen
-    </button>
-  </div>
+  </form>
 </template>
 
 <script>
@@ -78,7 +78,7 @@ export default {
       newDim.position = 0;
       newDim.visible = true;
       store.commit("data/addDimension", newDim);
-      this.updateDimensionList();
+//      this.updateDimensionList();
           this.newDimDetails.title = "";
     },
     cancelEdit(index) {
@@ -92,7 +92,7 @@ export default {
 
         store.commit("data/editDimName", { id: dimension.id, changes: editedDimension });
         this.isEditing[index] = false;
-        this.updateDimensionList()
+        // this.updateDimensionList()
       }
     },
 
@@ -105,7 +105,7 @@ export default {
           dimensionOne,
           dimensionTwo,
         });
-        this.updateDimensionList();
+        // this.updateDimensionList();
       }
     },
 
@@ -118,7 +118,7 @@ export default {
           dimensionOne,
           dimensionTwo,
         });
-        this.updateDimensionList();
+        // this.updateDimensionList();
       }
     },
 
