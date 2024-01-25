@@ -23,7 +23,7 @@
     <div id="Allgemein" class="tabcontent">
       <br>
     <h1 id="edit" class="title block">{{ title }}</h1>
-    <br />
+
     <div class="field is-horizontal">
       <div class="field-label is-normal">
         <label class="label" style="text-align: left">Name</label>
@@ -132,12 +132,12 @@
       <button
 
           class="button is-white"
-          style="margin-right: 1vw; right: -20vw"
+          style="margin-right: 1vw; right: -20vw; top: -9vh"
           @click="abort"
       >
         Abbrechen
       </button>
-      <button class="button is-link" style="right: -20vw" @click="savePerson">
+      <button class="button is-link" style="right: -20vw; top: -9vh" @click="savePerson">
         Fertig
       </button>
     </div>
