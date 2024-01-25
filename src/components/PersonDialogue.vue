@@ -162,7 +162,9 @@ export default {
     },
   },
   data() {
+    const dimensions = store.state.data.dimensions;
     return {
+      Dimension: [...dimensions].reverse(),
       startYear: "",
       endYear: "",
       creationYear: "",
@@ -198,6 +200,10 @@ export default {
       //@ts-ignore
       this.$router.go(0);
       this.close();
+    },
+    updateDimensionList() {
+      const dimensions = store.state.data.dimensions;
+      this.Dimension = [...dimensions].reverse();
     },
     openTab(event: any, tabName: any) {
       var i, tabcontent;

@@ -223,6 +223,7 @@ import EventDisplay from "@/components/EventDisplay.vue";
 // import TimeTable from "@/components/TimeTable.vue";
 import TimePane from "@/components/TimePane.vue";
 import { initEvent, type ZBEvent } from "@/data/ZBEvent";
+import router from "@/router";
 
 export default {
   name: "TimeGraph",
@@ -415,6 +416,11 @@ export default {
 
       return displayObj;
     },
+    /*updateDimensionList() {
+      const dimensions = store.state.data.dimensions;
+      this.Dimension = [...dimensions].reverse();
+    },
+     */
     newData() {
       this.closeModal();
       console.log("jetzt")
@@ -430,10 +436,12 @@ export default {
         //@ts-ignore
         store.commit("data/addDimension", newDim);
         count = count + 1
+        console.log(count)
       }
-      if (count = 7){
+      if (count = 5){
+        console.log("jetzt")
         //@ts-ignore
-        this.showCreateBiograph = true;
+        //this.showCreateBiograph = true;
       }
 
     },

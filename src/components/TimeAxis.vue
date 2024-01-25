@@ -75,7 +75,7 @@ onMounted(() => {
                   endDate: releasedDateZoom,
                 };
 
-                store.commit("data/addZoom", temporaryZoom);
+                store.commit("session/addZoom", temporaryZoom);
 
                 console.log("Zoom committed - temporary");
 
