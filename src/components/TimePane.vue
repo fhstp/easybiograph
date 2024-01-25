@@ -7,6 +7,7 @@
         v-for="(dim, index) in layout"
         :key="dim.id"
         :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
+        :style="`height: ${100 / layout.length}%`"
     >
       <div class="dimensionlabel" :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }">
 
@@ -339,7 +340,6 @@ div.pane2 {
 
 div.dim {
   width: 100%;
-  height: 14.2%;
   position: relative;
   display: inline-block;
 }
