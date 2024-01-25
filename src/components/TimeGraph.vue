@@ -416,11 +416,6 @@ export default {
 
       return displayObj;
     },
-    /*updateDimensionList() {
-      const dimensions = store.state.data.dimensions;
-      this.Dimension = [...dimensions].reverse();
-    },
-     */
     newData() {
       this.closeModal();
       console.log("jetzt")
@@ -441,7 +436,7 @@ export default {
       if (count = 5){
         console.log("jetzt")
         //@ts-ignore
-        //this.showCreateBiograph = true;
+        this.showCreateBiograph = true;
       }
 
     },
@@ -497,6 +492,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.file.is-dark {
+  background-color: #488193;
+
+  &:hover {
+    background-color: #488193;
+  }
+
+  .file-label {
+    color: white;
+  }
+
+  .file-icon {
+    color: white;
+  }
+}
+
 .navbar-brand > div {
   font-weight: bold;
   font-size: 120%;

@@ -47,21 +47,11 @@
 <script>
 import {DimensionA, initDimension} from "@/data/Dimension";
 import {store} from "@/store";
-import { computed } from "vue";
 
 export default {
   name: "DimensionDialogue",
-  /*computed: {
-    Dimension: function (){
-      return store.state.data.dimensions.reverse()
-    }
-  },
-   */
   data() {
-    //const dimensions = computed(() => store.state.data.dimensions);
-    const dimensions = store.state.data.dimensions;
     return {
-      Dimension: [...dimensions].reverse(),
       isEditing: Array(DimensionA.length).fill(false),
       editedDimension: "",
       dimensionString: [],
@@ -70,6 +60,12 @@ export default {
         title: "",
       },
     };
+  },
+  computed: {
+    Dimension() {
+      const dimensions = store.state.data.dimensions;
+      return dimensions ? [...dimensions].reverse() : [];
+    },
   },
   methods: {
     editDimension(index) {
