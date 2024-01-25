@@ -206,7 +206,7 @@ const size = computed(() =>
 );
 
 const yearTicks = computed(() => {
-  const idealtickCount = Math.round(axisWidth.value / size.value / 4);
+  const idealtickCount = Math.round(axisWidth.value / size.value / 7);
   const ticks = props.scale.ticks(idealtickCount);
   // console.log(ticks);
 

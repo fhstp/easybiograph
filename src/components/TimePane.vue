@@ -7,6 +7,7 @@
         v-for="(dim, index) in layout"
         :key="dim.id"
         :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
+        :style="`height: ${100 / layout.length}%`"
     >
       <div class="dimensionlabel" :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }">
 
@@ -24,7 +25,7 @@
           ref="substrateRef"
       >
         <!-- SVG container for brushing -->
-        <svg :id="'dataviz_brushing1D_' + dim.id" class="brush-container" style="width: 100%"></svg>
+        <svg :id="'dataviz_brushing1D_' + dim.id" class="brush-container"></svg>
 
 
         <TimeEvent
@@ -84,17 +85,15 @@ const initializeBrushing = () => {
   const dimensions = store.state.data.dimensions;
 
   dimensions.forEach((dim) => {
-    const brushingElement = document.getElementById(
-        `dataviz_brushing1D_${dim.id}`
-    ) as SVGSVGElement | null;
+    const brushingElement = d3.select(`#dataviz_brushing1D_${dim.id}`);
 
-    if (brushingElement) {
+    if (!brushingElement.empty()) {
 
       const brush = d3
           .brushX<SVGSVGElement>()
           .extent([[0, 0], [5000, 300]])
           .on('start brush end', (event) => {
-            if (event.sourceEvent.type === 'mousedown') {
+            if (event.sourceEvent && event.sourceEvent.type === 'mousedown') {
               const timePane = document.querySelector('.pane');
               const rect = timePane?.getBoundingClientRect();
               if (rect) {
@@ -102,7 +101,7 @@ const initializeBrushing = () => {
                 const timeAxisWidth = rect.width;
                 pressedDate = calculateDateFromClick(clickX, timeAxisWidth);
               }
-            } else if (event.sourceEvent.type === 'mouseup') {
+            } else if (event.sourceEvent && event.sourceEvent.type === 'mouseup') {
               const timePane = document.querySelector('.pane');
               const rect = timePane?.getBoundingClientRect();
               if (rect) {
@@ -119,6 +118,7 @@ const initializeBrushing = () => {
                     endDate: releasedDate,
                     dimensionId: dim.id,
                   });
+                  brushingElement.call(brush.clear as any);
 
                   pressedDate = null;
                   releasedDate = null;
@@ -131,7 +131,7 @@ const initializeBrushing = () => {
             }
           });
 
-      d3.select<SVGSVGElement, unknown>(brushingElement).call(brush as any);
+      brushingElement.call(brush as any);
     }
   });
 };
@@ -339,7 +339,6 @@ div.pane2 {
 
 div.dim {
   width: 100%;
-  height: 14.2%;
   position: relative;
   display: inline-block;
 }
@@ -387,5 +386,8 @@ div.line {
   z-index: 10;
 }
 
-
+svg.brush-container {
+  width: 100%;
+  height: 100%;
+}
 </style>
