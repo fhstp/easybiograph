@@ -5,9 +5,10 @@
     style="
       position: absolute;
       top: 3vh;
-      height: 93vh;
-      left: 10vw;
-      width: 40vw;
+      height: 90vh;
+      left: auto;
+      right: auto;
+      width: 50em;
       z-index: 10;
     "
   >
@@ -119,6 +120,7 @@
       <div class="field-body">
         <div class="field">
           <div class="control">
+            <form @submit.prevent="isNewEvent ? addEvent() : editEvent()">
             <input
               class="input"
               :class="{'is-danger': tempEvent.description.length < 1}"
@@ -128,6 +130,7 @@
               id="eventNameId"
               required
             />
+            </form>
           </div>
         </div>
       </div>
@@ -151,39 +154,37 @@
       </div>
     </div>
     <br />
-    <button
-      v-if="!isNewEvent"
-      class="button is-danger is-light"
-      @click="removeEvent"
-      style="margin-right: 1vw; right: 0vw; margin-top: -20px"
-    >
-      Löschen
-    </button>
-    <button
-      class="button is-white"
-      style="margin-right: 1vw; right: -20vw; margin-top: -20px"
-      v-on:click="close"
-    >
-      Abbrechen
-    </button>
-    <button
-      v-if="isNewEvent"
-      class="button is-link"
-      style="right: -20vw; margin-top: -20px"
-      v-on:click="addEvent"
-      :disabled="tempEvent.startDate > tempEvent.endDate || tempEvent.description < 1"
-    >
-      Fertig
-    </button>
-    <button
-      v-if="!isNewEvent"
-      class="button is-link"
-      style="right: -20vw; margin-top: -20px"
-      v-on:click="editEvent"
-      :disabled="tempEvent.startDate > tempEvent.endDate || tempEvent.description < 1"
-    >
-      Fertig
-    </button>
+    <div class="buttons is-right">
+      <button
+        v-if="!isNewEvent"
+        class="button is-danger is-light"
+        @click="removeEvent"
+      >
+        Löschen
+      </button>
+      <button
+        class="button is-white"
+        v-on:click="close"
+      >
+        Abbrechen
+      </button>
+      <button
+        v-if="isNewEvent"
+        class="button is-link"
+        v-on:click="addEvent"
+        :disabled="tempEvent.startDate > tempEvent.endDate || tempEvent.description < 1"
+      >
+        Fertig
+      </button>
+      <button
+        v-if="!isNewEvent"
+        class="button is-link"
+        v-on:click="editEvent"
+        :disabled="tempEvent.startDate > tempEvent.endDate || tempEvent.description < 1"
+      >
+        Fertig
+      </button>
+   </div>
   </div>
 </template>
 
