@@ -1,7 +1,31 @@
 <template>
-  <div class="box position" style="height: 96vh; width: 40vw">
+  <div class="box position" style="height: 96vh; width: 35em">
+    <div class="buttons">
+      <button class="button is-primary is-light" @click="openTab($event, 'Allgemein')">
+        <span class="icon">
+          <font-awesome-icon icon="sliders" />
+        </span>
+        <span>Allgemein</span>
+      </button>
+      <button class="button is-primary is-light" @click="openTab($event, 'Dimensionen')">
+        <span class="icon">
+          <font-awesome-icon icon="table-list" />
+        </span>
+        <span>Dimensionen</span>
+      </button>
+      <!--
+      <button class="button is-primary is-light" @click="openTab($event, 'Farben')" disabled>
+        <span class="icon">
+          <font-awesome-icon icon="palette" />
+        </span>
+        <span>Farben</span>
+      </button>
+      -->
+    </div>
+    <div id="Allgemein" class="tabcontent">
+      <br>
     <h1 id="edit" class="title block">{{ title }}</h1>
-    <br />
+
     <div class="field is-horizontal">
       <div class="field-label is-normal">
         <label class="label" style="text-align: left">Name</label>
@@ -24,7 +48,7 @@
         <label class="label" style="text-align: left">Geburtsdatum</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.birthDate" require-day :disable-check="false" />
+        <MonthChooser v-model="newPersonDetails.birthDate" require-day :disabled="false" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -32,7 +56,7 @@
         <label class="label" style="text-align: left">Zeitbalken bis</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.endDate" require-day :disable-check="false" />
+        <MonthChooser v-model="newPersonDetails.endDate" require-day :disabled="false" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -40,7 +64,7 @@
         <label class="label" style="text-align: left">Erstellt am</label>
       </div>
       <div class="field-body">
-        <MonthChooser v-model="newPersonDetails.creationDate" require-day :disable-check="false" />
+        <MonthChooser v-model="newPersonDetails.creationDate" require-day :disabled="false" />
       </div>
     </div>
     <div class="field is-horizontal">
@@ -96,17 +120,19 @@
         </div>
       </div>
     </div>
-    <br />
-    <div class="buttons">
-      <button
-        v-show="showButtons"
-        class="button is-white"
-        style="margin-right: 1vw; right: -20vw"
-        @click="abort"
-      >
+  </div>
+    <div id="Dimensionen" class="tabcontent" style="display: none">
+      <DimensionDialogue />
+    </div>
+    <div id="Farben" class="tabcontent" style="display: none">
+      <ColourDialogue />
+    </div>
+    <br>
+    <div class="buttons is-right">
+      <button class="button is-white" @click="abort">
         Abbrechen
       </button>
-      <button class="button is-link" style="right: -20vw" @click="savePerson">
+      <button class="button is-link" @click="savePerson">
         Fertig
       </button>
     </div>
@@ -116,12 +142,14 @@
 <script lang="ts">
 import { store } from "@/store";
 import MonthChooser from "./MonthChooser.vue";
+import DimensionDialogue from "@/components/DimensionDialogue.vue";
+import ColourDialogue from "@/components/ColourDialogue.vue";
 
 export default {
   name: "PersonDialogue",
-  components: { MonthChooser },
+  components: {ColourDialogue, DimensionDialogue, MonthChooser },
   props: {
-    showButton: Boolean,
+    //showButton: Boolean,
     title: String,
     newPersonDetails: {
       type: Object,
@@ -129,14 +157,14 @@ export default {
     },
   },
   data() {
+    const dimensions = store.state.data.dimensions;
     return {
+      Dimension: [...dimensions].reverse(),
       startYear: "",
       endYear: "",
       creationYear: "",
       personYears: [] as number[],
       showBiograph: false,
-      // //@ts-ignore
-      showButtons: this.showButton,
       // newPersonDetails: {},
     };
   },
@@ -156,10 +184,37 @@ export default {
 
       //@ts-ignore
       store.commit("data/addPerson", this.newPersonDetails);
+
+      const temporaryZoom = {
+        birthDate: "",
+        endDate: "",
+      };
+
+      store.commit("data/addZoom", temporaryZoom);
+
       //@ts-ignore
       this.$router.go(0);
       this.close();
     },
+    updateDimensionList() {
+      const dimensions = store.state.data.dimensions;
+      this.Dimension = [...dimensions].reverse();
+    },
+    openTab(event: any, tabName: any) {
+      var i, tabcontent;
+
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        //@ts-ignore
+        tabcontent[i].style.display = "none";
+      }
+
+      //@ts-ignore
+      event.currentTarget.className += " active";
+      //@ts-ignore
+      document.getElementById(tabName).style.display = "block";
+    },
+
     chooseYear() {
       //@ts-ignore
       let startValue = +this.startYear.substring(0, 4);
@@ -175,6 +230,7 @@ export default {
       this.chooseYear();
       //@ts-ignore
       store.commit("data/addTimeline", this.personYears);
+      //store.commit("data/addDimensions");
       //@ts-ignore
       this.$router.go(0);
       //@ts-ignore

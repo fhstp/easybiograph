@@ -12,7 +12,7 @@
 
     <div class="modal-content">
       <div class="box">
-        <EventDisplay :event="clickedEvent" @open-edit="editDiv" />
+        <EventDisplay :selectedEvent="clickedEvent" @open-edit="editDiv" />
       </div>
     </div>
 
@@ -24,6 +24,7 @@
   </div>
 
   <div class="personInfo">
+    <!-- TODO JB extract into separate component -->
     <p class="same interviewee">
       {{ $store.state.data.person.name }}, geboren am
       {{ $store.state.data.person.birthDate.substring(8, 10) }}.{{

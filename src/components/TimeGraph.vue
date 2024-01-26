@@ -1,44 +1,68 @@
 <template>
-  <TimeTable v-if="!showCreateBiograph && !showIntro" />
+  <!-- <TimeTable v-if="!showCreateBiograph && !showIntro" /> -->
 
-  <EventDialogue v-show="showDialogue" @close="showDialogue = false" />
+  <EventDialogue
+    v-show="showEventDialogue"
+    @close="showEventDialogue = false"
+    :event="selectedEvent"
+  />
 
   <PersonDialogue
     v-show="showCreateBiograph"
     :newPersonDetails="temporaryPerson"
-    :showButton="false"
     title="Neuen Zeitbalken erstellen"
     @close="closePerson"
     @abort="showCreateBiograph = false"
     v-if="newPerson"
   />
+  <!--:showButton="false"-->
 
   <PersonDialogue
     v-show="showCreateBiograph"
     :newPersonDetails="temporaryPerson"
-    :showButton="true"
     title="Zeitbalken bearbeiten"
     @close="closePerson"
     @abort="showCreateBiograph = false"
     v-if="!newPerson"
   />
+  <!--:showButton="true"-->
 
-  <nav
-    class="navbar is-fixed-top is-black"
-    style="background-color: #488193"
-    v-show="!showCreateBiograph"
-  >
-    <div class="navbar-brand">
-      <div class="navbar-item" title="easyBiograph version 2.0.2 beta">
-        easyBiograph
+  <div class="ebcontainer">
+    <nav
+        class="navbar is-black"
+        style="background-color: #488193"
+        v-show="!showCreateBiograph"
+        role="navigation"
+        aria-label="main navigation"
+    >
+      <div class="navbar-brand">
+        <div class="navbar-item" title="easyBiograph version 2.0.2 beta">
+          easyBiograph
+        </div>
+        <a
+            role="button"
+            class="navbar-burger"
+            aria-label="menu"
+            aria-expanded="false"
+            data-target="navbarBasicExample"
+            @click="toggleBurgerMenu"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
       </div>
-    </div>
-    <div id="navbarBasicExample" class="navbar-menu bar">
-      <div class="navbar-start">
-        <div class="navbar-item">
+
+      <div
+          :class="{ 'is-active': burgerMenuActive }"
+          id="navbarBasicExample"
+          class="navbar-menu bar"
+      >
+        <div class="navbar-start">
+        <div>
           <div class="buttons">
             <a
-              class="button is-dark"
+              class="button is-dark navbar-item"
               style="background-color: #36626f"
               @click="openPopUp"
               v-if="!showIntro"
@@ -50,7 +74,7 @@
             </a>
 
             <a
-              class="button is-dark"
+              class="button is-dark navbar-item"
               style="background-color: #36626f"
               @click="newData"
               v-if="showIntro"
@@ -61,7 +85,7 @@
               <span>Neu</span>
             </a>
 
-            <a class="file is-dark">
+            <a class="file is-dark navbar-item">
               <label class="file-label">
                 <input class="file-input" type="file" @change="importData" />
                 <span class="file-cta" style="background-color: #36626f">
@@ -74,7 +98,7 @@
             </a>
 
             <a
-              class="button is-dark"
+              class="button is-dark navbar-item"
               @click="downloadData"
               v-show="!showIntro"
               style="background-color: #36626f"
@@ -86,8 +110,8 @@
             </a>
 
             <a
-              class="button is-dark"
-              @click="showDiv()"
+              class="button is-dark navbar-item"
+              @click="showAddEventDialogue()"
               v-show="!showIntro"
               style="background-color: #36626f"
             >
@@ -98,7 +122,7 @@
             </a>
 
             <a
-              class="button is-dark"
+              class="button is-dark navbar-item"
               @click="
                 showCreateBiograph = true;
                 newPerson = false;
@@ -110,13 +134,30 @@
               <span class="icon">
                 <font-awesome-icon icon="pencil-alt" />
               </span>
+              <span>Zeitbalken bearbeiten</span>
+            </a>
+            <a
+                class="button is-dark navbar-item"
+                @click="
+                zoomUndo
+              "
+                style="background-color: #36626f"
+            >
+              <span class="icon">
+                <font-awesome-icon icon="magnifying-glass-minus" />
+              </span>
             </a>
           </div>
         </div>
       </div>
     </div>
   </nav>
-  <br />
+
+    <TimePane
+      v-if="!showCreateBiograph && !showIntro"
+      @display-event="openEventDisplay"
+      @open-edit="setSelectedEvent"
+    />
 
   <!-- Intro for easybiograph -->
   <div class="welcome" v-if="showIntro">
@@ -126,6 +167,7 @@
       Erstellen Sie einen neuen Zeitbalken oder öffnen Sie einen bestehenden
       Zeitbalken, um fortzufahren.
     </p>
+  </div>
   </div>
 
   <!-- Modal for Pop-Up message-->
@@ -148,49 +190,69 @@
       @click="closeModal"
     ></button>
   </div>
+
+  <div id="modal-event" class="modal">
+    <div class="modal-background" @click="closeModalEvent"></div>
+
+    <div class="modal-content">
+      <div class="box">
+        <EventDisplay
+          :selectedEvent="selectedEvent"
+          @open-edit="showEditEventDialogue"
+          @abort-new="closeModalEvent"
+        />
+      </div>
+    </div>
+
+    <button
+      class="modal-close is-large"
+      aria-label="close"
+      @click="closeModalEvent"
+    ></button>
+  </div>
 </template>
 
 <script lang="ts">
-import { Dimension } from "@/data/Dimension";
+import {Dimension, initDimension} from "@/data/Dimension";
 import { store } from "@/store";
 import PersonDialogue from "@/components/PersonDialogue.vue";
 import PopUpNew from "@/components/PopUpNew.vue";
 import EventDialogue from "@/components/EventDialogue.vue";
-import TimeTable from "@/components/TimeTable.vue";
+import EventPopUp from "@/components/EventPopUp.vue";
+import EventDisplay from "@/components/EventDisplay.vue";
+// import TimeTable from "@/components/TimeTable.vue";
+import TimePane from "@/components/TimePane.vue";
+import { initEvent, type ZBEvent } from "@/data/ZBEvent";
+import router from "@/router";
 
 export default {
   name: "TimeGraph",
   components: {
-    TimeTable,
+    TimePane, // TimeTable,
     EventDialogue,
     PopUpNew,
     PersonDialogue,
+    EventPopUp,
+    EventDisplay,
   },
 
-  props: {
-    event: {
-      type: Object,
-      required: true,
-    },
-  },
+  props: {},
   data() {
+    const dimensions = store.state.data.dimensions;
     return {
+      Dimension: [...dimensions].reverse(),
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       newPerson: true,
-      showDialogue: false,
+      selectedEvent: null as ZBEvent | null,
+      showEventPopUp: false,
+      showEventDialogue: false,
       personYears: store.getters.getTimeline,
       showEventDisplay: false,
+      burgerMenuActive: false,
       showCreateBiograph: !store.getters.getPersonCreated,
-      // TODO: without refresh it will be necessary to reset newEventDetails
-      newEventDetails: {
-        isInterval: true,
-        description: "",
-        note: "",
-        dimension: Dimension[Dimension.Familie], // XXX: might solve bug with uninitialized dimension
-        startDate: "2020-01",
-        endDate: "2020-12",
+      newDimDetails: {
+        title: "",
       },
-      events: store.getters.getEvents,
     };
   },
   computed: {
@@ -211,10 +273,79 @@ export default {
     },
   },
   methods: {
-    showDiv() {
-      // TODO: use self-explaining function name, which <div>? add event dialog
-      //@ts-ignore
-      this.showDialogue = true;
+    toggleBurgerMenu() {
+      this.burgerMenuActive = !this.burgerMenuActive;
+    },
+    setSelectedEvent({ startDate, endDate, dimensionId }: any) {
+      if(startDate == endDate) {
+        const tempEvent = initEvent();
+
+        tempEvent.isInterval = false;
+        tempEvent.dimensionId = dimensionId;
+        tempEvent.startDate = startDate;
+        tempEvent.endDate = endDate;
+
+        console.table(tempEvent);
+
+        this.selectedEvent = tempEvent;
+
+        this.showEventDialogue = true;
+      }else {
+          const tempEvent = initEvent();
+
+          tempEvent.isInterval = true;
+          tempEvent.dimensionId = dimensionId;
+        if (startDate < endDate){
+          tempEvent.startDate = startDate;
+          tempEvent.endDate = endDate;
+        }else{
+          tempEvent.startDate = endDate;
+          tempEvent.endDate = startDate;
+        }
+
+          console.table(tempEvent);
+
+          this.selectedEvent = tempEvent;
+
+          this.showEventDialogue = true;
+      }
+    },
+
+    zoomUndo(){
+      const originalZoom = {
+        birthDate: "",
+        endDate: "",
+      };
+
+      store.commit("data/addZoom", originalZoom);
+
+      console.log("Zoom commited - original");
+
+      // @ts-ignore
+      this.$router.go(0);
+    },
+
+    showAddEventDialogue() {
+      const tempEvent = initEvent();
+
+      // plausible defaults for dimension top-most visible
+      const dimIds = store.state.data.dimensions
+        .filter((d) => d.visible)
+        .map((d) => d.id);
+      tempEvent.dimensionId = dimIds[dimIds.length - 1];
+
+      // plausible defaults for time: the year before the end of Zeitbalken
+      const endYear = store.state.data.person.endDate.substring(0, 4);
+      const defaultYear = (Number(endYear) - 1).toString();
+      tempEvent.startDate = defaultYear + "-01";
+      tempEvent.endDate = defaultYear + "-12";
+
+      console.table(tempEvent);
+
+      this.selectedEvent = tempEvent;
+      // event.id = -1 therefore dialogue is informed that a new event is created
+
+      this.showEventDialogue = true;
     },
     removeEvent() {
       store.commit("data/removeEvent", 0);
@@ -229,6 +360,10 @@ export default {
       const modalPopUp = document.querySelector("#modal-popUp");
       if (modalPopUp) modalPopUp.classList.remove("is-active");
     },
+    closeModalEvent() {
+      const modalPopUp = document.querySelector("#modal-event");
+      if (modalPopUp) modalPopUp.classList.remove("is-active");
+    },
     closePerson() {
       //@ts-ignore
       this.personYears = store.getters.getTimeline;
@@ -238,6 +373,19 @@ export default {
       this.displayYears = this.displayPersonYears();
       //@ts-ignore
       this.$forceUpdate();
+
+      // Refresh the page after zooming
+      window.location.reload();
+    },
+
+    openEventDisplay(event: any) {
+      //@ts-ignore
+      this.selectedEvent = event;
+
+      console.log(event);
+      // Show the event display modal
+      const modal = document.querySelector("#modal-event");
+      if (modal) modal.classList.add("is-active");
     },
     displayPersonYears(): object {
       let displayedArray: number[] = [];
@@ -270,11 +418,32 @@ export default {
     },
     newData() {
       this.closeModal();
+      console.log("jetzt")
       store.commit("data/newZeitbalken");
       //@ts-ignore
       this.temporaryPerson = Object.assign({}, store.state.data.person); // shallow clone (ok for ZBPerson)
+      let defaultDims = ["Familie", "Wohnen", "Bildung", "Arbeit", "Gesundheit" , "Behandlung" , "Sonstiges"] ;
+      let count = 0
       //@ts-ignore
-      this.showCreateBiograph = true;
+      for (var i=0; i < defaultDims.length ; i++) {
+        const newDim = initDimension();
+        newDim.title = defaultDims[i];
+        //@ts-ignore
+        store.commit("data/addDimension", newDim);
+        count = count + 1
+        console.log(count)
+      }
+      if (count = 5){
+        console.log("jetzt")
+        //@ts-ignore
+        this.showCreateBiograph = true;
+      }
+
+    },
+    showEditEventDialogue() {
+      // this.selectedEvent has already been set before opening the modal event display
+      this.showEventDialogue = true;
+      this.closeModalEvent();
     },
     downloadData() {
       // TODO move to utils.ts (consistent with easynwk)
@@ -292,6 +461,12 @@ export default {
       document.body.removeChild(dlAnchorElem);
     },
     importData(event: any) {
+      const temporaryZoom = {
+        birthDate: "",
+        endDate: "",
+      };
+      store.commit("data/addZoom", temporaryZoom);
+
       // based on https://stackoverflow.com/a/36198572/1140589
       const files = event.target.files;
 
@@ -317,6 +492,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.file.is-dark {
+  background-color: #488193;
+
+  &:hover {
+    background-color: #488193;
+  }
+
+  .file-label {
+    color: white;
+  }
+
+  .file-icon {
+    color: white;
+  }
+}
+
 .navbar-brand > div {
   font-weight: bold;
   font-size: 120%;
@@ -334,5 +525,12 @@ export default {
 
 .welcome {
   text-align: center;
+}
+
+.ebcontainer {
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 </style>

@@ -5,13 +5,14 @@
     style="
       position: absolute;
       top: 3vh;
-      height: 93vh;
-      left: 10vw;
-      width: 40vw;
-      z-index: 5;
+      height: 90vh;
+      left: auto;
+      right: auto;
+      width: 50em;
+      z-index: 10;
     "
   >
-    <h1 class="title block">Eintrag erstellen</h1>
+    <h1 class="title block">{{ title }}</h1>
     <div class="field is-horizontal">
       <div class="field-label">
         <label class="label" style="text-align: left">Typ</label>
@@ -22,7 +23,7 @@
             <label class="radio">
               <input
                 type="radio"
-                v-model="newEventDetails.isInterval"
+                v-model="tempEvent.isInterval"
                 v-bind:value="true"
               />
               Zeitraum
@@ -30,7 +31,7 @@
             <label class="radio">
               <input
                 type="radio"
-                v-model="newEventDetails.isInterval"
+                v-model="tempEvent.isInterval"
                 v-bind:value="false"
               />
               Zeitpunkt
@@ -45,32 +46,50 @@
       </div>
       <div class="field-body">
         <MonthChooser
-          v-model="newEventDetails.startDate"
+          v-model="tempEvent.startDate"
           :min="birthDate"
           :max="endDate"
-          :disable-check="false"
+          :disabled="false"
         />
       </div>
     </div>
-    <div class="field is-horizontal" v-show="newEventDetails.isInterval">
+    <div class="field is-horizontal" v-show="tempEvent.isInterval">
       <div class="field-label is-normal">
         <label class="label" style="text-align: left">bis</label>
       </div>
-      <div class="field-body" >
+      <div class="field-body">
         <MonthChooser
-          v-model="newEventDetails.endDate"
+          v-model="tempEvent.endDate"
           :min="birthDate"
           :max="endDate"
-          :disable-check="isChecked"
+          :disabled="tempEvent.isOpenEnd"
         />
       </div>
     </div>
-
-    <label class="checkbox is-small" v-show="newEventDetails.isInterval" style="float: right; text-align: right; margin-right: 1%; font-size: smaller">
-      <input type="checkbox" v-model="newEventDetails.isOpenEnd" @change="isChecked = !isChecked">
+    <p class="help is-danger"
+       v-if="tempEvent.startDate > tempEvent.endDate"
+       style="
+        float: right;
+        text-align: right;
+        margin-right: 1%;
+        font-size: smaller;
+      ">Ende darf nicht vor dem Start liegen!</p>
+    <br />
+    <br v-if="tempEvent.startDate > tempEvent.endDate" />
+    <label
+      class="checkbox is-small"
+      v-show="tempEvent.isInterval"
+      style="
+        float: right;
+        text-align: right;
+        margin-right: 1%;
+        font-size: smaller;
+      "
+    >
+      <input type="checkbox" v-model="tempEvent.isOpenEnd" />
       Offenes Ende
     </label>
-    <br>
+    <br />
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
@@ -80,9 +99,13 @@
         <div class="field is-narrow">
           <div class="control">
             <div class="select is-fullwidth">
-              <select v-model="newEventDetails.dimension">
-                <option v-for="value in dimensionOptions" :key="value">
-                  {{ value }}
+              <select v-model="tempEvent.dimensionId">
+                <option
+                  v-for="dim in dimensionOptions"
+                  :key="dim.id"
+                  :value="dim.id"
+                >
+                  {{ dim.title }}
                 </option>
               </select>
             </div>
@@ -97,13 +120,17 @@
       <div class="field-body">
         <div class="field">
           <div class="control">
+            <form @submit.prevent="isNewEvent ? addEvent() : editEvent()">
             <input
               class="input"
-              v-model="newEventDetails.description"
+              :class="{'is-danger': tempEvent.description.length < 1}"
+              v-model="tempEvent.description"
               type="text"
               placeholder="Anzeigename des Events"
               id="eventNameId"
+              required
             />
+            </form>
           </div>
         </div>
       </div>
@@ -118,7 +145,7 @@
           <div class="control">
             <textarea
               class="textarea"
-              v-model="newEventDetails.note"
+              v-model="tempEvent.notes"
               placeholder="Notizen zum Event"
               id="noteId"
             ></textarea>
@@ -127,37 +154,62 @@
       </div>
     </div>
     <br />
-    <button
-      class="button is-white"
-      style="margin-right: 1vw; right: -20vw; margin-top: -20px"
-      v-on:click="close"
-    >
-      Abbrechen
-    </button>
-    <button
-      class="button is-link"
-      style="right: -20vw; margin-top: -20px"
-      v-on:click="addEvent"
-    >
-      Fertig
-    </button>
+    <div class="buttons is-right">
+      <button
+        v-if="!isNewEvent"
+        class="button is-danger is-light"
+        @click="removeEvent"
+      >
+        Löschen
+      </button>
+      <button
+        class="button is-white"
+        v-on:click="close"
+      >
+        Abbrechen
+      </button>
+      <button
+        v-if="isNewEvent"
+        class="button is-link"
+        v-on:click="addEvent"
+        :disabled="tempEvent.startDate > tempEvent.endDate || tempEvent.description < 1"
+      >
+        Fertig
+      </button>
+      <button
+        v-if="!isNewEvent"
+        class="button is-link"
+        v-on:click="editEvent"
+        :disabled="tempEvent.startDate > tempEvent.endDate || tempEvent.description < 1"
+      >
+        Fertig
+      </button>
+   </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import MonthChooser from "./MonthChooser.vue";
 import { store } from "../store";
-import { Dimension } from "../data/Dimension";
 import { initEvent } from "../data/ZBEvent";
+import type { ZBEvent } from "../data/ZBEvent";
+import { ref, computed } from "vue";
+import type { PropType } from "vue";
 
 export default {
   name: "EventDialogue",
   components: { MonthChooser },
+  props: {
+    event: { type: Object as PropType<ZBEvent | null> },
+  },
   setup() {
-    const dimensionOptions = Object.keys(Dimension).filter((v) =>
-      isNaN(Number(v))
+    const dimensionOptions = computed(() =>
+      [...store.state.data.dimensions].reverse().filter((dim) => dim.visible)
     );
+    const tempEvent = ref(initEvent());
+
     return {
+      tempEvent,
       dimensionOptions,
     };
   },
@@ -168,61 +220,60 @@ export default {
     endDate() {
       return store.state.data.person.endDate;
     },
+    title() {
+      return this.isNewEvent ? "Eintrag erstellen" : "Eintrag bearbeiten";
+    },
   },
   data() {
     return {
-      isChecked: false,
-      newEventDetails: {
-        isInterval: true,
-        description: "",
-        note: "",
-        dimension: Dimension[Dimension.Familie], // XXX: might solve bug with uninitialized dimension
-        startDate: "2020-01",
-        endDate: "2020-12",
-        isOpenEnd: false,
-      },
-      selectedDimension: Dimension.Familie,
+      isNewEvent: true,
     };
   },
   methods: {
     addEvent() {
-      // TODO: should be safe to pass newEventDetails as payload because it is cloned in mutation
-      const newEvent = initEvent();
-      //@ts-ignore
-      // XXX: replace by array? (this should convert enum to int, but sometimes it does not work)
-      newEvent.dimensionId = Dimension[this.newEventDetails.dimension];
-      //@ts-ignore
-      console.log(
-        `dimension: |${this.newEventDetails.dimension}| -> |${newEvent.dimensionId}|`
-      );
-      //@ts-ignore
-      newEvent.description = this.newEventDetails.description;
-      //@ts-ignore
-      newEvent.notes = this.newEventDetails.note;
-      //@ts-ignore
-      newEvent.isInterval = this.newEventDetails.isInterval;
-      //@ts-ignore
-      newEvent.startDate = this.newEventDetails.startDate;
-
-
-      if(this.newEventDetails.isOpenEnd){
-        //@ts-ignore
-        newEvent.endDate = store.state.data.person.endDate
-      }else{
-        //@ts-ignore
-        newEvent.endDate = this.newEventDetails.endDate;
+      if (!this.tempEvent.isInterval) {
+        this.tempEvent.endDate = this.tempEvent.startDate; // Set the same as start date for non-interval events
+      }
+      if (this.tempEvent.isOpenEnd) {
+        this.tempEvent.endDate = store.state.data.person.endDate;
       }
 
-      //@ts-ignore
-      newEvent.isOpenEnd = this.newEventDetails.isOpenEnd;
-      store.commit("data/addEvent", newEvent);
-      //@ts-ignore
-      this.$router.go(0);
-      //@ts-ignore
-      this.newEventDetails = {};
+      store.commit("data/addEvent", this.tempEvent);
+      this.$emit("close");
+    },
+    removeEvent() {
+      if (this.event) {
+        store.commit("data/removeEvent", this.event.eventId);
+      } else {
+        console.warn("try to remove newly added event");
+      }
+      this.$emit("close");
+    },
+    editEvent() {
+      if (!this.tempEvent.isInterval) {
+        this.tempEvent.endDate = this.tempEvent.startDate; // Set the same as start date for non-interval events
+      }
+      if (this.tempEvent.isOpenEnd) {
+        this.tempEvent.endDate = store.state.data.person.endDate;
+      }
+
+      console.table(this.tempEvent);
+      // safe to send currentEvent because it is a clone
+      store.commit("data/editEvents", this.tempEvent);
+      this.$emit("close");
     },
     close() {
       this.$emit("close");
+    },
+  },
+  watch: {
+    event: function () {
+      if (this.event) {
+        console.log("prepare EventDialogue for ..." + this.event);
+        // shallow clone event data when opening the dialog
+        this.tempEvent = Object.assign({}, this.event);
+        this.isNewEvent = this.event.eventId === -1;
+      }
     },
   },
 };

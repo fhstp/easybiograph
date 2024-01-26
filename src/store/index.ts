@@ -12,6 +12,7 @@ import { localStoragePlugin, type IUnReDoState } from "./localStoragePlugin";
 import { sessionModule, type SessionState } from "./sessionModule";
 import { settingsModule } from "./settingsModule";
 import { zeitbalkenModule } from "./zeitbalkenModule";
+import type { ZBEvent } from "@/data/ZBEvent";
 
 export interface IStoreState {
   data: Zeitbalken;
@@ -21,7 +22,8 @@ export interface IStoreState {
 }
 
 const getters = {
-  getEvents(state: IStoreState): any {
+  // TODO is the getter necessary?
+  getEvents(state: IStoreState): ZBEvent[] {
     return state.data.events;
   },
   getEventById: (state: IStoreState) => (id: number) => {
@@ -29,6 +31,9 @@ const getters = {
   },
   getTimeline(state: IStoreState): Array<any> {
     return state.data.timeline;
+  },
+  getDimensions(state: IStoreState): Array<any> {
+    return state.data.dimensions;
   },
   getPersonCreated(state: IStoreState): boolean {
     return typeof state.data.person != "undefined";
@@ -38,6 +43,7 @@ const getters = {
       person: state.data.person,
       timeline: state.data.timeline,
       events: state.data.events,
+      dimensions: state.data.dimensions,
     };
     return downloadObject;
   },

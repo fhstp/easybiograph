@@ -2,13 +2,12 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 
-
 const props = defineProps<{
   modelValue?: string;
   requireDay?: boolean;
   min?: string;
   max?: string;
-  disableCheck: boolean;
+  disabled?: boolean;
 }>();
 
 const emit = defineEmits(["update:modelValue"]);
@@ -53,7 +52,7 @@ const minDay = computed(() => {
  */
 
 const age = computed(() => {
-  if (minYear.value && minMonth.value) {
+  if (minYear.value && minMonth.value !== undefined) {
     const ageMon =
       (year.value - minYear.value) * 12 + (month.value - minMonth.value);
 
@@ -100,6 +99,8 @@ const setFromProperties = (newModelValue: string | undefined) => {
       month.value = parseInt(match[2]) - 1;
       if (match[3]) {
         day.value = match[3];
+      } else {
+        day.value = UNSET_DAY;
       }
       // TODO insert error handling
       //console.log(`parsed as ${match[1]} - ${AVAIL_MONTHS[month.value]}`);
@@ -123,13 +124,12 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
   console.log(newDay, newMonth, newYear, modelStr);
   emit("update:modelValue", modelStr);
 });
-
 </script>
 
 <template>
   <div class="control has-icons-left">
     <div class="select">
-      <select v-model="day" :disabled="disableCheck">
+      <select v-model="day" :disabled="disabled">
         <option v-for="label in AVAIL_DAYS" :key="label" :value="label">
           {{ label }}
         </option>
@@ -142,7 +142,7 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
   &nbsp;
   <div class="control">
     <div class="select">
-      <select v-model="month" :disabled="disableCheck">
+      <select v-model="month" :disabled="disabled">
         <option v-for="(label, i) in AVAIL_MONTHS" :key="i" :value="i">
           {{ label }}
         </option>
@@ -152,7 +152,7 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
   &nbsp;
   <div class="control">
     <div v-if="avail_years" class="select">
-      <select v-model="year" :disabled="disableCheck">
+      <select v-model="year" :disabled="disabled">
         <option v-for="label in avail_years" :key="label" :value="label">
           {{ label }}
         </option>

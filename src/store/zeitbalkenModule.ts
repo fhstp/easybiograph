@@ -6,6 +6,10 @@ import { initZeitbalkenAsJSON, loadZeitbalken } from "@/data/Zeitbalken";
 import { initPerson } from "@/data/ZBPerson";
 
 import { loadZeitbalkenFromStore } from "./localStoragePlugin";
+import { initDimension } from "@/data/Dimension";
+import type { ZBDimension } from "@/data/Dimension";
+import type { ZBZoom } from "@/data/ZBZoom";
+import { initZoom } from "@/data/ZBZoom";
 //import type { IStoreState } from "@/store/index";
 
 // module state object.
@@ -55,8 +59,91 @@ const mutations = {
     });
   },
 
+  // TODO check if still needed
   addTimeline(state: Zeitbalken, timeline: Array<number>): void {
     state.timeline = timeline;
+  },
+
+  //dimensions: Array<string>
+  /*addDimensions(state: Zeitbalken, payload: { index: number; dimensions: Array<string> } ): void {
+    state.dimensions.push(payload)
+  },
+   */
+
+  addDimension(
+    state: Zeitbalken,
+    initialValues: Partial<ZBDimension> = {}
+  ): void {
+    const newDim = {
+      ...initDimension(),
+      ...initialValues,
+    };
+    newDim.id =
+      state.dimensions.length > 0
+        ? Math.max(...state.dimensions.map((v) => (v.id ? v.id : 1))) + 1
+        : 1;
+    state.dimensions.unshift(newDim);
+  },
+
+  //because the Dims are reversed - own function here to change the name
+  editDimName(
+    state: Zeitbalken,
+    payload: { id: number; changes: Partial<ZBDimension> }
+  ) {
+    const dimension = state.dimensions.find((dim) => dim.id === payload.id);
+    if (dimension) {
+      dimension.title = payload.changes.title;
+    }
+  },
+
+  toggleDimVisi(
+    state: Zeitbalken,
+    payload: { id: number; changes: Partial<ZBDimension> }
+  ) {
+    const dimension = state.dimensions.find((dim) => dim.id === payload.id);
+    if (dimension) {
+      dimension.visible = !dimension.visible;
+    }
+  },
+
+  editDimension(
+    state: Zeitbalken,
+    payload: { index: number; changes: Partial<ZBDimension> }
+  ): void {
+    // based oen vuex\examples\composition\todomvc\store\mutations.js
+    // const index = state.alteri.indexOf(payload.alter);
+
+    // lookup does not work for 2 parallel mutations (form change & map click)
+    if (
+      payload.index != null &&
+      payload.index >= 0 &&
+      payload.index < state.dimensions.length
+    ) {
+      // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
+      const changedDimension = {
+        ...state.dimensions[payload.index],
+        ...payload.changes,
+      };
+      // applyAdaptiveNWKDefaults(changedAlter, payload.changes);
+      state.events.splice(payload.index, 1, changedDimension);
+    } else {
+      console.warn("dimension index out of bounds: " + payload.index);
+    }
+  },
+
+  switchDimensions(
+    state: Zeitbalken,
+    payload: { dimensionOne: number; dimensionTwo: number }
+  ) {
+    const indexToMoveUp = state.dimensions.indexOf(payload.dimensionOne);
+    const indexToMoveDown = state.dimensions.indexOf(payload.dimensionTwo);
+
+    if (indexToMoveUp !== -1 && indexToMoveDown !== -1) {
+      [state.dimensions[indexToMoveUp], state.dimensions[indexToMoveDown]] = [
+        state.dimensions[indexToMoveDown],
+        state.dimensions[indexToMoveUp],
+      ];
+    }
   },
 
   addPerson(state: Zeitbalken, initialValues: Partial<ZBPerson> = {}): void {
@@ -66,6 +153,14 @@ const mutations = {
       ...initialValues,
     };
     state.person = newPerson;
+  },
+
+  addZoom(state: Zeitbalken, initialValues: Partial<ZBZoom> = {}): void {
+    const newZoom = {
+      ...initZoom(),
+      ...initialValues,
+    };
+    state.zoom = newZoom;
   },
 
   editEvent(
@@ -112,24 +207,6 @@ const mutations = {
       const eventB = new Date(b.startDate);
       return eventA.getTime() - eventB.getTime();
     });
-  },
-
-  editEventById(
-    state: Zeitbalken,
-    payload: { id: number; changes: Partial<ZBEvent> }
-  ): void {
-    const index = state.events.findIndex((a) => a.eventId === payload.id);
-    // const index = state.alteri.map((a) => a.id).indexOf(payload.id);
-    if (index >= 0) {
-      const changedEvent = {
-        ...state.events[index],
-        ...payload.changes,
-      };
-      // applyAdaptiveNWKDefaults(changedAlter, payload.changes);
-      state.events.splice(index, 1, changedEvent);
-    } else {
-      console.warn("event id not found: " + payload.id);
-    }
   },
 
   removeEvent(state: Zeitbalken, eventIndex: number): void {

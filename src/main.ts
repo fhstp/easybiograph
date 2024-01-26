@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
-import { store } from "./store";
+import { key, store } from "./store";
 
 import "@/assets/main.scss";
 
@@ -18,6 +18,8 @@ import {
   faBars,
   faPencilAlt,
   faUserPlus,
+  faArrowDown,
+  faArrowUp,
   // faMapPin,
   // faUserMinus,
   // faExchangeAlt,
@@ -35,7 +37,7 @@ import {
   // faChevronUp,
   // // faUndoAlt,
   // // faRedoAlt,
-  // faUndo,
+  faUndo,
   // faRedo,
   // faChartBar,
   // faUserSecret,
@@ -51,12 +53,18 @@ import {
   // faUnlink,
   faPlus,
   faArrowsAlt,
+  faPalette,
+  faSliders,
+  faTableList,
+  faMagnifyingGlassMinus,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
   faBars,
   faPencilAlt,
   faUserPlus,
+  faArrowDown,
+  faArrowUp,
   // faMapPin,
   // faUserMinus,
   // faExchangeAlt,
@@ -74,7 +82,7 @@ library.add(
   // faChevronUp,
   // // faUndoAlt,
   // // faRedoAlt,
-  // faUndo,
+  faUndo,
   // faRedo,
   // faChartBar,
   // faUserSecret,
@@ -89,13 +97,17 @@ library.add(
   // faLink,
   // faUnlink,
   faPlus,
-  faArrowsAlt
+  faArrowsAlt,
+  faPalette,
+  faSliders,
+  faTableList,
+  faMagnifyingGlassMinus
 );
 
 app.component("font-awesome-icon", FontAwesomeIcon);
 
 // END fontawesome
 
-app.use(store);
+app.use(store, key);
 
 app.mount("#app");
