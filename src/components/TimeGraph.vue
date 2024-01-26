@@ -36,7 +36,7 @@
         aria-label="main navigation"
     >
       <div class="navbar-brand">
-        <div class="navbar-item" title="easyBiograph version 2.0.2 beta">
+        <div class="navbar-item" title="easyBiograph version 2.0.3 beta">
           easyBiograph
         </div>
         <a
