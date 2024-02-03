@@ -5,20 +5,20 @@
   <div>
     <div v-for="(dimension, index) in Dimension" :key="dimension.id" class="checkbox-container">
       <label v-if="!isEditing[index]">
-        <input type="checkbox" @click="toggleDim(dimension.id)" :checked="dimension.visible"> {{ dimension.title }}
+        <input type="checkbox" @click="toggleDim(dimension.id)" :checked="dimension.visible" v-if="dimension.id > 7"> {{ dimension.title }}
       </label>
       <input v-if="isEditing[index]" v-model="editedDimension" @blur="cancelEdit(index)" @keyup.enter="saveEdit(index)" />
       <div class="buttons">
-      <button class="button is-small" v-if="!isEditing[index]" @click="editDimension(index)">
+      <button class="button is-small" v-if="!isEditing[index] && dimension.id > 7" @click="editDimension(index)">
         <font-awesome-icon icon="pencil-alt" />
       </button>
-        <button class="button is-small" v-if="isEditing[index]" @click="cancelEdit(index)">
+        <button class="button is-small" v-if="isEditing[index] && dimension.id > 7" @click="cancelEdit(index)">
           <font-awesome-icon icon="pencil-alt" />
         </button>
-      <button class="button is-small" @click="moveUp(index)" :disabled="index === 0">
+      <button class="button is-small" @click="moveUp(index)" :disabled="index === 7" v-if="dimension.id > 7">
         <font-awesome-icon icon="arrow-up" />
       </button>
-        <button class="button is-small" @click="moveDown(index)" :disabled="index === Dimension.length - 1">
+        <button class="button is-small" @click="moveDown(index)" :disabled="index === Dimension.length - 1" v-if="dimension.id > 7">
           <font-awesome-icon icon="arrow-down" />
         </button>
       </div>

@@ -7,6 +7,10 @@
     :event="selectedEvent"
   />
 
+  <HelpDialogue
+    v-show="showHelpDialogue"
+  />
+
   <PersonDialogue
     v-show="showCreateBiograph"
     :newPersonDetails="temporaryPerson"
@@ -142,10 +146,22 @@
                 zoomUndo
               "
                 style="background-color: #36626f"
+                v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
             >
               <span class="icon">
                 <font-awesome-icon icon="magnifying-glass-minus" />
               </span>
+            </a>
+
+            <a
+                class="button is-dark navbar-item"
+                @click="helpDialogue()"
+                style="background-color: #36626f"
+            >
+              <span class="icon">
+                <font-awesome-icon icon="question" />
+              </span>
+              <span>Hilfe</span>
             </a>
           </div>
         </div>
@@ -224,10 +240,12 @@ import EventDisplay from "@/components/EventDisplay.vue";
 import TimePane from "@/components/TimePane.vue";
 import { initEvent, type ZBEvent } from "@/data/ZBEvent";
 import router from "@/router";
+import HelpDialogue from "@/components/HelpDialogue.vue";
 
 export default {
   name: "TimeGraph",
   components: {
+    HelpDialogue,
     TimePane, // TimeTable,
     EventDialogue,
     PopUpNew,
@@ -246,6 +264,7 @@ export default {
       selectedEvent: null as ZBEvent | null,
       showEventPopUp: false,
       showEventDialogue: false,
+      showHelpDialogue: false,
       personYears: store.getters.getTimeline,
       showEventDisplay: false,
       burgerMenuActive: false,
@@ -323,6 +342,10 @@ export default {
 
       // @ts-ignore
       this.$router.go(0);
+    },
+
+    helpDialogue(){
+      this.showHelpDialogue = true
     },
 
     showAddEventDialogue() {
