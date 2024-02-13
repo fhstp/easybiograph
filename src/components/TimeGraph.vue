@@ -7,9 +7,6 @@
     :event="selectedEvent"
   />
 
-  <HelpDialogue
-    v-show="showHelpDialogue"
-  />
 
   <PersonDialogue
     v-show="showCreateBiograph"
@@ -142,26 +139,26 @@
             </a>
             <a
                 class="button is-dark navbar-item"
-                @click="
-                zoomUndo
-              "
-                style="background-color: #36626f"
-                v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
-            >
-              <span class="icon">
-                <font-awesome-icon icon="magnifying-glass-minus" />
-              </span>
-            </a>
-
-            <a
-                class="button is-dark navbar-item"
-                @click="helpDialogue()"
+                @click="openHelpPopUp()"
                 style="background-color: #36626f"
             >
               <span class="icon">
                 <font-awesome-icon icon="question" />
               </span>
               <span>Hilfe</span>
+            </a>
+            <a
+                class="button is-dark navbar-item"
+                @click="
+                zoomUndo
+              "
+                style="background-color: #36626f"
+                v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
+                title="Zoom zurücksetzen"
+            >
+              <span class="icon">
+                <font-awesome-icon icon="magnifying-glass-minus" />
+              </span>
             </a>
           </div>
         </div>
@@ -224,6 +221,24 @@
       class="modal-close is-large"
       aria-label="close"
       @click="closeModalEvent"
+    ></button>
+  </div>
+  <div id="modal-help" class="modal">
+    <div class="modal-background" @click="closeModalHelp"></div>
+
+    <div class="modal-content">
+      <div class="box">
+        <HelpDialogue
+            @open-edit="showHelpModal"
+            @abort-new="closeModalHelp"
+        />
+      </div>
+    </div>
+
+    <button
+        class="modal-close is-large"
+        aria-label="close"
+        @click="closeModalEvent"
     ></button>
   </div>
 </template>
@@ -379,12 +394,21 @@ export default {
       const modal = document.querySelector("#modal-popUp"); // TODO: https://vuejs.org/guide/essentials/class-and-style.html#binding-html-classes
       if (modal) modal.classList.add("is-active");
     },
+    openHelpPopUp() {
+      //@ts-ignore
+      const modal = document.querySelector("#modal-help"); // TODO: https://vuejs.org/guide/essentials/class-and-style.html#binding-html-classes
+      if (modal) modal.classList.add("is-active");
+    },
     closeModal() {
       const modalPopUp = document.querySelector("#modal-popUp");
       if (modalPopUp) modalPopUp.classList.remove("is-active");
     },
     closeModalEvent() {
       const modalPopUp = document.querySelector("#modal-event");
+      if (modalPopUp) modalPopUp.classList.remove("is-active");
+    },
+    closeModalHelp() {
+      const modalPopUp = document.querySelector("#modal-help");
       if (modalPopUp) modalPopUp.classList.remove("is-active");
     },
     closePerson() {
@@ -466,6 +490,11 @@ export default {
     showEditEventDialogue() {
       // this.selectedEvent has already been set before opening the modal event display
       this.showEventDialogue = true;
+      this.closeModalEvent();
+    },
+    showHelpModal() {
+      // this.selectedEvent has already been set before opening the modal event display
+      this.showHelpDialogue = true;
       this.closeModalEvent();
     },
     downloadData() {
