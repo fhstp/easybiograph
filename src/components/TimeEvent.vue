@@ -58,6 +58,10 @@ export default {
   props: {
     event: Object,
     showNotes: Boolean,
+    contrastMode: {
+      type: Boolean,
+      required: true,
+    },
   },
   mounted() {
     this.setHeight();
@@ -85,7 +89,6 @@ export default {
 
 .openEnd {
   display: block;
-  //background-color: $periodblue;
   border: 2px solid $periodborderblue;
   background: linear-gradient(90deg, rgba(230,242,248,1) 0%, rgba(175,211,227,1) 90%, rgba(137,182,203,1) 100%);
   box-shadow: #2c3e50;

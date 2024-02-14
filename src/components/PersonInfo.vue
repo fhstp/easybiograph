@@ -1,5 +1,5 @@
 <template>
-  <div class="personInfo">
+  <div class="personInfo" :style="{ 'background-color': contrastMode ? '#FFA500' : '#d2dee2', 'color': contrastMode ? '#001F3F' : '#3e505b' }">
     <!-- TODO: Aktuelles Datum statt Erstellungsdatum -->
     <p class="same interviewee">
       {{ $store.state.data.person.name }}
@@ -31,6 +31,12 @@
 <script>
 export default {
   name: "PersonInfo",
+  props: {
+    contrastMode: {
+      type: Boolean,
+      required: true,
+    },
+  },
 };
 </script>
 
@@ -39,8 +45,6 @@ export default {
   position: fixed;
   padding-left: 1vw;
   padding-top: 0.5vh;
-  background-color: #d2dee2;
-  color: #3e505b;
   font-weight: normal;
   width: 100vw;
   height: 2.5em;

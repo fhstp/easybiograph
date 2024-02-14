@@ -7,13 +7,12 @@
     :event="selectedEvent"
   />
 
-
   <PersonDialogue
     v-show="showCreateBiograph"
     :newPersonDetails="temporaryPerson"
     title="Neuen Zeitbalken erstellen"
     @close="closePerson"
-    @abort="showCreateBiograph = false"
+    @abort="showIntroNew"
     v-if="newPerson"
   />
   <!--:showButton="false"-->
@@ -31,7 +30,7 @@
   <div class="ebcontainer">
     <nav
         class="navbar is-black"
-        style="background-color: #488193"
+        :style="{ 'background-color': contrastMode ? '#0074CC' : '#488193' }"
         v-show="!showCreateBiograph"
         role="navigation"
         aria-label="main navigation"
@@ -64,7 +63,7 @@
           <div class="buttons">
             <a
               class="button is-dark navbar-item"
-              style="background-color: #36626f"
+              :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
               @click="openPopUp"
               v-if="!showIntro"
             >
@@ -89,7 +88,7 @@
             <a class="file is-dark navbar-item">
               <label class="file-label">
                 <input class="file-input" type="file" @change="importData" />
-                <span class="file-cta" style="background-color: #36626f">
+                <span class="file-cta" :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }">
                   <span class="file-icon icon is-small">
                     <font-awesome-icon icon="folder-open" />
                   </span>
@@ -102,7 +101,7 @@
               class="button is-dark navbar-item"
               @click="downloadData"
               v-show="!showIntro"
-              style="background-color: #36626f"
+              :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
             >
               <span class="icon is-small">
                 <font-awesome-icon icon="save" />
@@ -114,7 +113,7 @@
               class="button is-dark navbar-item"
               @click="showAddEventDialogue()"
               v-show="!showIntro"
-              style="background-color: #36626f"
+              :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
             >
               <span class="icon">
                 <font-awesome-icon icon="plus" />
@@ -129,7 +128,7 @@
                 newPerson = false;
               "
               v-show="!showIntro"
-              style="background-color: #36626f"
+              :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
             >
               <!-- TODO edit instead of new -->
               <span class="icon">
@@ -139,8 +138,18 @@
             </a>
             <a
                 class="button is-dark navbar-item"
+                :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
+                @click="toggleContrastMode"
+            >
+              <span class="icon">
+                <font-awesome-icon icon="question" />
+              </span>
+              <span>Kontrast</span>
+            </a>
+            <a
+                class="button is-dark navbar-item"
                 @click="openHelpPopUp()"
-                style="background-color: #36626f"
+                :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
             >
               <span class="icon">
                 <font-awesome-icon icon="question" />
@@ -152,7 +161,7 @@
                 @click="
                 zoomUndo
               "
-                style="background-color: #36626f"
+                :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
                 v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
                 title="Zoom zurücksetzen"
             >
@@ -168,6 +177,7 @@
 
     <TimePane
       v-if="!showCreateBiograph && !showIntro"
+      :contrastMode="contrastMode"
       @display-event="openEventDisplay"
       @open-edit="setSelectedEvent"
     />
@@ -276,6 +286,7 @@ export default {
       Dimension: [...dimensions].reverse(),
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       newPerson: true,
+      contrastMode: false,
       selectedEvent: null as ZBEvent | null,
       showEventPopUp: false,
       showEventDialogue: false,
@@ -307,8 +318,18 @@ export default {
     },
   },
   methods: {
+    toggleContrastMode() {
+      this.contrastMode = !this.contrastMode;
+
+      console.log("Kontrast clicked")
+
+    },
     toggleBurgerMenu() {
       this.burgerMenuActive = !this.burgerMenuActive;
+    },
+    showIntroNew(){
+      this.showCreateBiograph = false;
+      this.$router.go(0);
     },
     setSelectedEvent({ startDate, endDate, dimensionId }: any) {
       if(startDate == endDate) {
@@ -545,7 +566,6 @@ export default {
 
 <style scoped lang="scss">
 .file.is-dark {
-  background-color: #488193;
 
   &:hover {
     background-color: #488193;
@@ -584,5 +604,7 @@ export default {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  background-color: var(--contrast-background);
+  color: var(--contrast-text);
 }
 </style>

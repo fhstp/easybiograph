@@ -1,6 +1,6 @@
 <template>
   <div class="pane">
-    <PersonInfo />
+    <PersonInfo :contrastMode="contrastMode" />
     <TimeAxis :scale="timeScale" style="z-index: 2" />
     <div class="pane2">
     <div
@@ -35,6 +35,7 @@
             class="events"
             :style="`left: ${mark.x1}%; width: ${mark.x2}%; top: ${mark.row * 1.5}rem`"
             @click="$emit('displayEvent', mark.datum)"
+            :contrastMode="contrastMode"
         />
       </div>
     </div>
@@ -76,10 +77,13 @@ interface DimensionLayout {
 // }
 
 const store = useStore();
+const props = defineProps(['contrastMode']);
 
 onMounted(() => {
   initializeBrushing();
 });
+
+const contrastMode = computed(() => props.contrastMode);
 
 const initializeBrushing = () => {
   const dimensions = store.state.data.dimensions;
