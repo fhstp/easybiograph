@@ -23,7 +23,7 @@
                   event.startDate.substring(0, 4)
       }}
     </span>
-    <div :class="[event.isInterval && event.isOpenEnd ? 'openEnd sel' : event.isInterval ? 'period sel' : 'event sel']" @click="showDetails">
+    <div :value="contrastMode ? true : false" :class="[event.isInterval && event.isOpenEnd ? 'openEnd sel' : event.isInterval ? 'period sel' : 'event sel']" @click="showDetails">
       <p class="eventText">
         {{ event.description }}
       </p>
@@ -87,7 +87,7 @@ export default {
 
 <style scoped lang="scss">
 
-.openEnd {
+.openEnd[value="false"] {
   display: block;
   border: 2px solid $periodborderblue;
   background: linear-gradient(90deg, rgba(230,242,248,1) 0%, rgba(175,211,227,1) 90%, rgba(137,182,203,1) 100%);
@@ -102,13 +102,13 @@ export default {
 
 }
 
-.content {
+.content[value="false"] {
   border-right: 0.5px solid lightgrey;
   width: 10%;
   text-align: center;
 }
 
-.event {
+.event[value="false"] {
   display: block;
   background-color: $eventgrey;
   border-left: 3px solid $eventgreen;
@@ -118,10 +118,52 @@ export default {
   width: 50px;
 }
 
-.period {
+.period[value="false"] {
   display: block;
   background-color: $periodblue;
   border: 2px solid $periodborderblue;
+  box-shadow: #2c3e50;
+  margin: 5px 0;
+  border-radius: 3px;
+  z-index: 1;
+  margin-right: 1px;
+}
+
+.openEnd[value="true"] {
+  display: block;
+  border: 1.5px solid #488193;
+  background: linear-gradient(90deg, rgba(230,242,248,1) 0%, rgba(175,211,227,1) 90%, rgba(137,182,203,1) 100%);
+  box-shadow: #2c3e50;
+  margin: 5px 0;
+  border-radius: 3px;
+  z-index: 1;
+  margin-right: 1px;
+  border-right: none;
+  border-top-right-radius: 100px;
+
+
+}
+
+.content[value="true"] {
+  border-right: 0.5px solid lightgrey;
+  width: 10%;
+  text-align: center;
+}
+
+.event[value="true"] {
+  display: block;
+  background-color: $eventgrey;
+  border-left: 3px solid #FFA500;
+  margin: 5px 0;
+  border-radius: 3px;
+  z-index: 1;
+  width: 50px;
+}
+
+.period[value="true"] {
+  display: block;
+  background-color: $periodblue;
+  border: 1.5px solid #488193;
   box-shadow: #2c3e50;
   margin: 5px 0;
   border-radius: 3px;

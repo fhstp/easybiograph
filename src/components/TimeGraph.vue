@@ -57,6 +57,7 @@
           :class="{ 'is-active': burgerMenuActive }"
           id="navbarBasicExample"
           class="navbar-menu bar"
+          :style="{ 'background-color': contrastMode ? '#0074CC' : '#488193' }"
       >
         <div class="navbar-start">
         <div>
@@ -85,10 +86,10 @@
               <span>Neu</span>
             </a>
 
-            <a class="file is-dark navbar-item">
+            <a class="file is-dark navbar-item" :value="contrastMode ? true : false" style="margin-right: 0vw; margin-left: 0vw">
               <label class="file-label">
                 <input class="file-input" type="file" @change="importData" />
-                <span class="file-cta" :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }">
+                <span class="file-cta" :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }" >
                   <span class="file-icon icon is-small">
                     <font-awesome-icon icon="folder-open" />
                   </span>
@@ -142,19 +143,9 @@
                 @click="toggleContrastMode"
             >
               <span class="icon">
-                <font-awesome-icon icon="question" />
+                <font-awesome-icon icon="paint-roller" />
               </span>
               <span>Kontrast</span>
-            </a>
-            <a
-                class="button is-dark navbar-item"
-                @click="openHelpPopUp()"
-                :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
-            >
-              <span class="icon">
-                <font-awesome-icon icon="question" />
-              </span>
-              <span>Hilfe</span>
             </a>
             <a
                 class="button is-dark navbar-item"
@@ -172,7 +163,21 @@
           </div>
         </div>
       </div>
-    </div>
+      </div>
+        <div class="navbar-end">
+          <a
+              class="button is-dark navbar-item"
+              @click="openHelpPopUp()"
+              style="margin-right: 0.5vw; margin-top: 0.5vh"
+              :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
+          >
+              <span class="icon">
+                <font-awesome-icon icon="question" />
+              </span>
+            <span>Hilfe</span>
+          </a>
+        </div>
+
   </nav>
 
     <TimePane
@@ -565,7 +570,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.file.is-dark {
+.file.is-dark[value="true"] {
+
+  &:hover {
+    background-color: #0074CC;
+  }
+
+  .file-label {
+    color: white;
+  }
+
+  .file-icon {
+    color: white;
+  }
+}
+
+.file.is-dark[value="false"] {
 
   &:hover {
     background-color: #488193;
