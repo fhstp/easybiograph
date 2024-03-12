@@ -36,7 +36,7 @@
         aria-label="main navigation"
     >
       <div class="navbar-brand">
-        <div class="navbar-item" title="easyBiograph version 2.0.3 beta">
+        <div class="navbar-item" :title="`easyBiograph version ${appVersion}`">
           easyBiograph
         </div>
         <a
@@ -312,6 +312,10 @@ export default {
     showIntro(): boolean {
       //@ts-ignore
       return this.personYears < 1;
+    },
+    appVersion(): string {
+      // eslint-disable-next-line no-undef
+      return __APP_VERSION__;
     },
   },
   watch: {
