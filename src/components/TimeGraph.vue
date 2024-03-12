@@ -238,22 +238,19 @@
       @click="closeModalEvent"
     ></button>
   </div>
-  <div id="modal-help" class="modal">
+  <div id="modal-help" :class="['modal', { 'is-active': showHelpDialogue }]">
     <div class="modal-background" @click="closeModalHelp"></div>
 
     <div class="modal-content">
       <div class="box">
-        <HelpDialogue
-            @open-edit="showHelpModal"
-            @abort-new="closeModalHelp"
-        />
+        <HelpDialogue @abort="closeModalHelp" />
       </div>
     </div>
 
     <button
-        class="modal-close is-large"
-        aria-label="close"
-        @click="closeModalEvent"
+      class="modal-close is-large"
+      aria-label="close"
+      @click="closeModalHelp"
     ></button>
   </div>
 </template>
@@ -389,10 +386,6 @@ export default {
       this.$router.go(0);
     },
 
-    helpDialogue(){
-      this.showHelpDialogue = true
-    },
-
     showAddEventDialogue() {
       const tempEvent = initEvent();
 
@@ -425,9 +418,7 @@ export default {
       if (modal) modal.classList.add("is-active");
     },
     openHelpPopUp() {
-      //@ts-ignore
-      const modal = document.querySelector("#modal-help"); // TODO: https://vuejs.org/guide/essentials/class-and-style.html#binding-html-classes
-      if (modal) modal.classList.add("is-active");
+      this.showHelpDialogue = true;
     },
     closeModal() {
       const modalPopUp = document.querySelector("#modal-popUp");
@@ -438,8 +429,7 @@ export default {
       if (modalPopUp) modalPopUp.classList.remove("is-active");
     },
     closeModalHelp() {
-      const modalPopUp = document.querySelector("#modal-help");
-      if (modalPopUp) modalPopUp.classList.remove("is-active");
+      this.showHelpDialogue = false;
     },
     closePerson() {
       //@ts-ignore
