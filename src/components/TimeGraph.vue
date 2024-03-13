@@ -158,7 +158,7 @@
               <span class="icon">
                 <font-awesome-icon icon="question" />
               </span>
-            <span>Hilfe</span>
+            <span>Info</span>
           </a>
           </div>
         </div>
