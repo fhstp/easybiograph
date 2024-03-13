@@ -1,5 +1,5 @@
 <template>
-  <div class="personInfo" :style="{ 'background-color': contrastMode ? '#93b2c9' : '#d2dee2', 'color': contrastMode ? '#001F3F' : '#3e505b' }">
+  <div class="personInfo">
     <!-- TODO: Aktuelles Datum statt Erstellungsdatum -->
     <p class="same interviewee">
       {{ $store.state.data.person.name }}
@@ -50,6 +50,12 @@ export default {
   height: 2.5em;
   z-index: 5;
   white-space: nowrap;
+  background-color: #d2dee2;
+}
+
+.contrast .personInfo {
+  /* background-color: #93b2c9; */
+  color: #001f3f;
 }
 
 .same {

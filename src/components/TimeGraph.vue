@@ -27,7 +27,7 @@
   />
   <!--:showButton="true"-->
 
-  <div class="ebcontainer">
+  <div :class="['ebcontainer', { contrast: contrastMode }]">
     <nav
         class="navbar is-black"
         :style="{ 'background-color': contrastMode ? '#0074CC' : '#488193' }"
@@ -59,12 +59,10 @@
           class="navbar-menu bar"
           :style="{ 'background-color': contrastMode ? '#0074CC' : '#488193' }"
       >
-        <div class="navbar-start">
-        <div>
-          <div class="buttons">
+        <div class="navbar-start" style="flex-grow: 1">
+          <div class="buttons" style="flex-grow: 1">
             <a
               class="button is-dark navbar-item"
-              :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
               @click="openPopUp"
               v-if="!showIntro"
             >
@@ -76,7 +74,6 @@
 
             <a
               class="button is-dark navbar-item"
-              style="background-color: #36626f"
               @click="newData"
               v-if="showIntro"
             >
@@ -102,7 +99,6 @@
               class="button is-dark navbar-item"
               @click="downloadData"
               v-show="!showIntro"
-              :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
             >
               <span class="icon is-small">
                 <font-awesome-icon icon="save" />
@@ -114,7 +110,6 @@
               class="button is-dark navbar-item"
               @click="showAddEventDialogue()"
               v-show="!showIntro"
-              :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
             >
               <span class="icon">
                 <font-awesome-icon icon="plus" />
@@ -129,7 +124,6 @@
                 newPerson = false;
               "
               v-show="!showIntro"
-              :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
             >
               <!-- TODO edit instead of new -->
               <span class="icon">
@@ -139,7 +133,6 @@
             </a>
             <a
                 class="button is-dark navbar-item"
-                :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
                 @click="toggleContrastMode"
             >
               <span class="icon">
@@ -149,10 +142,7 @@
             </a>
             <a
                 class="button is-dark navbar-item"
-                @click="
-                zoomUndo
-              "
-                :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
+                @click="zoomUndo"
                 v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
                 title="Zoom zurücksetzen"
             >
@@ -160,24 +150,19 @@
                 <font-awesome-icon icon="magnifying-glass-minus" />
               </span>
             </a>
-          </div>
-        </div>
-      </div>
-      </div>
-        <div class="navbar-end">
-          <a
+            <span style="flex-grow: 1"></span>
+            <a
               class="button is-dark navbar-item"
               @click="openHelpPopUp()"
-              style="margin-right: 0.5vw; margin-top: 0.5vh"
-              :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }"
           >
               <span class="icon">
                 <font-awesome-icon icon="question" />
               </span>
             <span>Hilfe</span>
           </a>
+          </div>
         </div>
-
+      </div>
   </nav>
 
     <TimePane
@@ -592,6 +577,18 @@ export default {
   .file-icon {
     color: white;
   }
+}
+
+.button.navbar-item {
+  background-color: #36626f;
+}
+
+.contrast .button.navbar-item {
+  background-color: #001f3f;
+}
+
+.navbar-start .buttons:last-child {
+  margin-right: 0.5em;
 }
 
 .navbar-brand > div {
