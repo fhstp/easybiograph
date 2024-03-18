@@ -12,7 +12,7 @@
     :newPersonDetails="temporaryPerson"
     title="Neuen Zeitbalken erstellen"
     @close="closePerson"
-    @abort="showCreateBiograph = false"
+    @abort="showIntroNew"
     v-if="newPerson"
   />
   <!--:showButton="false"-->
@@ -27,16 +27,16 @@
   />
   <!--:showButton="true"-->
 
-  <div class="ebcontainer">
+  <div :class="['ebcontainer', { contrast: contrastMode }]">
     <nav
         class="navbar is-black"
-        style="background-color: #488193"
+        :style="{ 'background-color': contrastMode ? '#0074CC' : '#488193' }"
         v-show="!showCreateBiograph"
         role="navigation"
         aria-label="main navigation"
     >
       <div class="navbar-brand">
-        <div class="navbar-item" title="easyBiograph version 2.0.3 beta">
+        <div class="navbar-item" :title="`easyBiograph version ${appVersion}`">
           easyBiograph
         </div>
         <a
@@ -57,13 +57,12 @@
           :class="{ 'is-active': burgerMenuActive }"
           id="navbarBasicExample"
           class="navbar-menu bar"
+          :style="{ 'background-color': contrastMode ? '#0074CC' : '#488193' }"
       >
-        <div class="navbar-start">
-        <div>
-          <div class="buttons">
+        <div class="navbar-start" style="flex-grow: 1">
+          <div class="buttons" style="flex-grow: 1">
             <a
               class="button is-dark navbar-item"
-              style="background-color: #36626f"
               @click="openPopUp"
               v-if="!showIntro"
             >
@@ -75,7 +74,6 @@
 
             <a
               class="button is-dark navbar-item"
-              style="background-color: #36626f"
               @click="newData"
               v-if="showIntro"
             >
@@ -85,10 +83,10 @@
               <span>Neu</span>
             </a>
 
-            <a class="file is-dark navbar-item">
+            <a class="file is-dark navbar-item" :value="contrastMode ? true : false" style="margin-right: 0vw; margin-left: 0vw">
               <label class="file-label">
                 <input class="file-input" type="file" @change="importData" />
-                <span class="file-cta" style="background-color: #36626f">
+                <span class="file-cta" :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }" >
                   <span class="file-icon icon is-small">
                     <font-awesome-icon icon="folder-open" />
                   </span>
@@ -101,7 +99,6 @@
               class="button is-dark navbar-item"
               @click="downloadData"
               v-show="!showIntro"
-              style="background-color: #36626f"
             >
               <span class="icon is-small">
                 <font-awesome-icon icon="save" />
@@ -113,7 +110,6 @@
               class="button is-dark navbar-item"
               @click="showAddEventDialogue()"
               v-show="!showIntro"
-              style="background-color: #36626f"
             >
               <span class="icon">
                 <font-awesome-icon icon="plus" />
@@ -128,7 +124,6 @@
                 newPerson = false;
               "
               v-show="!showIntro"
-              style="background-color: #36626f"
             >
               <!-- TODO edit instead of new -->
               <span class="icon">
@@ -138,23 +133,41 @@
             </a>
             <a
                 class="button is-dark navbar-item"
-                @click="
-                zoomUndo
-              "
-                style="background-color: #36626f"
+                @click="toggleContrastMode"
+            >
+              <span class="icon">
+                <font-awesome-icon icon="paint-roller" />
+              </span>
+              <span>Kontrast</span>
+            </a>
+            <a
+                class="button is-dark navbar-item"
+                @click="zoomUndo"
+                v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
+                title="Zoom zurücksetzen"
             >
               <span class="icon">
                 <font-awesome-icon icon="magnifying-glass-minus" />
               </span>
             </a>
+            <span style="flex-grow: 1"></span>
+            <a
+              class="button is-dark navbar-item"
+              @click="openHelpPopUp()"
+          >
+              <span class="icon">
+                <font-awesome-icon icon="question" />
+              </span>
+            <span>Info</span>
+          </a>
           </div>
         </div>
       </div>
-    </div>
   </nav>
 
     <TimePane
       v-if="!showCreateBiograph && !showIntro"
+      :contrastMode="contrastMode"
       @display-event="openEventDisplay"
       @open-edit="setSelectedEvent"
     />
@@ -210,6 +223,21 @@
       @click="closeModalEvent"
     ></button>
   </div>
+  <div id="modal-help" :class="['modal', { 'is-active': showHelpDialogue }]">
+    <div class="modal-background" @click="closeModalHelp"></div>
+
+    <div class="modal-content">
+      <div class="box">
+        <HelpDialogue @abort="closeModalHelp" />
+      </div>
+    </div>
+
+    <button
+      class="modal-close is-large"
+      aria-label="close"
+      @click="closeModalHelp"
+    ></button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -224,10 +252,12 @@ import EventDisplay from "@/components/EventDisplay.vue";
 import TimePane from "@/components/TimePane.vue";
 import { initEvent, type ZBEvent } from "@/data/ZBEvent";
 import router from "@/router";
+import HelpDialogue from "@/components/HelpDialogue.vue";
 
 export default {
   name: "TimeGraph",
   components: {
+    HelpDialogue,
     TimePane, // TimeTable,
     EventDialogue,
     PopUpNew,
@@ -243,9 +273,11 @@ export default {
       Dimension: [...dimensions].reverse(),
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       newPerson: true,
+      contrastMode: false,
       selectedEvent: null as ZBEvent | null,
       showEventPopUp: false,
       showEventDialogue: false,
+      showHelpDialogue: false,
       personYears: store.getters.getTimeline,
       showEventDisplay: false,
       burgerMenuActive: false,
@@ -263,6 +295,10 @@ export default {
       //@ts-ignore
       return this.personYears < 1;
     },
+    appVersion(): string {
+      // eslint-disable-next-line no-undef
+      return __APP_VERSION__;
+    },
   },
   watch: {
     displayYears: {
@@ -273,8 +309,18 @@ export default {
     },
   },
   methods: {
+    toggleContrastMode() {
+      this.contrastMode = !this.contrastMode;
+
+      console.log("Kontrast clicked")
+
+    },
     toggleBurgerMenu() {
       this.burgerMenuActive = !this.burgerMenuActive;
+    },
+    showIntroNew(){
+      this.showCreateBiograph = false;
+      this.$router.go(0);
     },
     setSelectedEvent({ startDate, endDate, dimensionId }: any) {
       if(startDate == endDate) {
@@ -356,6 +402,9 @@ export default {
       const modal = document.querySelector("#modal-popUp"); // TODO: https://vuejs.org/guide/essentials/class-and-style.html#binding-html-classes
       if (modal) modal.classList.add("is-active");
     },
+    openHelpPopUp() {
+      this.showHelpDialogue = true;
+    },
     closeModal() {
       const modalPopUp = document.querySelector("#modal-popUp");
       if (modalPopUp) modalPopUp.classList.remove("is-active");
@@ -363,6 +412,9 @@ export default {
     closeModalEvent() {
       const modalPopUp = document.querySelector("#modal-event");
       if (modalPopUp) modalPopUp.classList.remove("is-active");
+    },
+    closeModalHelp() {
+      this.showHelpDialogue = false;
     },
     closePerson() {
       //@ts-ignore
@@ -445,6 +497,11 @@ export default {
       this.showEventDialogue = true;
       this.closeModalEvent();
     },
+    showHelpModal() {
+      // this.selectedEvent has already been set before opening the modal event display
+      this.showHelpDialogue = true;
+      this.closeModalEvent();
+    },
     downloadData() {
       // TODO move to utils.ts (consistent with easynwk)
       const filename = "easybiograph_" + store.state.data.person.name + ".json";
@@ -492,8 +549,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.file.is-dark {
-  background-color: #488193;
+.file.is-dark[value="true"] {
+
+  &:hover {
+    background-color: #0074CC;
+  }
+
+  .file-label {
+    color: white;
+  }
+
+  .file-icon {
+    color: white;
+  }
+}
+
+.file.is-dark[value="false"] {
 
   &:hover {
     background-color: #488193;
@@ -506,6 +577,18 @@ export default {
   .file-icon {
     color: white;
   }
+}
+
+.button.navbar-item {
+  background-color: #36626f;
+}
+
+.contrast .button.navbar-item {
+  background-color: #001f3f;
+}
+
+.navbar-start .buttons:last-child {
+  margin-right: 0.5em;
 }
 
 .navbar-brand > div {
@@ -532,5 +615,7 @@ export default {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  background-color: var(--contrast-background);
+  color: var(--contrast-text);
 }
 </style>

@@ -57,6 +57,8 @@ import {
   faSliders,
   faTableList,
   faMagnifyingGlassMinus,
+  faQuestion,
+  faPaintRoller,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -101,7 +103,9 @@ library.add(
   faPalette,
   faSliders,
   faTableList,
-  faMagnifyingGlassMinus
+  faMagnifyingGlassMinus,
+  faQuestion,
+  faPaintRoller
 );
 
 app.component("font-awesome-icon", FontAwesomeIcon);

@@ -1,15 +1,17 @@
 <template>
   <div class="pane">
-    <PersonInfo />
+    <PersonInfo :contrastMode="contrastMode" />
     <TimeAxis :scale="timeScale" style="z-index: 2" />
     <div class="pane2">
     <div
         v-for="(dim, index) in layout"
+        :value="contrastMode ? true : false"
         :key="dim.id"
         :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
         :style="`height: ${100 / layout.length}%`"
     >
-      <div class="dimensionlabel" :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }">
+      <!-- , {'border-style': contrastMode ? 'groove hidden groove hidden' : 'hidden'} -->
+      <div value="false" class="dimensionlabel" :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }">
 
       </div>
       <div class="dlabel">
@@ -35,6 +37,7 @@
             class="events"
             :style="`left: ${mark.x1}%; width: ${mark.x2}%; top: ${mark.row * 1.5}rem`"
             @click="$emit('displayEvent', mark.datum)"
+            :contrastMode="contrastMode"
         />
       </div>
     </div>
@@ -76,10 +79,13 @@ interface DimensionLayout {
 // }
 
 const store = useStore();
+const props = defineProps(['contrastMode']);
 
 onMounted(() => {
   initializeBrushing();
 });
+
+const contrastMode = computed(() => props.contrastMode);
 
 const initializeBrushing = () => {
   const dimensions = store.state.data.dimensions;
@@ -283,10 +289,14 @@ const layout = computed((): Array<DimensionLayout> => {
 
 <style scoped lang="scss">
 
-.grey-background {
+.grey-background[value="false"] {
   background-color: #f2f2f2;
 }
-
+.grey-background[value="true"] {
+  background-color: #f2f2f2;
+  border-style: groove hidden groove hidden;
+  border-width: 2px;
+}
 .white-background {
   background-color: #fcfcfc;
 }

@@ -31,6 +31,12 @@
 <script>
 export default {
   name: "PersonInfo",
+  props: {
+    contrastMode: {
+      type: Boolean,
+      required: true,
+    },
+  },
 };
 </script>
 
@@ -39,13 +45,17 @@ export default {
   position: fixed;
   padding-left: 1vw;
   padding-top: 0.5vh;
-  background-color: #d2dee2;
-  color: #3e505b;
   font-weight: normal;
   width: 100vw;
   height: 2.5em;
   z-index: 5;
   white-space: nowrap;
+  background-color: #d2dee2;
+}
+
+.contrast .personInfo {
+  /* background-color: #93b2c9; */
+  color: #001f3f;
 }
 
 .same {
