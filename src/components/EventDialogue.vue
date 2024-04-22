@@ -67,7 +67,7 @@
       </div>
     </div>
     <p class="help is-danger"
-       v-if="tempEvent.startDate > tempEvent.endDate"
+       v-if="tempEvent.startDate > tempEvent.endDate && tempEvent.isInterval && !tempEvent.isOpenEnd"
        style="
         float: right;
         text-align: right;
@@ -75,7 +75,7 @@
         font-size: smaller;
       ">Ende darf nicht vor dem Start liegen!</p>
     <br />
-    <br v-if="tempEvent.startDate > tempEvent.endDate" />
+    <br v-if="tempEvent.startDate > tempEvent.endDate && tempEvent.isInterval && !tempEvent.isOpenEnd"/>
     <label
       class="checkbox is-small"
       v-show="tempEvent.isInterval"
@@ -172,7 +172,7 @@
         v-if="isNewEvent"
         class="button is-link"
         v-on:click="addEvent"
-        :disabled="tempEvent.startDate > tempEvent.endDate || tempEvent.description < 1"
+        :disabled="tempEvent.startDate > tempEvent.endDate && tempEvent.isInterval && !tempEvent.isOpenEnd || tempEvent.description < 1"
       >
         Fertig
       </button>
