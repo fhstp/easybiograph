@@ -5,10 +5,25 @@
       <br />
       {{ temporalExtentLabel }}
     </span>
-    <div :value="contrastMode ? true : false" class="ebox" :class="[event.isInterval && event.isOpenEnd ? 'openEnd' : event.isInterval ? 'period' : 'event']" @click="showDetails">
+    <div
+      :value="contrastMode ? true : false"
+      class="ebox"
+      :class="[
+        event.isInterval && event.isOpenEnd
+          ? 'openEnd'
+          : event.isInterval
+          ? 'period'
+          : 'event',
+      ]"
+      @click="showDetails"
+    >
       &nbsp;
     </div>
-    <p class="eventText" :style="`max-width: ${labelSpace}%`">
+    <p
+      class="eventText"
+      :class="{ int: event.isInterval }"
+      :style="`max-width: ${labelSpace}%`"
+    >
       {{ event.description }}
     </p>
     <p class="subcontent" v-show="showNotes">
@@ -133,14 +148,18 @@ export default {
 .eventText {
   position: absolute;
   top: 5px;
-  left: 2px;
+  left: 3px;
   font-size: smaller;
   line-height: 1.4;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 0 2px;
+  padding: 0 2px 0 2px;
+}
+
+.eventText.int {
   background: $periodblue;
+  padding: 0 2px 0 1px;
 }
 
 .subcontent {
