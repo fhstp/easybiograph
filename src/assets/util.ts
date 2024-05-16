@@ -64,6 +64,12 @@ export const germanTimeFormat = {
   ],
 };
 
+export function format(input: string): string {
+  const month = Number(input.substring(5, 7));
+  const year = Number(input.substring(0, 4));
+  return germanTimeFormat.shortMonths[month - 1] + " " + year;
+}
+
 export function utcIncompleteDate(input: string): Date {
   // When the time zone offset is absent, date-only forms are interpreted as
   // a UTC time and date-time forms are interpreted as local time. This is due

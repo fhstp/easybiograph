@@ -66,16 +66,17 @@
         />
       </div>
     </div>
-    <p class="help is-danger"
-       v-if="tempEvent.startDate > tempEvent.endDate && tempEvent.isInterval && !tempEvent.isOpenEnd"
-       style="
+    <p
+      class="help is-danger"
+      v-if="invalidEnd"
+      style="
         float: right;
         text-align: right;
         margin-right: 1%;
         font-size: smaller;
       ">Ende darf nicht vor dem Start liegen!</p>
     <br />
-    <br v-if="tempEvent.startDate > tempEvent.endDate && tempEvent.isInterval && !tempEvent.isOpenEnd"/>
+    <br v-if="invalidEnd" />
     <label
       class="checkbox is-small"
       v-show="tempEvent.isInterval"
@@ -172,7 +173,7 @@
         v-if="isNewEvent"
         class="button is-link"
         v-on:click="addEvent"
-        :disabled="tempEvent.startDate > tempEvent.endDate && tempEvent.isInterval && !tempEvent.isOpenEnd || tempEvent.description < 1"
+        :disabled="invalidEnd || tempEvent.description < 1"
       >
         Fertig
       </button>
@@ -180,7 +181,7 @@
         v-if="!isNewEvent"
         class="button is-link"
         v-on:click="editEvent"
-        :disabled="tempEvent.startDate > tempEvent.endDate || tempEvent.description < 1"
+        :disabled="invalidEnd || tempEvent.description < 1"
       >
         Fertig
       </button>
@@ -222,6 +223,13 @@ export default {
     },
     title() {
       return this.isNewEvent ? "Eintrag erstellen" : "Eintrag bearbeiten";
+    },
+    invalidEnd() {
+      return (
+        this.tempEvent.startDate > this.tempEvent.endDate &&
+        this.tempEvent.isInterval &&
+        !this.tempEvent.isOpenEnd
+      );
     },
   },
   data() {

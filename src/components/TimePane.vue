@@ -3,44 +3,50 @@
     <PersonInfo :contrastMode="contrastMode" />
     <TimeAxis :scale="timeScale" style="z-index: 2" />
     <div class="pane2">
-    <div
+      <div
         v-for="(dim, index) in layout"
         :value="contrastMode ? true : false"
         :key="dim.id"
         :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
         :style="`height: ${100 / layout.length}%`"
-    >
-      <!-- , {'border-style': contrastMode ? 'groove hidden groove hidden' : 'hidden'} -->
-      <div value="false" class="dimensionlabel" :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }">
+      >
+        <!-- , {'border-style': contrastMode ? 'groove hidden groove hidden' : 'hidden'} -->
+        <div
+          value="false"
+          class="dimensionlabel"
+          :class="{
+            dim: true,
+            'white-background': index % 2 !== 0,
+            'grey-background': index % 2 === 0,
+          }"
+        ></div>
+        <div class="dlabel">
+          {{ dim.label }}
+        </div>
 
-      </div>
-      <div class="dlabel">
-        {{ dim.label }}
-      </div>
-
-      <div
+        <div
           class="substrate"
           :class="{
-          'white-background': index % 2 !== 0,
-          'grey-background': index % 2 === 0
+            'white-background': index % 2 !== 0,
+            'grey-background': index % 2 === 0,
         }"
           ref="substrateRef"
-      >
-        <!-- SVG container for brushing -->
-        <svg :id="'dataviz_brushing1D_' + dim.id" class="brush-container"></svg>
+        >
+          <!-- SVG container for brushing -->
+          <svg :id="'dataviz_brushing1D_' + dim.id" class="brush-container"></svg>
 
-
-        <TimeEvent
+          <TimeEvent
             v-for="mark in dim.marks"
             :key="mark.datum.eventId"
             :event="mark.datum"
+            :labelSpace="(100 * mark.spx) / mark.w"
             class="events"
-            :style="`left: ${mark.x1}%; width: ${mark.x2}%; top: ${mark.row * 1.5}rem`"
+            :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * 1.8}rem; height: 1.8rem`"
             @click="$emit('displayEvent', mark.datum)"
             :contrastMode="contrastMode"
-        />
+          />
+        </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
@@ -59,8 +65,11 @@ import {brushX} from "d3";
 
 interface EventMark {
   datum: ZBEvent;
-  x1: number;
-  x2: number;
+  x: number;
+  /** width of the time interval */
+  w: number;
+  /** available width to the next event */
+  spx: number;
   row: number;
   // collapsed: boolean;
 }
@@ -159,10 +168,7 @@ if(store.state.data.zoom.birthDate.length >= 1){
     const rightDate = new Date(store.state.data.person.endDate);
     return d3.scaleUtc().domain([leftDate, rightDate]).range([0, 100]);
   });
-};
-
-
-
+}
 
 const calculateDateFromClick = (clickX: number, axisWidth: number): string | null => {
 
@@ -243,6 +249,8 @@ const layout = computed((): Array<DimensionLayout> => {
     const eventsInDim = visibleEvents.get(dim.id) || [];
     // keep track how far to the right rows inside a dimension are occupied
     const rowOccup: number[] = [];
+    const rightEventbyRow: (EventMark | null)[] = [];
+
     eventsInDim.forEach((datum) => {
       const leftDate = new Date(datum.startDate);
       const nextDate = new Date(datum.endDate);
@@ -260,12 +268,16 @@ const layout = computed((): Array<DimensionLayout> => {
 
       for (;;) {
         if (rowOccup.length == eventRow) {
+          // row occupation array full --> start new row & occupy
           rowOccup.push(rightCorrX);
+          rightEventbyRow.push(null);
           break;
         } else if (rowOccup[eventRow] <= leftX) {
+          // current row is free --> take & occupy
           rowOccup[eventRow] = rightCorrX;
           break;
         } else {
+          // try next row
           eventRow++;
         }
       }
@@ -273,15 +285,25 @@ const layout = computed((): Array<DimensionLayout> => {
       // remember the maximum row
       dim.rows = Math.max(dim.rows, eventRow);
 
-      dim.marks.push({
+      // update space for label for previous event in this row
+      const prevMarkInRow = rightEventbyRow[eventRow];
+      if (prevMarkInRow !== null) {
+        prevMarkInRow.spx = leftX - prevMarkInRow.x;
+      }
+
+      const newMark = {
         datum,
-        x1: leftX,
-        x2: rightX - leftX,
+        x: leftX,
+        w: Math.max(rightX - leftX, 0.5),
+        spx: 100 - leftX, // default space is rest to 100%
         row: eventRow,
         // collapsed: false,
-      });
+      };
+      rightEventbyRow[eventRow] = newMark;
+      dim.marks.push(newMark);
     });
   });
+
 
   return buffer;
 });
