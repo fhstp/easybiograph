@@ -88,7 +88,7 @@ interface DimensionLayout {
 // }
 
 const store = useStore();
-const props = defineProps(['contrastMode']);
+const props = defineProps(['contrastMode', 'zoomMode']);
 
 onMounted(() => {
   initializeBrushing();

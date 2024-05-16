@@ -142,6 +142,15 @@
             </a>
             <a
                 class="button is-dark navbar-item"
+                @click="toggleZoomMode"
+            >
+              <span class="icon">
+                <font-awesome-icon icon="paint-roller" />
+              </span>
+              <span>Zoom</span>
+            </a>
+            <a
+                class="button is-dark navbar-item"
                 @click="zoomUndo"
                 v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
                 title="Zoom zurücksetzen"
@@ -168,6 +177,7 @@
     <TimePane
       v-if="!showCreateBiograph && !showIntro"
       :contrastMode="contrastMode"
+      :zoomMode="zoomMode"
       @display-event="openEventDisplay"
       @open-edit="setSelectedEvent"
     />
@@ -274,6 +284,7 @@ export default {
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       newPerson: true,
       contrastMode: false,
+      zoomMode: false,
       selectedEvent: null as ZBEvent | null,
       showEventPopUp: false,
       showEventDialogue: false,
@@ -314,6 +325,10 @@ export default {
 
       console.log("Kontrast clicked")
 
+    },
+    toggleZoomMode() {
+      this.zoomMode = !this.zoomMode;
+      console.log(this.zoomMode)
     },
     toggleBurgerMenu() {
       this.burgerMenuActive = !this.burgerMenuActive;
