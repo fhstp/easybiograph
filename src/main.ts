@@ -57,6 +57,7 @@ import {
   faSliders,
   faTableList,
   faMagnifyingGlassMinus,
+  faMagnifyingGlassPlus,
   faQuestion,
   faPaintRoller,
 } from "@fortawesome/free-solid-svg-icons";
@@ -104,6 +105,7 @@ library.add(
   faSliders,
   faTableList,
   faMagnifyingGlassMinus,
+  faMagnifyingGlassPlus,
   faQuestion,
   faPaintRoller
 );

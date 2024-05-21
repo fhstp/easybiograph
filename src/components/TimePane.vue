@@ -92,9 +92,11 @@ const props = defineProps(['contrastMode', 'zoomMode']);
 
 onMounted(() => {
   initializeBrushing();
+  initializeZoomBrushing();
 });
 
 const contrastMode = computed(() => props.contrastMode);
+const zoomMode = computed(() => props.zoomMode)
 
 const initializeBrushing = () => {
   const dimensions = store.state.data.dimensions;
@@ -147,6 +149,37 @@ const initializeBrushing = () => {
           });
 
       brushingElement.call(brush as any);
+    }
+  });
+};
+
+const initializeZoomBrushing = () => {
+  const dimensions = store.state.data.dimensions;
+
+  dimensions.forEach((dim) => {
+    const brushingElement = d3.select(`#dataviz_brushing1D_${dim.id}`);
+
+    if (!brushingElement.empty()) {
+      const zoomBrush = d3
+          .brushX<SVGSVGElement>()
+          .extent([[0, 0], [5000, 300]])
+          .on('start brush end', (event) => {
+            // Zoom logic here
+            if (props.zoomMode) {
+              const selection = event.selection;
+              if (selection) {
+                const [x0, x1] = selection;
+                const center = (x0 + x1) / 2;
+                const width = x1 - x0;
+                const halfWidth = width / 2;
+                const newStart = center - halfWidth;
+                const newEnd = center + halfWidth;
+                brushingElement.call(zoomBrush.move as any, [newStart, newEnd]);
+              }
+            }
+          });
+
+      brushingElement.call(zoomBrush as any);
     }
   });
 };

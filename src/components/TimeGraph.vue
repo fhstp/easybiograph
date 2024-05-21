@@ -145,7 +145,7 @@
                 @click="toggleZoomMode"
             >
               <span class="icon">
-                <font-awesome-icon icon="paint-roller" />
+                <font-awesome-icon icon="magnifying-glass-plus" />
               </span>
               <span>Zoom</span>
             </a>
