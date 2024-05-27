@@ -328,7 +328,7 @@ export default {
     },
     toggleZoomMode() {
       this.zoomMode = !this.zoomMode;
-      console.log(this.zoomMode)
+      //console.log("Zoom: " + this.zoomMode)
     },
     toggleBurgerMenu() {
       this.burgerMenuActive = !this.burgerMenuActive;

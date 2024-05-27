@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onBeforeUnmount } from "vue";
+import {computed, ref, onMounted, onBeforeUnmount, watch} from "vue";
 import * as d3 from "d3";
 import {debounce, germanTimeFormat} from "@/assets/util";
 import { useStore } from "@/store";
@@ -121,11 +121,49 @@ onMounted(() => {
       .attr('pointer-events', 'all')
       .selectAll('rect')
       .attr('height', '100%');
-
 });
 
 let pressedDateZoom: string | null = null;
 let releasedDateZoom: string | null = null;
+
+const props = defineProps<{
+  scale: d3.ScaleTime<number, number, never>;
+  zoomMode: boolean;
+}>();
+
+const zoomModeUse = ref(props.zoomMode);
+
+watch(() => props.zoomMode, (newVal, oldVal) => {
+  zoomModeUse.value = newVal;
+  if (zoomModeUse.value) {
+    const timePane = document.querySelector('.pane');
+    const rect = timePane?.getBoundingClientRect();
+    if (rect) {
+      const centerClickX = rect.left + rect.width / 2; // Calculate the center of the axis
+      const timeAxisWidth = rect.width;
+
+      // Calculate temporary zoom with center as the focus
+      const centerDateZoom = calculateDateFromClick(centerClickX, timeAxisWidth);
+
+      // Calculate birth and end dates approximately two years from the center
+      const centerDate = new Date(centerDateZoom);
+      const birthDate = new Date(centerDate);
+      birthDate.setFullYear(centerDate.getFullYear() - 5);
+      const endDate = new Date(centerDate);
+      endDate.setFullYear(centerDate.getFullYear() + 5);
+
+      const temporaryZoom = {
+        birthDate: birthDate.toISOString().split("T")[0],
+        endDate: endDate.toISOString().split("T")[0],
+      };
+
+      store.commit("data/addZoom", temporaryZoom);
+
+      console.log("Zoom committed with birth and end dates approximately 5 years from the center");
+      updateAfterZoom()
+    }
+  }
+});
 
 // @ts-ignore
 d3.timeFormatDefaultLocale(germanTimeFormat);
@@ -176,10 +214,9 @@ onBeforeUnmount(() => {
   if (brush) brush.on('brush', null);
 });
 
-const props = defineProps<{
+/*const props = defineProps<{
   scale: d3.ScaleTime<number, number, never>;
-}>();
-
+}>();*/
 
 
 // make time axis reactive to window width

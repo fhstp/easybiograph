@@ -1,7 +1,7 @@
 <template>
   <div class="pane">
     <PersonInfo :contrastMode="contrastMode" />
-    <TimeAxis :scale="timeScale" style="z-index: 2" />
+    <TimeAxis :scale="timeScale" :zoomMode="zoomMode" style="z-index: 2" />
     <div class="pane2">
       <div
         v-for="(dim, index) in layout"
@@ -61,7 +61,7 @@ import TimeAxis from "./TimeAxis.vue";
 import { germanTimeFormat } from "../assets/util";
 import PersonInfo from "@/components/PersonInfo.vue";
 import TimeEvent from "@/components/TimeEvent.vue";
-import {brushX} from "d3";
+import {brushX, zoom} from "d3";
 
 interface EventMark {
   datum: ZBEvent;
@@ -92,7 +92,6 @@ const props = defineProps(['contrastMode', 'zoomMode']);
 
 onMounted(() => {
   initializeBrushing();
-  initializeZoomBrushing();
 });
 
 const contrastMode = computed(() => props.contrastMode);
@@ -153,36 +152,16 @@ const initializeBrushing = () => {
   });
 };
 
-const initializeZoomBrushing = () => {
+/*const initializeZoom = () => {
   const dimensions = store.state.data.dimensions;
 
   dimensions.forEach((dim) => {
-    const brushingElement = d3.select(`#dataviz_brushing1D_${dim.id}`);
 
-    if (!brushingElement.empty()) {
-      const zoomBrush = d3
-          .brushX<SVGSVGElement>()
-          .extent([[0, 0], [5000, 300]])
-          .on('start brush end', (event) => {
-            // Zoom logic here
-            if (props.zoomMode) {
-              const selection = event.selection;
-              if (selection) {
-                const [x0, x1] = selection;
-                const center = (x0 + x1) / 2;
-                const width = x1 - x0;
-                const halfWidth = width / 2;
-                const newStart = center - halfWidth;
-                const newEnd = center + halfWidth;
-                brushingElement.call(zoomBrush.move as any, [newStart, newEnd]);
-              }
-            }
-          });
-
-      brushingElement.call(zoomBrush as any);
-    }
+    d3.select(`#dataviz_brushing1D_${dim.id}`)
+        .transition()
+        .call(zoom.scaleBy, 0.5);
   });
-};
+};*/
 
 // @ts-ignore
 d3.timeFormatDefaultLocale(germanTimeFormat);
