@@ -36,9 +36,35 @@
         aria-label="main navigation"
     >
       <div class="navbar-brand">
+
+        <a
+            role="button"
+            class="navbar-burger"
+            aria-label="menu"
+            aria-expanded="false"
+            data-target="navbarBasicExample"
+            @click="toggleBurgerMenu"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
         <div class="navbar-item" :title="`easyBiograph version ${appVersion}`">
           easyBiograph
         </div>
+
+        <div class="buttons">
+        <a
+            class="button is-dark navbar-item"
+            @click="showAddEventDialogue()"
+            v-show="!showIntro"
+        >
+              <span class="icon">
+                <font-awesome-icon icon="plus" />
+              </span>
+          <span>Event erstellen</span>
+        </a>
+
         <a
             class="button is-dark navbar-item"
             @click="toggleZoomMode"
@@ -53,23 +79,13 @@
             @click="zoomUndo"
             v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
             title="Zoom zurücksetzen"
+            style="margin-right: 2vw"
         >
               <span class="icon">
                 <font-awesome-icon icon="magnifying-glass-minus" />
               </span>
         </a>
-        <a
-            role="button"
-            class="navbar-burger"
-            aria-label="menu"
-            aria-expanded="false"
-            data-target="navbarBasicExample"
-            @click="toggleBurgerMenu"
-        >
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
+        </div>
       </div>
 
       <div
@@ -125,16 +141,7 @@
               <span>Speichern</span>
             </a>
 
-            <a
-              class="button is-dark navbar-item"
-              @click="showAddEventDialogue()"
-              v-show="!showIntro"
-            >
-              <span class="icon">
-                <font-awesome-icon icon="plus" />
-              </span>
-              <span>Event erstellen</span>
-            </a>
+
 
             <a
               class="button is-dark navbar-item"
@@ -172,6 +179,15 @@
           </a>
           </div>
         </div>
+      </div>
+      <div class="years-text"
+           v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0">
+        Zoom: {{ zoomedYears }} von {{ totalYears }} Jahren
+      <div class="horizontal-bar-container">
+        <div class="white-bar">
+          <div class="grey-bar" :style="{ width: greyBarWidth, left: greyBarLeft }"></div>
+        </div>
+      </div>
       </div>
   </nav>
 
@@ -300,6 +316,39 @@ export default {
     };
   },
   computed: {
+    greyBarWidth(): any {
+      const zoomStartDate = store.state.data.zoom.birthDate;
+      const zoomEndDate = store.state.data.zoom.endDate;
+      const personStartDate = store.state.data.person.birthDate;
+      const personEndDate = store.state.data.person.endDate;
+      //@ts-ignore
+      const totalPersonDuration = new Date(personEndDate) - new Date(personStartDate);
+      //@ts-ignore
+      const zoomDuration = new Date(zoomEndDate) - new Date(zoomStartDate);
+      return (zoomDuration / totalPersonDuration) * 100 + '%';
+    },
+    greyBarLeft(): any {
+      const zoomStartDate = store.state.data.zoom.birthDate;
+      const personStartDate = store.state.data.person.birthDate;
+      const personEndDate = store.state.data.person.endDate;
+
+      //@ts-ignore
+      const totalPersonDuration = new Date(personEndDate) - new Date(personStartDate);
+      //@ts-ignore
+      const zoomDurationFromStart = new Date(zoomStartDate) - new Date(personStartDate);
+      return (zoomDurationFromStart / totalPersonDuration) * 100 + '%';
+    },
+
+    zoomedYears() {
+      const zoomStartDate = new Date(store.state.data.zoom.birthDate);
+      const zoomEndDate = new Date(store.state.data.zoom.endDate);
+      return zoomEndDate.getFullYear() - zoomStartDate.getFullYear() + 1;
+    },
+    totalYears() {
+      const personStartDate = new Date(store.state.data.person.birthDate);
+      const personEndDate = new Date(store.state.data.person.endDate);
+      return personEndDate.getFullYear() - personStartDate.getFullYear() + 1;
+    },
     birthDate() {
       return store.state.data.person.birthDate;
     },
@@ -329,7 +378,6 @@ export default {
     },
     toggleZoomMode() {
       this.zoomMode = !this.zoomMode;
-      //console.log("Zoom: " + this.zoomMode)
     },
     toggleBurgerMenu() {
       this.burgerMenuActive = !this.burgerMenuActive;
@@ -633,6 +681,33 @@ export default {
   flex-direction: column;
   background-color: var(--contrast-background);
   color: var(--contrast-text);
+}
+
+.horizontal-bar-container {
+  margin-top: 10px; /* Adjust this value to position the bar correctly */
+  display: flex;
+  align-items: center;
+  height: 20px; /* Adjust the height of the bar as needed */
+}
+
+.white-bar {
+  background-color: white;
+  width: 10vw;
+  height: 100%;
+  border: 1px solid #ccc;
+  position: relative;
+}
+
+.grey-bar {
+  background-color: grey;
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+
+.years-text {
+  text-align: center;
+  margin-bottom: 5px; /* Adjust the margin as needed */
 }
 
 @media screen {
