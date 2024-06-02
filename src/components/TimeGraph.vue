@@ -40,6 +40,25 @@
           easyBiograph
         </div>
         <a
+            class="button is-dark navbar-item"
+            @click="toggleZoomMode"
+        >
+              <span class="icon">
+                <font-awesome-icon icon="magnifying-glass-plus" />
+              </span>
+          <span>Zoom</span>
+        </a>
+        <a
+            class="button is-dark navbar-item"
+            @click="zoomUndo"
+            v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
+            title="Zoom zurücksetzen"
+        >
+              <span class="icon">
+                <font-awesome-icon icon="magnifying-glass-minus" />
+              </span>
+        </a>
+        <a
             role="button"
             class="navbar-burger"
             aria-label="menu"
@@ -140,25 +159,7 @@
               </span>
               <span>Kontrast</span>
             </a>
-            <a
-                class="button is-dark navbar-item"
-                @click="toggleZoomMode"
-            >
-              <span class="icon">
-                <font-awesome-icon icon="magnifying-glass-plus" />
-              </span>
-              <span>Zoom</span>
-            </a>
-            <a
-                class="button is-dark navbar-item"
-                @click="zoomUndo"
-                v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
-                title="Zoom zurücksetzen"
-            >
-              <span class="icon">
-                <font-awesome-icon icon="magnifying-glass-minus" />
-              </span>
-            </a>
+
             <span style="flex-grow: 1"></span>
             <a
               class="button is-dark navbar-item"
@@ -632,5 +633,17 @@ export default {
   flex-direction: column;
   background-color: var(--contrast-background);
   color: var(--contrast-text);
+}
+
+@media screen {
+  .navbar-menu {
+    display: none !important;
+  }
+  .navbar-burger {
+    display: block !important;
+  }
+  .navbar-menu.is-active {
+    display: flex !important;
+  }
 }
 </style>
