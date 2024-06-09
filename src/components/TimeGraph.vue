@@ -104,95 +104,71 @@
         </div>
       </div>
 
-      <div
+      <!--<div
           :class="{ 'is-active': burgerMenuActive }"
           id="navbarBasicExample"
           class="navbar-menu bar"
           :style="{ 'background-color': contrastMode ? '#0074CC' : '#488193' }"
-      >
-        <div class="navbar-start" style="flex-grow: 1">
-          <div class="buttons" style="flex-grow: 1">
-            <a
-              class="button is-dark navbar-item"
-              @click="openPopUp"
-              v-if="!showIntro"
-            >
-              <span class="icon is-small">
-                <font-awesome-icon icon="file" />
-              </span>
+      > -->
+      <div class="sidebar" :class="{ 'is-active': burgerMenuActive }">
+        <div class="sidebar-header">
+          easyBiograph
+          <button class="button is-dark navbar-item" @click="toggleBurgerMenu" style="position: absolute; top: 1em; right: 1em; margin-left: 50px;">
+        <span class="icon">
+          <font-awesome-icon icon="times" size="2x" />
+        </span>
+          </button>
+        </div>
+        <div class="sidebar-menu">
+          <div class="buttons sidebar-buttons">
+            <a class="button is-dark navbar-item" @click="openPopUp" v-if="!showIntro">
+          <span class="icon is-small">
+            <font-awesome-icon icon="file" />
+          </span>
               <span>Neu</span>
             </a>
-
-            <a
-              class="button is-dark navbar-item"
-              @click="newData"
-              v-if="showIntro"
-            >
-              <span class="icon is-small">
-                <font-awesome-icon icon="file" />
-              </span>
+            <a class="button is-dark navbar-item" @click="newData" v-if="showIntro">
+          <span class="icon is-small">
+            <font-awesome-icon icon="file" />
+          </span>
               <span>Neu</span>
             </a>
-
-            <a class="file is-dark navbar-item" :value="contrastMode ? true : false" style="margin-right: 0vw; margin-left: 0vw">
+            <a class="file is-dark navbar-item" :value="contrastMode ? true : false" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
               <label class="file-label">
                 <input class="file-input" type="file" @change="importData" />
-                <span class="file-cta" :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }" >
-                  <span class="file-icon icon is-small">
-                    <font-awesome-icon icon="folder-open" />
-                  </span>
-                  <span class="file-label">Öffnen</span>
-                </span>
+                <span class="file-cta" :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }">
+              <span class="file-icon icon is-small">
+                <font-awesome-icon icon="folder-open" />
+              </span>
+              <span class="file-label">Öffnen</span>
+            </span>
               </label>
             </a>
-
-            <a
-              class="button is-dark navbar-item"
-              @click="downloadData"
-              v-show="!showIntro"
-            >
-              <span class="icon is-small">
-                <font-awesome-icon icon="save" />
-              </span>
+            <a class="button is-dark navbar-item" @click="downloadData" v-show="!showIntro">
+          <span class="icon is-small">
+            <font-awesome-icon icon="save" />
+          </span>
               <span>Speichern</span>
             </a>
-
-
-
-            <a
-              class="button is-dark navbar-item"
-              @click="
-                showCreateBiograph = true;
-                newPerson = false;
-              "
-              v-show="!showIntro"
-            >
-              <!-- TODO edit instead of new -->
-              <span class="icon">
-                <font-awesome-icon icon="pencil-alt" />
-              </span>
+            <a class="button is-dark navbar-item" @click="showCreateBiograph = true; newPerson = false;" v-show="!showIntro">
+          <span class="icon">
+            <font-awesome-icon icon="pencil-alt" />
+          </span>
               <span>Zeitbalken bearbeiten</span>
             </a>
-            <a
-                class="button is-dark navbar-item"
-                @click="toggleContrastMode"
-            >
-              <span class="icon">
-                <font-awesome-icon icon="paint-roller" />
-              </span>
+            <a class="button is-dark navbar-item" @click="toggleContrastMode">
+          <span class="icon">
+            <font-awesome-icon icon="paint-roller" />
+          </span>
               <span>Kontrast</span>
             </a>
-
-            <span style="flex-grow: 1"></span>
-            <a
-              class="button is-dark navbar-item"
-              @click="openHelpPopUp()"
-          >
-              <span class="icon">
-                <font-awesome-icon icon="question" />
-              </span>
-            <span>Info</span>
-          </a>
+            <br>
+            <a class="button is-dark navbar-item" @click="openHelpPopUp()">
+          <span class="icon">
+            <font-awesome-icon icon="question" />
+          </span>
+              <span>Info</span>
+            </a>
           </div>
         </div>
       </div>
@@ -391,20 +367,21 @@ export default {
       const zoomEndDate = new Date(store.state.data.zoom.endDate);
       const personStartDate = new Date(store.state.data.person.birthDate);
 
-      const currentRange = zoomEndDate.getTime() - zoomStartDate.getTime();
-      const moveRange = currentRange * 0.1; // 10% of the current range
+      const maxZoomStartDate = new Date(personStartDate);
 
-      const newZoomStartDate = new Date(zoomStartDate.getTime() - moveRange);
-      const newZoomEndDate = new Date(zoomEndDate.getTime() - moveRange);
+      if (zoomStartDate > maxZoomStartDate) {
+        const newZoomStartDate = new Date(zoomStartDate);
+        newZoomStartDate.setFullYear(zoomStartDate.getFullYear() - 5);
+        const newZoomEndDate = new Date(zoomEndDate);
+        newZoomEndDate.setFullYear(zoomEndDate.getFullYear() - 5);
 
-      if (newZoomStartDate >= personStartDate) {
         const newZoom = {
           birthDate: newZoomStartDate.toISOString().split("T")[0],
           endDate: newZoomEndDate.toISOString().split("T")[0],
         };
 
         store.commit("data/addZoom", newZoom);
-        console.log("Zoom moved 10% to the left");
+        console.log("Zoom moved 5 years to the left");
       } else {
         console.log("Cannot zoom further left, already at the minimum");
       }
@@ -414,20 +391,21 @@ export default {
       const zoomEndDate = new Date(store.state.data.zoom.endDate);
       const personEndDate = new Date(store.state.data.person.endDate);
 
-      const currentRange = zoomEndDate.getTime() - zoomStartDate.getTime();
-      const moveRange = currentRange * 0.1; // 10% of the current range
+      const maxZoomEndDate = new Date(personEndDate);
 
-      const newZoomStartDate = new Date(zoomStartDate.getTime() + moveRange);
-      const newZoomEndDate = new Date(zoomEndDate.getTime() + moveRange);
+      if (zoomEndDate < maxZoomEndDate) {
+        const newZoomStartDate = new Date(zoomStartDate);
+        newZoomStartDate.setFullYear(zoomStartDate.getFullYear() + 5);
+        const newZoomEndDate = new Date(zoomEndDate);
+        newZoomEndDate.setFullYear(zoomEndDate.getFullYear() + 5);
 
-      if (newZoomEndDate <= personEndDate) {
         const newZoom = {
           birthDate: newZoomStartDate.toISOString().split("T")[0],
           endDate: newZoomEndDate.toISOString().split("T")[0],
         };
 
         store.commit("data/addZoom", newZoom);
-        console.log("Zoom moved 10% to the right");
+        console.log("Zoom moved 5 years to the right");
       } else {
         console.log("Cannot zoom further right, already at the maximum");
       }
@@ -693,7 +671,7 @@ export default {
 .file.is-dark[value="false"] {
 
   &:hover {
-    background-color: #488193;
+    background-color: #333;
   }
 
   .file-label {
@@ -703,6 +681,10 @@ export default {
   .file-icon {
     color: white;
   }
+}
+
+.file.is-dark[value="false"]:hover .file-cta {
+  background-color: #333; /* Change background color of the button on hover */
 }
 
 .button.navbar-item {
@@ -746,7 +728,7 @@ export default {
 }
 
 .horizontal-bar-container {
-  margin-top: 5px;
+  margin-top: 10px;
   display: flex;
   align-items: center;
   height: 20px;
@@ -754,14 +736,14 @@ export default {
 
 .white-bar {
   background-color: white;
-  width: 15vw;
+  width: 10vw;
   height: 100%;
   border: 1px solid #ccc;
   position: relative;
 }
 
 .grey-bar {
-  background-color: slategrey;
+  background-color: grey;
   height: 100%;
   position: absolute;
   top: 0;
@@ -769,9 +751,49 @@ export default {
 
 .years-text {
   text-align: center;
-  margin-bottom: 8px;
-  margin-top: 3px;
+  margin-bottom: 5px;
 }
+
+.sidebar {
+  width: 250px;
+  position: fixed;
+  top: 0;
+  left: -250px;
+  height: 100%;
+  background-color: #333;
+  transition: left 0.3s ease;
+}
+
+.sidebar.is-active {
+  left: 0;
+}
+
+.sidebar-header {
+  color: white;
+  padding: 20px;
+  font-size: 20px;
+  background-color: #222;
+}
+
+.sidebar-menu {
+  padding: 20px;
+  color: white;
+}
+
+.sidebar-buttons .button.navbar-item {
+  display: block;
+  text-align: left;
+  margin-bottom: 10px;
+  margin-left: 8px;
+}
+
+.sidebar-buttons .file.navbar-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 8px;
+}
+
 
 @media screen {
   .navbar-menu {
