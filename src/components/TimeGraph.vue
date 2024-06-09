@@ -79,12 +79,28 @@
             @click="zoomUndo"
             v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
             title="Zoom zurücksetzen"
-            style="margin-right: 2vw"
         >
               <span class="icon">
                 <font-awesome-icon icon="magnifying-glass-minus" />
               </span>
         </a>
+          <a
+              class="button is-dark navbar-item"
+              @click="moveZoomLeft"
+              v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
+              title="5 Jahre nach links bewegen"
+          >
+            &lt;
+          </a>
+          <a
+              class="button is-dark navbar-item"
+              @click="moveZoomRight"
+              v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
+              title="5 Jahre nach rechts bewegen"
+              style="margin-right: 2vw"
+          >
+            >
+          </a>
         </div>
       </div>
 
@@ -370,6 +386,52 @@ export default {
     },
   },
   methods: {
+    moveZoomLeft() {
+      const zoomStartDate = new Date(store.state.data.zoom.birthDate);
+      const zoomEndDate = new Date(store.state.data.zoom.endDate);
+      const personStartDate = new Date(store.state.data.person.birthDate);
+
+      const currentRange = zoomEndDate.getTime() - zoomStartDate.getTime();
+      const moveRange = currentRange * 0.1; // 10% of the current range
+
+      const newZoomStartDate = new Date(zoomStartDate.getTime() - moveRange);
+      const newZoomEndDate = new Date(zoomEndDate.getTime() - moveRange);
+
+      if (newZoomStartDate >= personStartDate) {
+        const newZoom = {
+          birthDate: newZoomStartDate.toISOString().split("T")[0],
+          endDate: newZoomEndDate.toISOString().split("T")[0],
+        };
+
+        store.commit("data/addZoom", newZoom);
+        console.log("Zoom moved 10% to the left");
+      } else {
+        console.log("Cannot zoom further left, already at the minimum");
+      }
+    },
+    moveZoomRight() {
+      const zoomStartDate = new Date(store.state.data.zoom.birthDate);
+      const zoomEndDate = new Date(store.state.data.zoom.endDate);
+      const personEndDate = new Date(store.state.data.person.endDate);
+
+      const currentRange = zoomEndDate.getTime() - zoomStartDate.getTime();
+      const moveRange = currentRange * 0.1; // 10% of the current range
+
+      const newZoomStartDate = new Date(zoomStartDate.getTime() + moveRange);
+      const newZoomEndDate = new Date(zoomEndDate.getTime() + moveRange);
+
+      if (newZoomEndDate <= personEndDate) {
+        const newZoom = {
+          birthDate: newZoomStartDate.toISOString().split("T")[0],
+          endDate: newZoomEndDate.toISOString().split("T")[0],
+        };
+
+        store.commit("data/addZoom", newZoom);
+        console.log("Zoom moved 10% to the right");
+      } else {
+        console.log("Cannot zoom further right, already at the maximum");
+      }
+    },
     toggleContrastMode() {
       this.contrastMode = !this.contrastMode;
 
@@ -684,22 +746,22 @@ export default {
 }
 
 .horizontal-bar-container {
-  margin-top: 10px; /* Adjust this value to position the bar correctly */
+  margin-top: 5px;
   display: flex;
   align-items: center;
-  height: 20px; /* Adjust the height of the bar as needed */
+  height: 20px;
 }
 
 .white-bar {
   background-color: white;
-  width: 10vw;
+  width: 15vw;
   height: 100%;
   border: 1px solid #ccc;
   position: relative;
 }
 
 .grey-bar {
-  background-color: grey;
+  background-color: slategrey;
   height: 100%;
   position: absolute;
   top: 0;
@@ -707,7 +769,8 @@ export default {
 
 .years-text {
   text-align: center;
-  margin-bottom: 5px; /* Adjust the margin as needed */
+  margin-bottom: 8px;
+  margin-top: 3px;
 }
 
 @media screen {

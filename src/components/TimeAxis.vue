@@ -139,28 +139,31 @@ watch(() => props.zoomMode, (newVal, oldVal) => {
     const timePane = document.querySelector('.pane');
     const rect = timePane?.getBoundingClientRect();
     if (rect) {
-      const centerClickX = rect.left + rect.width / 2; // Calculate the center of the axis
+      const centerClickX = rect.left + rect.width / 2;
       const timeAxisWidth = rect.width;
 
-      // Calculate temporary zoom with center as the focus
       const centerDateZoom = calculateDateFromClick(centerClickX, timeAxisWidth);
-
-      // Calculate birth and end dates approximately two years from the center
       const centerDate = new Date(centerDateZoom);
-      const birthDate = new Date(centerDate);
-      birthDate.setFullYear(centerDate.getFullYear() - 5);
-      const endDate = new Date(centerDate);
-      endDate.setFullYear(centerDate.getFullYear() + 5);
+      console.log("HERE" + store.state.data.zoom.birthDate)
+
+      const currentStartDate = store.state.data.zoom.birthDate.length <= 0 ? new Date(store.state.data.person.birthDate) : new Date(store.state.data.zoom.birthDate);
+      const currentEndDate = store.state.data.zoom.endDate.length <= 0 ? new Date(store.state.data.person.endDate) : new Date(store.state.data.zoom.endDate);
+
+      const currentRange = currentEndDate.getTime() - currentStartDate.getTime();
+      const newRange = currentRange * 0.25; // 25% für beide Seiten um 50% Zoom zu haben
+
+      const newStartDate = new Date(centerDate.getTime() - newRange);
+      const newEndDate = new Date(centerDate.getTime() + newRange);
 
       const temporaryZoom = {
-        birthDate: birthDate.toISOString().split("T")[0],
-        endDate: endDate.toISOString().split("T")[0],
+        birthDate: newStartDate.toISOString().split("T")[0],
+        endDate: newEndDate.toISOString().split("T")[0],
       };
 
       store.commit("data/addZoom", temporaryZoom);
 
-      console.log("Zoom committed with birth and end dates approximately 5 years from the center");
-      updateAfterZoom()
+      console.log("Zoom committed with new range ±25%");
+      updateAfterZoom();
     }
   }
 });
