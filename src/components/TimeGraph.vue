@@ -162,6 +162,13 @@
           </span>
               <span>Kontrast</span>
             </a>
+
+            <a class="button is-dark navbar-item" @click="openPrintView">
+              <span class="icon">
+                <font-awesome-icon icon="print" />
+              </span>
+              <span>Drucken</span>
+            </a>
             <br>
             <a class="button is-dark navbar-item" @click="openHelpPopUp()">
           <span class="icon">
@@ -270,8 +277,8 @@ import EventDisplay from "@/components/EventDisplay.vue";
 // import TimeTable from "@/components/TimeTable.vue";
 import TimePane from "@/components/TimePane.vue";
 import { initEvent, type ZBEvent } from "@/data/ZBEvent";
-import router from "@/router";
 import HelpDialogue from "@/components/HelpDialogue.vue";
+import router from '@/router';
 
 export default {
   name: "TimeGraph",
@@ -362,6 +369,10 @@ export default {
     },
   },
   methods: {
+    openPrintView() {
+      const printViewUrl = `${window.location.origin}/print-view`;
+      window.open(printViewUrl, '_blank');
+    },
     moveZoomLeft() {
       const zoomStartDate = new Date(store.state.data.zoom.birthDate);
       const zoomEndDate = new Date(store.state.data.zoom.endDate);
