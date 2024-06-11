@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onBeforeUnmount } from "vue";
+import {computed, ref, onMounted, onBeforeUnmount, watch} from "vue";
 import * as d3 from "d3";
 import {debounce, germanTimeFormat} from "@/assets/util";
 import { useStore } from "@/store";
@@ -121,11 +121,52 @@ onMounted(() => {
       .attr('pointer-events', 'all')
       .selectAll('rect')
       .attr('height', '100%');
-
 });
 
 let pressedDateZoom: string | null = null;
 let releasedDateZoom: string | null = null;
+
+const props = defineProps<{
+  scale: d3.ScaleTime<number, number, never>;
+  zoomMode: boolean;
+}>();
+
+const zoomModeUse = ref(props.zoomMode);
+
+watch(() => props.zoomMode, (newVal, oldVal) => {
+  zoomModeUse.value = newVal;
+  if (zoomModeUse.value) {
+    const timePane = document.querySelector('.pane');
+    const rect = timePane?.getBoundingClientRect();
+    if (rect) {
+      const centerClickX = rect.left + rect.width / 2;
+      const timeAxisWidth = rect.width;
+
+      const centerDateZoom = calculateDateFromClick(centerClickX, timeAxisWidth);
+      const centerDate = new Date(centerDateZoom);
+      console.log("HERE" + store.state.data.zoom.birthDate)
+
+      const currentStartDate = store.state.data.zoom.birthDate.length <= 0 ? new Date(store.state.data.person.birthDate) : new Date(store.state.data.zoom.birthDate);
+      const currentEndDate = store.state.data.zoom.endDate.length <= 0 ? new Date(store.state.data.person.endDate) : new Date(store.state.data.zoom.endDate);
+
+      const currentRange = currentEndDate.getTime() - currentStartDate.getTime();
+      const newRange = currentRange * 0.25; // 25% für beide Seiten um 50% Zoom zu haben
+
+      const newStartDate = new Date(centerDate.getTime() - newRange);
+      const newEndDate = new Date(centerDate.getTime() + newRange);
+
+      const temporaryZoom = {
+        birthDate: newStartDate.toISOString().split("T")[0],
+        endDate: newEndDate.toISOString().split("T")[0],
+      };
+
+      store.commit("data/addZoom", temporaryZoom);
+
+      console.log("Zoom committed with new range ±25%");
+      updateAfterZoom();
+    }
+  }
+});
 
 // @ts-ignore
 d3.timeFormatDefaultLocale(germanTimeFormat);
@@ -176,10 +217,9 @@ onBeforeUnmount(() => {
   if (brush) brush.on('brush', null);
 });
 
-const props = defineProps<{
+/*const props = defineProps<{
   scale: d3.ScaleTime<number, number, never>;
-}>();
-
+}>();*/
 
 
 // make time axis reactive to window width

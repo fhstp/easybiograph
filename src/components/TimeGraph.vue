@@ -36,9 +36,7 @@
         aria-label="main navigation"
     >
       <div class="navbar-brand">
-        <div class="navbar-item" :title="`easyBiograph version ${appVersion}`">
-          easyBiograph
-        </div>
+
         <a
             role="button"
             class="navbar-burger"
@@ -51,123 +49,143 @@
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
+        <div class="navbar-item" :title="`easyBiograph version ${appVersion}`">
+          easyBiograph
+        </div>
+
+        <div class="buttons">
+        <a
+            class="button is-dark navbar-item in-nav"
+            @click="showAddEventDialogue()"
+            v-show="!showIntro"
+        >
+              <span class="icon">
+                <font-awesome-icon icon="plus" />
+              </span>
+          <span>Event erstellen</span>
+        </a>
+
+        <a
+            class="button is-dark navbar-item in-nav"
+            @click="toggleZoomMode"
+        >
+              <span class="icon">
+                <font-awesome-icon icon="magnifying-glass-plus" />
+              </span>
+          <span>Zoom</span>
+        </a>
+        <a
+            class="button is-dark navbar-item in-nav"
+            @click="zoomUndo"
+            v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
+            title="Zoom zurücksetzen"
+        >
+              <span class="icon">
+                <font-awesome-icon icon="magnifying-glass-minus" />
+              </span>
+        </a>
+          <a
+              class="button is-dark navbar-item in-nav"
+              @click="moveZoomLeft"
+              v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
+              title="10% nach links bewegen"
+          >
+            &lt;
+          </a>
+          <a
+              class="button is-dark navbar-item in-nav"
+              @click="moveZoomRight"
+              v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
+              title="10% nach rechts bewegen"
+              style="margin-right: 2vw"
+          >
+            >
+          </a>
+        </div>
       </div>
 
-      <div
+      <!--<div
           :class="{ 'is-active': burgerMenuActive }"
           id="navbarBasicExample"
           class="navbar-menu bar"
           :style="{ 'background-color': contrastMode ? '#0074CC' : '#488193' }"
-      >
-        <div class="navbar-start" style="flex-grow: 1">
-          <div class="buttons" style="flex-grow: 1">
-            <a
-              class="button is-dark navbar-item"
-              @click="openPopUp"
-              v-if="!showIntro"
-            >
-              <span class="icon is-small">
-                <font-awesome-icon icon="file" />
-              </span>
+      > -->
+      <div class="sidebar" :class="{ 'is-active': burgerMenuActive }">
+        <div class="sidebar-header">
+          easyBiograph
+          <button class="button navbar-item out-nav" @click="toggleBurgerMenu" style="position: absolute; top: 1em; right: 1em; margin-left: 50px;">
+        <span class="icon">
+          <font-awesome-icon icon="times" size="2x" />
+        </span>
+          </button>
+        </div>
+        <div class="sidebar-menu">
+          <div class="buttons sidebar-buttons">
+            <a class="button navbar-item out-nav" @click="openPopUp" v-if="!showIntro">
+          <span class="icon is-small">
+            <font-awesome-icon icon="file" />
+          </span>
               <span>Neu</span>
             </a>
-
-            <a
-              class="button is-dark navbar-item"
-              @click="newData"
-              v-if="showIntro"
-            >
-              <span class="icon is-small">
-                <font-awesome-icon icon="file" />
-              </span>
+            <a class="button navbar-item out-nav" @click="newData" v-if="showIntro">
+          <span class="icon is-small">
+            <font-awesome-icon icon="file" />
+          </span>
               <span>Neu</span>
             </a>
-
-            <a class="file is-dark navbar-item" :value="contrastMode ? true : false" style="margin-right: 0vw; margin-left: 0vw">
+            <a class="file navbar-item" :value="contrastMode ? true : false" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
               <label class="file-label">
                 <input class="file-input" type="file" @change="importData" />
-                <span class="file-cta" :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }" >
-                  <span class="file-icon icon is-small">
-                    <font-awesome-icon icon="folder-open" />
-                  </span>
-                  <span class="file-label">Öffnen</span>
-                </span>
+                <span class="file-cta" :style="{ 'background-color': contrastMode ? '#FFFFFF' : '#FFFFFF' }">
+              <span class="file-icon icon is-small">
+                <font-awesome-icon icon="folder-open" />
+              </span>
+              <span class="file-label">Öffnen</span>
+            </span>
               </label>
             </a>
-
-            <a
-              class="button is-dark navbar-item"
-              @click="downloadData"
-              v-show="!showIntro"
-            >
-              <span class="icon is-small">
-                <font-awesome-icon icon="save" />
-              </span>
+            <a class="button navbar-item out-nav" @click="downloadData" v-show="!showIntro">
+          <span class="icon is-small">
+            <font-awesome-icon icon="save" />
+          </span>
               <span>Speichern</span>
             </a>
-
-            <a
-              class="button is-dark navbar-item"
-              @click="showAddEventDialogue()"
-              v-show="!showIntro"
-            >
-              <span class="icon">
-                <font-awesome-icon icon="plus" />
-              </span>
-              <span>Event erstellen</span>
-            </a>
-
-            <a
-              class="button is-dark navbar-item"
-              @click="
-                showCreateBiograph = true;
-                newPerson = false;
-              "
-              v-show="!showIntro"
-            >
-              <!-- TODO edit instead of new -->
-              <span class="icon">
-                <font-awesome-icon icon="pencil-alt" />
-              </span>
+            <a class="button navbar-item out-nav" @click="showCreateBiograph = true; newPerson = false;" v-show="!showIntro">
+          <span class="icon">
+            <font-awesome-icon icon="pencil-alt" />
+          </span>
               <span>Zeitbalken bearbeiten</span>
             </a>
-            <a
-                class="button is-dark navbar-item"
-                @click="toggleContrastMode"
-            >
-              <span class="icon">
-                <font-awesome-icon icon="paint-roller" />
-              </span>
+            <a class="button navbar-item out-nav" @click="toggleContrastMode">
+          <span class="icon">
+            <font-awesome-icon icon="paint-roller" />
+          </span>
               <span>Kontrast</span>
             </a>
-            <a
-                class="button is-dark navbar-item"
-                @click="zoomUndo"
-                v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
-                title="Zoom zurücksetzen"
-            >
-              <span class="icon">
-                <font-awesome-icon icon="magnifying-glass-minus" />
-              </span>
+            <a class="button navbar-item out-nav" @click="openHelpPopUp()">
+          <span class="icon">
+            <font-awesome-icon icon="question" />
+          </span>
+              <span>Info</span>
             </a>
-            <span style="flex-grow: 1"></span>
-            <a
-              class="button is-dark navbar-item"
-              @click="openHelpPopUp()"
-          >
-              <span class="icon">
-                <font-awesome-icon icon="question" />
-              </span>
-            <span>Info</span>
-          </a>
           </div>
         </div>
+      </div>
+      <div class="years-text"
+           v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0">
+        Zoom: {{ zoomedYears }} von {{ totalYears }} Jahren
+      <div class="horizontal-bar-container">
+        <div class="white-bar">
+          <div class="grey-bar" :style="{ width: greyBarWidth, left: greyBarLeft }"></div>
+        </div>
+      </div>
       </div>
   </nav>
 
     <TimePane
       v-if="!showCreateBiograph && !showIntro"
       :contrastMode="contrastMode"
+      :zoomMode="zoomMode"
       @display-event="openEventDisplay"
       @open-edit="setSelectedEvent"
     />
@@ -248,10 +266,8 @@ import PopUpNew from "@/components/PopUpNew.vue";
 import EventDialogue from "@/components/EventDialogue.vue";
 import EventPopUp from "@/components/EventPopUp.vue";
 import EventDisplay from "@/components/EventDisplay.vue";
-// import TimeTable from "@/components/TimeTable.vue";
 import TimePane from "@/components/TimePane.vue";
 import { initEvent, type ZBEvent } from "@/data/ZBEvent";
-import router from "@/router";
 import HelpDialogue from "@/components/HelpDialogue.vue";
 
 export default {
@@ -274,6 +290,7 @@ export default {
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       newPerson: true,
       contrastMode: false,
+      zoomMode: false,
       selectedEvent: null as ZBEvent | null,
       showEventPopUp: false,
       showEventDialogue: false,
@@ -288,6 +305,39 @@ export default {
     };
   },
   computed: {
+    greyBarWidth(): any {
+      const zoomStartDate = store.state.data.zoom.birthDate;
+      const zoomEndDate = store.state.data.zoom.endDate;
+      const personStartDate = store.state.data.person.birthDate;
+      const personEndDate = store.state.data.person.endDate;
+      //@ts-ignore
+      const totalPersonDuration = new Date(personEndDate) - new Date(personStartDate);
+      //@ts-ignore
+      const zoomDuration = new Date(zoomEndDate) - new Date(zoomStartDate);
+      return (zoomDuration / totalPersonDuration) * 100 + '%';
+    },
+    greyBarLeft(): any {
+      const zoomStartDate = store.state.data.zoom.birthDate;
+      const personStartDate = store.state.data.person.birthDate;
+      const personEndDate = store.state.data.person.endDate;
+
+      //@ts-ignore
+      const totalPersonDuration = new Date(personEndDate) - new Date(personStartDate);
+      //@ts-ignore
+      const zoomDurationFromStart = new Date(zoomStartDate) - new Date(personStartDate);
+      return (zoomDurationFromStart / totalPersonDuration) * 100 + '%';
+    },
+
+    zoomedYears() {
+      const zoomStartDate = new Date(store.state.data.zoom.birthDate);
+      const zoomEndDate = new Date(store.state.data.zoom.endDate);
+      return zoomEndDate.getFullYear() - zoomStartDate.getFullYear() + 1;
+    },
+    totalYears() {
+      const personStartDate = new Date(store.state.data.person.birthDate);
+      const personEndDate = new Date(store.state.data.person.endDate);
+      return personEndDate.getFullYear() - personStartDate.getFullYear() + 1;
+    },
     birthDate() {
       return store.state.data.person.birthDate;
     },
@@ -309,11 +359,62 @@ export default {
     },
   },
   methods: {
+    moveZoomLeft() {
+      const zoomStartDate = new Date(store.state.data.zoom.birthDate);
+      const zoomEndDate = new Date(store.state.data.zoom.endDate);
+      const personStartDate = new Date(store.state.data.person.birthDate);
+
+      const maxZoomStartDate = new Date(personStartDate);
+
+      if (zoomStartDate > maxZoomStartDate) {
+        const newZoomStartDate = new Date(zoomStartDate);
+        newZoomStartDate.setFullYear(zoomStartDate.getFullYear() - 5);
+        const newZoomEndDate = new Date(zoomEndDate);
+        newZoomEndDate.setFullYear(zoomEndDate.getFullYear() - 5);
+
+        const newZoom = {
+          birthDate: newZoomStartDate.toISOString().split("T")[0],
+          endDate: newZoomEndDate.toISOString().split("T")[0],
+        };
+
+        store.commit("data/addZoom", newZoom);
+        console.log("Zoom moved 5 years to the left");
+      } else {
+        console.log("Cannot zoom further left, already at the minimum");
+      }
+    },
+    moveZoomRight() {
+      const zoomStartDate = new Date(store.state.data.zoom.birthDate);
+      const zoomEndDate = new Date(store.state.data.zoom.endDate);
+      const personEndDate = new Date(store.state.data.person.endDate);
+
+      const maxZoomEndDate = new Date(personEndDate);
+
+      if (zoomEndDate < maxZoomEndDate) {
+        const newZoomStartDate = new Date(zoomStartDate);
+        newZoomStartDate.setFullYear(zoomStartDate.getFullYear() + 5);
+        const newZoomEndDate = new Date(zoomEndDate);
+        newZoomEndDate.setFullYear(zoomEndDate.getFullYear() + 5);
+
+        const newZoom = {
+          birthDate: newZoomStartDate.toISOString().split("T")[0],
+          endDate: newZoomEndDate.toISOString().split("T")[0],
+        };
+
+        store.commit("data/addZoom", newZoom);
+        console.log("Zoom moved 5 years to the right");
+      } else {
+        console.log("Cannot zoom further right, already at the maximum");
+      }
+    },
     toggleContrastMode() {
       this.contrastMode = !this.contrastMode;
 
       console.log("Kontrast clicked")
 
+    },
+    toggleZoomMode() {
+      this.zoomMode = !this.zoomMode;
     },
     toggleBurgerMenu() {
       this.burgerMenuActive = !this.burgerMenuActive;
@@ -549,38 +650,33 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.file.is-dark[value="true"] {
+.file[value="true"] {
 
   &:hover {
     background-color: #0074CC;
   }
-
-  .file-label {
-    color: white;
-  }
-
-  .file-icon {
-    color: white;
-  }
 }
 
-.file.is-dark[value="false"] {
+.file[value="false"] {
 
   &:hover {
-    background-color: #488193;
-  }
-
-  .file-label {
-    color: white;
-  }
-
-  .file-icon {
-    color: white;
+    background-color: #333;
   }
 }
 
-.button.navbar-item {
+.button.navbar-item.in-nav {
   background-color: #36626f;
+  font-weight: normal;
+}
+
+.button.navbar-item.in-nav:hover {
+  background-color: #333;
+  font-weight: normal;
+}
+
+.button.navbar-item.out-nav {
+  background-color: white;
+  color: #333;
 }
 
 .contrast .button.navbar-item {
@@ -617,5 +713,86 @@ export default {
   flex-direction: column;
   background-color: var(--contrast-background);
   color: var(--contrast-text);
+}
+
+.horizontal-bar-container {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  height: 20px;
+}
+
+.white-bar {
+  background-color: white;
+  width: 10vw;
+  height: 100%;
+  border: 1px solid #ccc;
+  position: relative;
+}
+
+.grey-bar {
+  background-color: grey;
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+
+.years-text {
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.sidebar {
+  width: 250px;
+  position: fixed;
+  top: 0;
+  left: -250px;
+  height: 100%;
+  background-color: #333;
+  transition: left 0.3s ease;
+}
+
+.sidebar.is-active {
+  left: 0;
+}
+
+.sidebar-header {
+  color: white;
+  padding: 20px;
+  font-size: 20px;
+  font-weight: bolder;
+  background-color: #222;
+}
+
+.sidebar-menu {
+  padding: 20px;
+  color: white;
+}
+
+.sidebar-buttons .button.navbar-item {
+  display: block;
+  text-align: left;
+  margin-bottom: 10px;
+  margin-left: 8px;
+}
+
+.sidebar-buttons .file.navbar-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+
+@media screen {
+  .navbar-menu {
+    display: none !important;
+  }
+  .navbar-burger {
+    display: block !important;
+  }
+  .navbar-menu.is-active {
+    display: flex !important;
+  }
 }
 </style>

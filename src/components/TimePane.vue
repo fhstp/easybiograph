@@ -1,7 +1,7 @@
 <template>
   <div class="pane">
     <PersonInfo :contrastMode="contrastMode" />
-    <TimeAxis :scale="timeScale" style="z-index: 2" />
+    <TimeAxis :scale="timeScale" :zoomMode="zoomMode" style="z-index: 2" />
     <div class="pane2">
       <div
         v-for="(dim, index) in layout"
@@ -61,7 +61,7 @@ import TimeAxis from "./TimeAxis.vue";
 import { germanTimeFormat } from "../assets/util";
 import PersonInfo from "@/components/PersonInfo.vue";
 import TimeEvent from "@/components/TimeEvent.vue";
-import {brushX} from "d3";
+import {brushX, zoom} from "d3";
 
 interface EventMark {
   datum: ZBEvent;
@@ -88,13 +88,14 @@ interface DimensionLayout {
 // }
 
 const store = useStore();
-const props = defineProps(['contrastMode']);
+const props = defineProps(['contrastMode', 'zoomMode']);
 
 onMounted(() => {
   initializeBrushing();
 });
 
 const contrastMode = computed(() => props.contrastMode);
+const zoomMode = computed(() => props.zoomMode)
 
 const initializeBrushing = () => {
   const dimensions = store.state.data.dimensions;
@@ -150,6 +151,17 @@ const initializeBrushing = () => {
     }
   });
 };
+
+/*const initializeZoom = () => {
+  const dimensions = store.state.data.dimensions;
+
+  dimensions.forEach((dim) => {
+
+    d3.select(`#dataviz_brushing1D_${dim.id}`)
+        .transition()
+        .call(zoom.scaleBy, 0.5);
+  });
+};*/
 
 // @ts-ignore
 d3.timeFormatDefaultLocale(germanTimeFormat);
