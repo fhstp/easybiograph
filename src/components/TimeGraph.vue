@@ -55,7 +55,7 @@
 
         <div class="buttons">
         <a
-            class="button is-dark navbar-item"
+            class="button is-dark navbar-item in-nav"
             @click="showAddEventDialogue()"
             v-show="!showIntro"
         >
@@ -66,7 +66,7 @@
         </a>
 
         <a
-            class="button is-dark navbar-item"
+            class="button is-dark navbar-item in-nav"
             @click="toggleZoomMode"
         >
               <span class="icon">
@@ -75,7 +75,7 @@
           <span>Zoom</span>
         </a>
         <a
-            class="button is-dark navbar-item"
+            class="button is-dark navbar-item in-nav"
             @click="zoomUndo"
             v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
             title="Zoom zurücksetzen"
@@ -85,18 +85,18 @@
               </span>
         </a>
           <a
-              class="button is-dark navbar-item"
+              class="button is-dark navbar-item in-nav"
               @click="moveZoomLeft"
               v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
-              title="5 Jahre nach links bewegen"
+              title="10% nach links bewegen"
           >
             &lt;
           </a>
           <a
-              class="button is-dark navbar-item"
+              class="button is-dark navbar-item in-nav"
               @click="moveZoomRight"
               v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
-              title="5 Jahre nach rechts bewegen"
+              title="10% nach rechts bewegen"
               style="margin-right: 2vw"
           >
             >
@@ -113,7 +113,7 @@
       <div class="sidebar" :class="{ 'is-active': burgerMenuActive }">
         <div class="sidebar-header">
           easyBiograph
-          <button class="button is-dark navbar-item" @click="toggleBurgerMenu" style="position: absolute; top: 1em; right: 1em; margin-left: 50px;">
+          <button class="button navbar-item out-nav" @click="toggleBurgerMenu" style="position: absolute; top: 1em; right: 1em; margin-left: 50px;">
         <span class="icon">
           <font-awesome-icon icon="times" size="2x" />
         </span>
@@ -121,22 +121,22 @@
         </div>
         <div class="sidebar-menu">
           <div class="buttons sidebar-buttons">
-            <a class="button is-dark navbar-item" @click="openPopUp" v-if="!showIntro">
+            <a class="button navbar-item out-nav" @click="openPopUp" v-if="!showIntro">
           <span class="icon is-small">
             <font-awesome-icon icon="file" />
           </span>
               <span>Neu</span>
             </a>
-            <a class="button is-dark navbar-item" @click="newData" v-if="showIntro">
+            <a class="button navbar-item out-nav" @click="newData" v-if="showIntro">
           <span class="icon is-small">
             <font-awesome-icon icon="file" />
           </span>
               <span>Neu</span>
             </a>
-            <a class="file is-dark navbar-item" :value="contrastMode ? true : false" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
+            <a class="file navbar-item" :value="contrastMode ? true : false" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
               <label class="file-label">
                 <input class="file-input" type="file" @change="importData" />
-                <span class="file-cta" :style="{ 'background-color': contrastMode ? '#001F3F' : '#36626f' }">
+                <span class="file-cta" :style="{ 'background-color': contrastMode ? '#FFFFFF' : '#FFFFFF' }">
               <span class="file-icon icon is-small">
                 <font-awesome-icon icon="folder-open" />
               </span>
@@ -144,26 +144,25 @@
             </span>
               </label>
             </a>
-            <a class="button is-dark navbar-item" @click="downloadData" v-show="!showIntro">
+            <a class="button navbar-item out-nav" @click="downloadData" v-show="!showIntro">
           <span class="icon is-small">
             <font-awesome-icon icon="save" />
           </span>
               <span>Speichern</span>
             </a>
-            <a class="button is-dark navbar-item" @click="showCreateBiograph = true; newPerson = false;" v-show="!showIntro">
+            <a class="button navbar-item out-nav" @click="showCreateBiograph = true; newPerson = false;" v-show="!showIntro">
           <span class="icon">
             <font-awesome-icon icon="pencil-alt" />
           </span>
               <span>Zeitbalken bearbeiten</span>
             </a>
-            <a class="button is-dark navbar-item" @click="toggleContrastMode">
+            <a class="button navbar-item out-nav" @click="toggleContrastMode">
           <span class="icon">
             <font-awesome-icon icon="paint-roller" />
           </span>
               <span>Kontrast</span>
             </a>
-            <br>
-            <a class="button is-dark navbar-item" @click="openHelpPopUp()">
+            <a class="button navbar-item out-nav" @click="openHelpPopUp()">
           <span class="icon">
             <font-awesome-icon icon="question" />
           </span>
@@ -267,10 +266,8 @@ import PopUpNew from "@/components/PopUpNew.vue";
 import EventDialogue from "@/components/EventDialogue.vue";
 import EventPopUp from "@/components/EventPopUp.vue";
 import EventDisplay from "@/components/EventDisplay.vue";
-// import TimeTable from "@/components/TimeTable.vue";
 import TimePane from "@/components/TimePane.vue";
 import { initEvent, type ZBEvent } from "@/data/ZBEvent";
-import router from "@/router";
 import HelpDialogue from "@/components/HelpDialogue.vue";
 
 export default {
@@ -653,42 +650,33 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.file.is-dark[value="true"] {
+.file[value="true"] {
 
   &:hover {
     background-color: #0074CC;
   }
-
-  .file-label {
-    color: white;
-  }
-
-  .file-icon {
-    color: white;
-  }
 }
 
-.file.is-dark[value="false"] {
+.file[value="false"] {
 
   &:hover {
     background-color: #333;
   }
-
-  .file-label {
-    color: white;
-  }
-
-  .file-icon {
-    color: white;
-  }
 }
 
-.file.is-dark[value="false"]:hover .file-cta {
-  background-color: #333; /* Change background color of the button on hover */
-}
-
-.button.navbar-item {
+.button.navbar-item.in-nav {
   background-color: #36626f;
+  font-weight: normal;
+}
+
+.button.navbar-item.in-nav:hover {
+  background-color: #333;
+  font-weight: normal;
+}
+
+.button.navbar-item.out-nav {
+  background-color: white;
+  color: #333;
 }
 
 .contrast .button.navbar-item {
@@ -772,6 +760,7 @@ export default {
   color: white;
   padding: 20px;
   font-size: 20px;
+  font-weight: bolder;
   background-color: #222;
 }
 
