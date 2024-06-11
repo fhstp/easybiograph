@@ -176,7 +176,7 @@ export default {
 }
 
 .ttParent .tooltiptext {
-  top: -3.7em;
+  bottom: calc(100% + 5px);
   visibility: hidden;
   width: 140px;
   background-color: darkgrey;
@@ -185,8 +185,6 @@ export default {
   border-radius: 6px;
   padding: 5px 0;
   font-size: smaller;
-
-  /* Position the tooltip */
   position: absolute;
 }
 
@@ -196,7 +194,7 @@ export default {
 .ttParent .tooltiptext::after {
   content: " ";
   position: absolute;
-  top: 100%; /* At the bottom of the tooltip */
+  top: 100%;
   left: 15%;
   margin-left: -5px;
   border-width: 5px;
