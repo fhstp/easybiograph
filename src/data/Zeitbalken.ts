@@ -1,7 +1,7 @@
 import type { ZBDimension } from "./Dimension";
 import type { ZBEvent } from "./ZBEvent";
 import { initPerson, type ZBPerson } from "./ZBPerson";
-import type { ZBZoom } from "@/data/ZBZoom";
+import { initZoom, type ZBZoom } from "@/data/ZBZoom";
 
 export interface Zeitbalken {
   person: ZBPerson;
@@ -17,6 +17,7 @@ export function initZeitbalkenAsJSON(): string {
     events: [],
     timeline: [],
     dimensions: [],
+    zoom: initZoom(),
   });
 }
 
