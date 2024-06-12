@@ -198,6 +198,26 @@
       Erstellen Sie einen neuen Zeitbalken oder öffnen Sie einen bestehenden
       Zeitbalken, um fortzufahren.
     </p>
+    <div class="buttons is-centered">
+      <a class="button is-primary" @click="newData">
+        <span class="icon is-small">
+          <font-awesome-icon icon="file" />
+        </span>
+        <span>Neu</span>
+      </a>
+      &nbsp;
+      <a class="file is-primary" :value="contrastMode ? true : false" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
+        <label class="file-label is-primary">
+          <input class="file-input" type="file" @change="importData" />
+          <span class="file-cta" :style="{ 'background-color': contrastMode ? '#FFFFFF' : '#42ABC2' }">
+            <span class="file-icon icon is-small">
+              <font-awesome-icon icon="folder-open" />
+            </span>
+            <span class="file-label">Öffnen</span>
+          </span>
+        </label>
+      </a>
+    </div>
   </div>
   </div>
 
