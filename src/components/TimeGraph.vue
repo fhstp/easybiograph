@@ -68,6 +68,7 @@
         <a
             class="button is-dark navbar-item in-nav"
             @click="toggleZoomMode"
+            v-show="!showIntro"
         >
               <span class="icon">
                 <font-awesome-icon icon="magnifying-glass-plus" />
@@ -162,6 +163,13 @@
           </span>
               <span>Kontrast</span>
             </a>
+            <a class="button navbar-item out-nav" @click="openPrintView">
+              <span class="icon">
+                <font-awesome-icon icon="print" />
+              </span>
+              <span>Drucken</span>
+            </a>
+            <br>
             <a class="button navbar-item out-nav" @click="openHelpPopUp()">
           <span class="icon">
             <font-awesome-icon icon="question" />
@@ -306,8 +314,8 @@ export default {
   },
   computed: {
     greyBarWidth(): any {
-      const zoomStartDate = store.state.data.zoom.birthDate;
-      const zoomEndDate = store.state.data.zoom.endDate;
+      const zoomStartDate = store.state.data.zoom ? store.state.data.zoom.birthDate : '';
+      const zoomEndDate = store.state.data.zoom ? store.state.data.zoom.endDate : '';
       const personStartDate = store.state.data.person.birthDate;
       const personEndDate = store.state.data.person.endDate;
       //@ts-ignore
@@ -317,7 +325,7 @@ export default {
       return (zoomDuration / totalPersonDuration) * 100 + '%';
     },
     greyBarLeft(): any {
-      const zoomStartDate = store.state.data.zoom.birthDate;
+      const zoomStartDate = store.state.data.zoom ? store.state.data.zoom.birthDate : '';
       const personStartDate = store.state.data.person.birthDate;
       const personEndDate = store.state.data.person.endDate;
 
@@ -329,8 +337,8 @@ export default {
     },
 
     zoomedYears() {
-      const zoomStartDate = new Date(store.state.data.zoom.birthDate);
-      const zoomEndDate = new Date(store.state.data.zoom.endDate);
+      const zoomStartDate = new Date(store.state.data.zoom ? store.state.data.zoom.birthDate : '');
+      const zoomEndDate = new Date(store.state.data.zoom ? store.state.data.zoom.endDate : '');
       return zoomEndDate.getFullYear() - zoomStartDate.getFullYear() + 1;
     },
     totalYears() {
@@ -359,6 +367,10 @@ export default {
     },
   },
   methods: {
+    openPrintView() {
+      const printViewUrl = `${window.location.origin}/print-view`;
+      window.open(printViewUrl, '_blank');
+    },
     moveZoomLeft() {
       const zoomStartDate = new Date(store.state.data.zoom.birthDate);
       const zoomEndDate = new Date(store.state.data.zoom.endDate);
