@@ -7,11 +7,13 @@ export interface ZBSettingsFlags {
 
 export interface ZBSettings extends ZBSettingsFlags {
   // put non-boolean settings here
+  language: string; // "de" or "en"
 }
 
 export function initSettingsAsJSON(): string {
   return JSON.stringify({
     showOnboarding: true,
+    language: "de", // TODO set from browser prefs
   });
 }
 

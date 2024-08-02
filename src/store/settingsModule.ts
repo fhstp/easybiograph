@@ -16,6 +16,10 @@ const mutations = {
   toggle(state: ZBSettings, flag: keyof ZBSettingsFlags): void {
     state[flag] = !state[flag];
   },
+
+  changeLanguage(state: ZBSettings, newLanguage: string): void {
+    state.language = newLanguage;
+  },
 };
 
 export const settingsModule = {
