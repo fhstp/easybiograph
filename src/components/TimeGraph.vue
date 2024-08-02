@@ -5,6 +5,7 @@
     v-show="showEventDialogue"
     @close="showEventDialogue = false"
     :event="selectedEvent"
+    :key="langKey"
   />
 
   <PersonDialogue
@@ -51,6 +52,17 @@
         </a>
         <div class="navbar-item" :title="`easyBiograph version ${appVersion}`">
           easyBiograph
+        </div>
+
+        <div class="navbar-item">
+          <select class="button is-dark navbar-item in-nav"
+              id="langselect"
+              name="lang"
+              v-model="lang"
+              @change="onLangChange($event)">
+              <option value="de">Deutsch</option>
+              <option value="en">English</option>
+            </select>
         </div>
 
         <div class="buttons">
@@ -323,6 +335,8 @@ export default {
       newDimDetails: {
         title: "",
       },
+      lang: "de",
+      langKey: "de",
     };
   },
   computed: {
@@ -673,6 +687,10 @@ export default {
         this.$router.go(0);
       };
       fr.readAsText(files.item(0));
+    },
+    onLangChange(event: any) {
+      document.documentElement.setAttribute("lang", event.target.value);
+      this.langKey = document.documentElement.lang;
     },
   },
 };

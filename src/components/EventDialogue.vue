@@ -195,9 +195,12 @@ import { store } from "../store";
 import { initEvent } from "../data/ZBEvent";
 import type { ZBEvent } from "../data/ZBEvent";
 import { ref, computed } from "vue";
-import type { PropType } from "vue";
+import type { defineComponent, PropType } from "vue";
+import de from "@/de";
+import en from "@/en";
 
 export default {
+  mixins: [de, en],
   name: "EventDialogue",
   components: { MonthChooser },
   props: {
@@ -272,6 +275,9 @@ export default {
     },
     close() {
       this.$emit("close");
+    },
+    t(prop: string) {
+      return this[document.documentElement.lang][prop];
     },
   },
   watch: {
