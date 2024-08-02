@@ -143,8 +143,10 @@ watch(() => props.zoomMode, (newVal, oldVal) => {
       const timeAxisWidth = rect.width;
 
       const centerDateZoom = calculateDateFromClick(centerClickX, timeAxisWidth);
-      const centerDate = new Date(centerDateZoom);
       console.log("HERE" + store.state.data.zoom.birthDate)
+
+      if (centerDateZoom != null) {
+        const centerDate = new Date(centerDateZoom);
 
       const currentStartDate = store.state.data.zoom.birthDate.length <= 0 ? new Date(store.state.data.person.birthDate) : new Date(store.state.data.zoom.birthDate);
       const currentEndDate = store.state.data.zoom.endDate.length <= 0 ? new Date(store.state.data.person.endDate) : new Date(store.state.data.zoom.endDate);
@@ -164,6 +166,8 @@ watch(() => props.zoomMode, (newVal, oldVal) => {
 
       console.log("Zoom committed with new range ±25%");
       updateAfterZoom();
+
+      }
     }
   }
 });
@@ -207,7 +211,6 @@ const calculateDateFromClick = (clickX: number, axisWidth: number): string | nul
     const formattedDate = `${clickedDate.getFullYear()}-${String(clickedDate.getMonth() + 1).padStart(2, '0')}-${String(clickedDate.getDate()).padStart(2, '0')}`;
 
     return formattedDate;
-
   }
 
   return null;

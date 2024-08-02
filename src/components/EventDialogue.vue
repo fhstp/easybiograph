@@ -173,7 +173,7 @@
         v-if="isNewEvent"
         class="button is-link"
         v-on:click="addEvent"
-        :disabled="invalidEnd || tempEvent.description < 1"
+        :disabled="invalidEnd || tempEvent.description.length < 1"
       >
         Fertig
       </button>
@@ -181,7 +181,7 @@
         v-if="!isNewEvent"
         class="button is-link"
         v-on:click="editEvent"
-        :disabled="invalidEnd || tempEvent.description < 1"
+        :disabled="invalidEnd || tempEvent.description.length < 1"
       >
         Fertig
       </button>
@@ -221,10 +221,10 @@ export default {
     endDate() {
       return store.state.data.person.endDate;
     },
-    title() {
+    title(): string {
       return this.isNewEvent ? "Eintrag erstellen" : "Eintrag bearbeiten";
     },
-    invalidEnd() {
+    invalidEnd(): boolean {
       return (
         this.tempEvent.startDate > this.tempEvent.endDate &&
         this.tempEvent.isInterval &&

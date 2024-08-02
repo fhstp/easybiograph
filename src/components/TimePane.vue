@@ -42,7 +42,7 @@
             :labelSpace="(100 * mark.spx) / mark.w"
             class="events"
             :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * 1.8}rem; height: 1.8rem`"
-            @click="$emit('displayEvent', mark.datum)"
+            @click="$emit('display-event', mark.datum)"
             :contrastMode="contrastMode"
           />
         </div>
@@ -218,7 +218,7 @@ const handleMouseRelease = () => {
   isMouseDown = false;
 };
 
-const emits = defineEmits(["open-edit"]);
+const emits = defineEmits(["open-edit", "display-event"]);
 
 let pressedDate: string | null = null;
 let releasedDate: string | null = null;
