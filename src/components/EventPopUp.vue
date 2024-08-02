@@ -53,9 +53,9 @@ export default {
   },
   methods: {
     loadEvents() {
-      //@ts-ignore
-      this.personYears = store.getters.getTimeline;
-      this.displayPersonYears();
+      // //@ts-ignore
+      // this.personYears = store.getters.getTimeline;
+      // this.displayPersonYears();
       //@ts-ignore
       this.events = store.getters.getEvents;
       const dims = ref(DimensionA);

@@ -316,7 +316,7 @@ export default {
       showEventPopUp: false,
       showEventDialogue: false,
       showHelpDialogue: false,
-      personYears: store.getters.getTimeline,
+      // personYears: store.getters.getTimeline,
       showEventDisplay: false,
       burgerMenuActive: false,
       showCreateBiograph: !store.getters.getPersonCreated,
@@ -364,7 +364,11 @@ export default {
     },
     showIntro(): boolean {
       //@ts-ignore
-      return this.personYears < 1;
+      return !(
+        store.state.data.person &&
+        store.state.data.person.name &&
+        store.state.data.person.name.length > 0
+      );
     },
     appVersion(): string {
       // eslint-disable-next-line no-undef
@@ -542,12 +546,12 @@ export default {
       this.showHelpDialogue = false;
     },
     closePerson() {
-      //@ts-ignore
-      this.personYears = store.getters.getTimeline;
+      // //@ts-ignore
+      // this.personYears = store.getters.getTimeline;
       //@ts-ignore
       this.showCreateBiograph = false;
-      //@ts-ignore
-      this.displayYears = this.displayPersonYears();
+      // //@ts-ignore
+      // this.displayYears = this.displayPersonYears();
       //@ts-ignore
       this.$forceUpdate();
 
@@ -564,35 +568,36 @@ export default {
       const modal = document.querySelector("#modal-event");
       if (modal) modal.classList.add("is-active");
     },
-    displayPersonYears(): object {
-      let displayedArray: number[] = [];
-      //@ts-ignore
-      let years: number[] = Object.values(this.personYears);
-      const displayMaximum: number = 15;
+    // XXX AR:not needed anymore?
+    // displayPersonYears(): object {
+    //   let displayedArray: number[] = [];
+    //   //@ts-ignore
+    //   let years: number[] = Object.values(this.personYears);
+    //   const displayMaximum: number = 15;
 
-      //@ts-ignore
-      if (years.length <= displayMaximum) return this.personYears;
+    //   //@ts-ignore
+    //   if (years.length <= displayMaximum) return this.personYears;
 
-      displayedArray = [years[0]];
-      let gap = Math.round(years.length / displayMaximum);
+    //   displayedArray = [years[0]];
+    //   let gap = Math.round(years.length / displayMaximum);
 
-      for (let i = 1; i < years.length - 1; i++) {
-        if (i % gap === 0) {
-          displayedArray.push(years[i]);
-        }
-      }
-      const gapYear = displayedArray[2] - displayedArray[1];
-      displayedArray.push(gapYear + displayedArray[displayedArray.length - 1]);
-      const born = years[0];
+    //   for (let i = 1; i < years.length - 1; i++) {
+    //     if (i % gap === 0) {
+    //       displayedArray.push(years[i]);
+    //     }
+    //   }
+    //   const gapYear = displayedArray[2] - displayedArray[1];
+    //   displayedArray.push(gapYear + displayedArray[displayedArray.length - 1]);
+    //   const born = years[0];
 
-      var displayObj = {};
-      displayedArray.forEach((year) => {
-        //@ts-ignore
-        displayObj[year - born] = year;
-      });
+    //   var displayObj = {};
+    //   displayedArray.forEach((year) => {
+    //     //@ts-ignore
+    //     displayObj[year - born] = year;
+    //   });
 
-      return displayObj;
-    },
+    //   return displayObj;
+    // },
     newData() {
       this.closeModal();
       console.log("jetzt")
@@ -610,7 +615,7 @@ export default {
         count = count + 1
         console.log(count)
       }
-      if (count = 5){
+      if (count == 5) {
         console.log("jetzt")
         //@ts-ignore
         this.showCreateBiograph = true;

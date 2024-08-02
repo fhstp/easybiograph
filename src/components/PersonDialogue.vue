@@ -163,7 +163,7 @@ export default {
       startYear: "",
       endYear: "",
       creationYear: "",
-      personYears: [] as number[],
+      // personYears: [] as number[],
       showBiograph: false,
       // newPersonDetails: {},
     };
@@ -215,21 +215,21 @@ export default {
       document.getElementById(tabName).style.display = "block";
     },
 
-    chooseYear() {
-      //@ts-ignore
-      let startValue = +this.startYear.substring(0, 4);
-      //@ts-ignore
-      let endValue = +this.endYear.substring(0, 4);
+    // chooseYear() {
+    //   //@ts-ignore
+    //   let startValue = +this.startYear.substring(0, 4);
+    //   //@ts-ignore
+    //   let endValue = +this.endYear.substring(0, 4);
 
-      for (let i = startValue; i <= endValue; i++) {
-        //@ts-ignore
-        this.personYears.push(i);
-      }
-    },
+    //   for (let i = startValue; i <= endValue; i++) {
+    //     //@ts-ignore
+    //     this.personYears.push(i);
+    //   }
+    // },
     close() {
-      this.chooseYear();
+      // this.chooseYear();
       //@ts-ignore
-      store.commit("data/addTimeline", this.personYears);
+      // store.commit("data/addTimeline", this.personYears);
       //store.commit("data/addDimensions");
       //@ts-ignore
       this.$router.go(0);
@@ -241,30 +241,30 @@ export default {
       this.$emit("abort");
     },
 
-    displayPersonYears(): Array<number> {
-      let displayedArray: number[] = [];
-      //@ts-ignore
-      let years: number[] = this.personYears;
-      console.log(years);
+    // displayPersonYears(): Array<number> {
+    //   let displayedArray: number[] = [];
+    //   //@ts-ignore
+    //   let years: number[] = this.personYears;
+    //   console.log(years);
 
-      const displayMaximum: number = 20;
+    //   const displayMaximum: number = 20;
 
-      if (years.length <= displayMaximum) return years;
+    //   if (years.length <= displayMaximum) return years;
 
-      let gap = years.length / displayMaximum;
-      const firstYear: number = years.shift() || 0;
-      const lastYear: number = years.pop() || 0;
+    //   let gap = years.length / displayMaximum;
+    //   const firstYear: number = years.shift() || 0;
+    //   const lastYear: number = years.pop() || 0;
 
-      console.log(gap);
-      displayedArray.push(firstYear);
-      for (let i = gap; i < years.length; i += gap + 1) {
-        displayedArray.push(years[i]);
-      }
-      displayedArray.push(lastYear);
+    //   console.log(gap);
+    //   displayedArray.push(firstYear);
+    //   for (let i = gap; i < years.length; i += gap + 1) {
+    //     displayedArray.push(years[i]);
+    //   }
+    //   displayedArray.push(lastYear);
 
-      console.log(displayedArray);
-      return displayedArray;
-    },
+    //   console.log(displayedArray);
+    //   return displayedArray;
+    // },
   },
 };
 </script>

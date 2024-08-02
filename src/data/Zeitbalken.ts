@@ -6,7 +6,7 @@ import { initZoom, type ZBZoom } from "@/data/ZBZoom";
 export interface Zeitbalken {
   person: ZBPerson;
   events: Array<ZBEvent>;
-  timeline: Array<number>;
+  // timeline: Array<number>;
   dimensions: Array<ZBDimension>;
   zoom: ZBZoom;
 }
@@ -15,7 +15,7 @@ export function initZeitbalkenAsJSON(): string {
   return JSON.stringify({
     person: initPerson(),
     events: [],
-    timeline: [],
+    // timeline: [],
     dimensions: [],
     zoom: initZoom(),
   });
@@ -26,7 +26,7 @@ export function loadZeitbalken(state: Zeitbalken, loadedText: string): void {
   compatibilityChecks(loaded);
   state.person = loaded.person;
   state.events = loaded.events;
-  state.timeline = loaded.timeline;
+  // state.timeline = loaded.timeline;
   state.dimensions = loaded.dimensions;
 }
 

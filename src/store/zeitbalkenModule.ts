@@ -60,9 +60,9 @@ const mutations = {
   },
 
   // TODO check if still needed
-  addTimeline(state: Zeitbalken, timeline: Array<number>): void {
-    state.timeline = timeline;
-  },
+  // addTimeline(state: Zeitbalken, timeline: Array<number>): void {
+  //   state.timeline = timeline;
+  // },
 
   //dimensions: Array<string>
   /*addDimensions(state: Zeitbalken, payload: { index: number; dimensions: Array<string> } ): void {
