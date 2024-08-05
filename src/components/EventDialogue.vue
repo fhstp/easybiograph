@@ -15,7 +15,7 @@
     <h1 class="title block">{{ title }}</h1>
     <div class="field is-horizontal">
       <div class="field-label">
-        <label class="label" style="text-align: left">Typ</label>
+        <label class="label" style="text-align: left">{{ t("eventtyp") }}</label>
       </div>
       <div class="field-body">
         <div class="field is-narrow">
@@ -26,7 +26,7 @@
                 v-model="tempEvent.isInterval"
                 v-bind:value="true"
               />
-              Zeitraum
+              {{ t("period") }}
             </label>
             <label class="radio">
               <input
@@ -34,7 +34,7 @@
                 v-model="tempEvent.isInterval"
                 v-bind:value="false"
               />
-              Zeitpunkt
+              {{ t("moment") }}
             </label>
           </div>
         </div>
@@ -42,7 +42,7 @@
     </div>
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Datum</label>
+        <label class="label" style="text-align: left">{{t("eventdate")}}</label>
       </div>
       <div class="field-body">
         <MonthChooser
@@ -55,7 +55,7 @@
     </div>
     <div class="field is-horizontal" v-show="tempEvent.isInterval">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">bis</label>
+        <label class="label" style="text-align: left">{{t("until")}}</label>
       </div>
       <div class="field-body">
         <MonthChooser
@@ -74,7 +74,7 @@
         text-align: right;
         margin-right: 1%;
         font-size: smaller;
-      ">Ende darf nicht vor dem Start liegen!</p>
+      ">{{ t("periodmsg") }}</p>
     <br />
     <br v-if="invalidEnd" />
     <label
@@ -116,7 +116,7 @@
     </div>
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Titel</label>
+        <label class="label" style="text-align: left">{{t("title")}}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -139,7 +139,7 @@
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Notizen</label>
+        <label class="label" style="text-align: left">{{t("notes")}}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -200,7 +200,6 @@ import de from "@/de";
 import en from "@/en";
 
 export default {
-  mixins: [de, en],
   name: "EventDialogue",
   components: { MonthChooser },
   props: {
@@ -225,7 +224,7 @@ export default {
       return store.state.data.person.endDate;
     },
     title() {
-      return this.isNewEvent ? "Eintrag erstellen" : "Eintrag bearbeiten";
+      return this.isNewEvent ? this.t("createentry") : this.t("editentry");
     },
     invalidEnd() {
       return (
@@ -277,7 +276,9 @@ export default {
       this.$emit("close");
     },
     t(prop: string) {
-      return this[document.documentElement.lang][prop];
+      const lang = store.state.settings.language;
+      const trans = lang === "de" ? de :  en;
+      return trans[prop];
     },
   },
   watch: {

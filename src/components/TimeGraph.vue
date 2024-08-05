@@ -5,7 +5,7 @@
     v-show="showEventDialogue"
     @close="showEventDialogue = false"
     :event="selectedEvent"
-    :key="langKey"
+    :key="lang"
   />
 
   <PersonDialogue
@@ -55,7 +55,7 @@
         </div>
 
         <div class="navbar-item">
-          <select class="button is-dark navbar-item in-nav"
+          <select
               id="langselect"
               name="lang"
               v-model="lang"
@@ -335,8 +335,7 @@ export default {
       newDimDetails: {
         title: "",
       },
-      lang: "de",
-      langKey: "de",
+      lang: store.state.settings.language,
     };
   },
   computed: {
@@ -689,8 +688,7 @@ export default {
       fr.readAsText(files.item(0));
     },
     onLangChange(event: any) {
-      document.documentElement.setAttribute("lang", event.target.value);
-      this.langKey = document.documentElement.lang;
+      store.commit("settings/changeLanguage", event.target.value);
     },
   },
 };
@@ -834,6 +832,11 @@ export default {
   .navbar-burger {
     margin-left: 1rem;
   }
+}
+
+#langselect {
+  height: 2.25em;
+  margin-left: 0.5em;
 }
 
 @media screen {
