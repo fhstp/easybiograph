@@ -21,7 +21,7 @@
       <div class="content">
         <div class="field is-horizontal">
           <div class="field-label is-normal">
-            <label class="label" style="text-align: left">Datum</label>
+            <label class="label" style="text-align: left">{{ t("eventdate") }}</label>
           </div>
           <div class="field-body">
             <div class="field">
@@ -32,7 +32,7 @@
 
         <div class="field is-horizontal">
           <div class="field-label is-normal">
-            <label class="label" style="text-align: left">Notizen</label>
+            <label class="label" style="text-align: left">{{ t("notes") }}</label>
           </div>
           <div class="field-body">
             <div class="field">
@@ -47,6 +47,9 @@
 
 <script setup lang="ts">
 import type { ZBEvent } from "@/data/ZBEvent";
+import de from "@/de";
+import en from "@/en";
+import { store } from "@/store";
 import { computed } from "vue";
 
 const props = defineProps<{
@@ -63,7 +66,7 @@ const notes = computed(() =>
 
 const eventTypeAsString = computed(() => {
   if (props.selectedEvent) {
-    return props.selectedEvent.isInterval ? "Zeitraum" : "Zeitpunkt";
+    return props.selectedEvent.isInterval ? t("period") : t("moment");
   } else {
     return "";
   }
@@ -72,14 +75,20 @@ const eventTypeAsString = computed(() => {
 const timeInfo = computed(() => {
   if (props.selectedEvent) {
     return props.selectedEvent.isOpenEnd
-      ? props.selectedEvent.startDate + " bis Offenes Ende"
+      ? props.selectedEvent.startDate + t("toopenend")
       : props.selectedEvent.isInterval
-      ? props.selectedEvent.startDate + " bis " + props.selectedEvent.endDate
+      ? props.selectedEvent.startDate + t("to") + props.selectedEvent.endDate
       : props.selectedEvent.startDate;
   } else {
     return "";
   }
 });
+
+function t(prop: string) {
+  const lang = store.state.settings.language;
+      const trans: any = lang === "de" ? de :  en;
+      return trans[prop];
+}
 </script>
 
 <style scoped></style>

@@ -1,6 +1,6 @@
 <template>
   <br />
-  <h1 id="edit" class="title block">Dimension bearbeiten</h1>
+  <h1 id="edit" class="title block">{{ t("editdimension") }}</h1>
   <br />
   <div>
     <div v-for="(dimension, index) in Dimension" :key="dimension.id" class="checkbox-container">
@@ -32,13 +32,11 @@
           v-model="newDimDetails.title"
           class="input"
           type="text"
-          placeholder="Titel der neuen Dimension"
+          :placeholder="t('dimensionplaceholder')"
         />
       </p>
       <p class="control">
-        <a class="button is-link is-light" @click="addDimension">
-          Dimension hinzufügen
-        </a>
+        <a class="button is-link is-light" @click="addDimension"> {{ t("adddimension") }}</a>
       </p>
     </div>
   </form>
@@ -46,6 +44,8 @@
 
 <script>
 import {DimensionA, initDimension} from "@/data/Dimension";
+import de from "@/de";
+import en from "@/en";
 import {store} from "@/store";
 
 export default {
@@ -137,8 +137,11 @@ export default {
         });
       }
     },
-
-
+    t(prop) {
+      const lang = store.state.settings.language;
+      const trans = lang === "de" ? de :  en;
+      return trans[prop];
+    }
   },
 };
 </script>

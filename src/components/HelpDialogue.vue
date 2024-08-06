@@ -1,6 +1,16 @@
 <script setup>
+import de from '@/de';
+import en from '@/en';
+import { store } from '@/store';
+
 // eslint-disable-next-line no-undef
 const appVersion = __APP_VERSION__;
+
+function t(prop) {
+  const lang = store.state.settings.language;
+      const trans = lang === "de" ? de :  en;
+      return trans[prop];
+}
 </script>
 
 <template>
@@ -15,21 +25,20 @@ const appVersion = __APP_VERSION__;
           verfügbar.
         </p>
         <p class="block">
-          easyBiograph ist Free and Open Source Software. Den Source Code finden
-          Sie auf <a href="https://github.com/fhstp/easybiograph">GitHub</a>.
+          {{ t("help1") }} <a href="https://github.com/fhstp/easybiograph">GitHub</a>.
         </p>
         <p class="block">
-          Diese Software wurde im Rahmen des Erasmus+ Projekts
+          {{ t("help2") }}
           <a
             href="https://research.fhstp.ac.at/en/projects/transsodia-transnational-and-digital-learning-and-teaching-in-cooperative-social-diagnostics"
             target="_blank"
           >
             TransSoDia
           </a>
-          entwickelt, das von der Europäischen Union kofinanziert wurde.
+          {{ t("help3") }}
         </p>
         <div class="buttons is-centered">
-          <button class="button" @click="$emit('abort')">Schließen</button>
+          <button class="button" @click="$emit('abort')">{{ t("close") }}</button>
         </div>
       </div>
     </div>

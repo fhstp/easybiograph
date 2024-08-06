@@ -58,8 +58,23 @@ export default {
     age: "Age",
   //}
   //popUpNew{
-    attention: "Attention, if the current time bar hasn't been saved, it will be lost!",
-    continuemsg: "Do you still want to continue?",
-    continue: "Continue"
-    //}
+  attention: "Attention, if the current time bar hasn't been saved, it will be lost!",
+  continuemsg: "Do you still want to continue?",
+  continue: "Continue",
+  //}
+  //eventDisplay{
+  to: " to ",
+  toopenend: " to open end",
+  //}
+  //helpDialogue{
+  help1: "easyBiograph is free and open source software. You can find the source code at",
+  help2: "This software was developed as part of the Erasmus+ project",
+  help3: ", co-financed by the European Union.",
+  close: "Close",
+  //}
+  //dimensionDialogue{
+  editdimension: "Edit dimension",
+  adddimension: "Add dimension",
+  dimensionplaceholder: "Title of the new dimension"
+  //}
 };

@@ -60,6 +60,21 @@ export default {
   //popUpNew{
   attention: "Achtung, wenn der aktuelle Zeitbalken noch nicht gespeichtert wurde, dann geht dieser verloren!",
   continuemsg: "Wollen Sie dennoch fortfahren?",
-  continue: "Weiter"
+  continue: "Weiter",
+  //}
+  //eventDisplay{
+  to: " bis ",
+  toopenend: " bis Offenes Ende",
+  //}
+  //helpDialogue{
+  help1: "easyBiograph ist Free and Open Source Software. Den Source Code finden Sie auf",
+  help2: "Diese Software wurde im Rahmen des Erasmus+ Projekts",
+  help3: "entwickelt, das von der Europäischen Union kofinanziert wurde.",
+  close: "Schließen",
+  //}
+  //dimensionDialogue{
+  editdimension: "Dimension bearbeiten",
+  adddimension: "Dimension hinzufügen",
+  dimensionplaceholder: "Titel der neuen Dimension"
   //}
 };
