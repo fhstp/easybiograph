@@ -248,17 +248,16 @@ const layout = computed((): Array<DimensionLayout> => {
   // TODO filter visible events (possibly as a vuex getter)
   // TODO use interval tree for filter and sort <https://www.npmjs.com/package/@flatten-js/interval-tree> or <https://github.com/ieg-vienna/TimeBench/blob/master/src/timeBench/data/util/IntervalTree.java>
   const visibleEvents = d3.group(
-    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-    store.state.data.events.sort((a, b) =>
-      a.startDate.localeCompare(b.startDate)
-    ),
-    // store.state.data.events,
+    store.state.data.events,
     (d) => d.dimensionId
   );
   // console.log(visibleEvents);
 
   buffer.forEach((dim) => {
     const eventsInDim = visibleEvents.get(dim.id) || [];
+    eventsInDim.sort((a, b) =>
+      a.startDate.localeCompare(b.startDate)
+    );
     // keep track how far to the right rows inside a dimension are occupied
     const rowOccup: number[] = [];
     const rightEventbyRow: (EventMark | null)[] = [];
