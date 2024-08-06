@@ -1,4 +1,17 @@
 export default {
+  //TimeGraph: {
+  createevent: "Create event",
+  resetzoom: "Reset zoom",
+  totheleft: "Move 10% to the left",
+  totheright: "Move 10% to the right",
+  new: "New",
+  open: "Open",
+  save: "Save",
+  edittimebar: "Edit time bar",
+  contrast: "Contrast",
+  help: "Help",
+  //}
+  //eventDialogue: {
   createentry: "Create a new entry",
   editentry: "Edit entry",
   eventtyp: "Type",
@@ -9,5 +22,26 @@ export default {
   notes: "Notes",
   period: "Period",
   moment: "Moment",
-  periodmsg: "End date can't be before start date!"
+  periodmsg: "End date can't be before start date!",
+  openend: "Open end",
+  delete: "Delete",
+  cancel: "Cancel",
+  done: "Done",
+  titleplaceholder: "Display name of the event",
+  eventnotesplaceholder: "Notes about the event",
+  //},
+  //personDialogue: {
+  general: "General",
+  dimensions: "Dimensions",
+  createtimebar: "Create a new time bar",
+  name: "Name",
+  birthday: "Date of birth",
+  timebaruntil: "Timeline until",
+  createdon: "Created on",
+  birthplace: "Place of birth",
+  creator: "Created by",
+  birthplaceplaceholder: "Place of birth of the person",
+  creatorplaceholder: "Name of the creator",
+  personnotesplaceholder: "Notes about the person"
+  //}
 };

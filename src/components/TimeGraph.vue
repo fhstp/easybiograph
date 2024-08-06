@@ -5,13 +5,12 @@
     v-show="showEventDialogue"
     @close="showEventDialogue = false"
     :event="selectedEvent"
-    :key="lang"
   />
 
   <PersonDialogue
     v-show="showCreateBiograph"
     :newPersonDetails="temporaryPerson"
-    title="Neuen Zeitbalken erstellen"
+    :title= "t('createtimebar')"
     @close="closePerson"
     @abort="showIntroNew"
     v-if="newPerson"
@@ -21,7 +20,7 @@
   <PersonDialogue
     v-show="showCreateBiograph"
     :newPersonDetails="temporaryPerson"
-    title="Zeitbalken bearbeiten"
+    :title= "t('edittimebar')"
     @close="closePerson"
     @abort="showCreateBiograph = false"
     v-if="!newPerson"
@@ -74,7 +73,7 @@
               <span class="icon">
                 <font-awesome-icon icon="plus" />
               </span>
-          <span>Event erstellen</span>
+          <span>{{ t("createevent") }}</span>
         </a>
 
         <a
@@ -91,7 +90,7 @@
             class="button is-dark navbar-item in-nav"
             @click="zoomUndo"
             v-show="!showIntro && isZoomed"
-            title="Zoom zurücksetzen"
+            :title="t('resetzoom')"
         >
               <span class="icon">
                 <font-awesome-icon icon="magnifying-glass-minus" />
@@ -101,7 +100,7 @@
               class="button is-dark navbar-item in-nav"
               @click="moveZoomLeft"
               v-show="!showIntro && isZoomed"
-              title="10% nach links bewegen"
+              :title="t('totheleft')"
           >
             &lt;
           </a>
@@ -109,7 +108,7 @@
               class="button is-dark navbar-item in-nav"
               @click="moveZoomRight"
               v-show="!showIntro && isZoomed"
-              title="10% nach rechts bewegen"
+              :title="t('totheright')"
               style="margin-right: 2vw"
           >
             >
@@ -138,13 +137,13 @@
           <span class="icon is-small">
             <font-awesome-icon icon="file" />
           </span>
-              <span>Neu</span>
+              <span>{{ t("new") }}</span>
             </a>
             <a class="button navbar-item out-nav" @click="newData" v-if="showIntro">
           <span class="icon is-small">
             <font-awesome-icon icon="file" />
           </span>
-              <span>Neu</span>
+              <span>{{ t("new") }}</span>
             </a>
             <a class="file navbar-item" :value="contrastMode ? true : false" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
               <label class="file-label">
@@ -153,7 +152,7 @@
               <span class="file-icon icon is-small">
                 <font-awesome-icon icon="folder-open" />
               </span>
-              <span class="file-label">Öffnen</span>
+              <span class="file-label">{{ t("open") }}</span>
             </span>
               </label>
             </a>
@@ -161,25 +160,25 @@
           <span class="icon is-small">
             <font-awesome-icon icon="save" />
           </span>
-              <span>Speichern</span>
+              <span>{{ t("save") }}</span>
             </a>
             <a class="button navbar-item out-nav" @click="showCreateBiograph = true; newPerson = false;" v-show="!showIntro">
           <span class="icon">
             <font-awesome-icon icon="pencil-alt" />
           </span>
-              <span>Zeitbalken bearbeiten</span>
+              <span>{{ t("edittimebar") }}</span>
             </a>
             <a class="button navbar-item out-nav" @click="toggleContrastMode">
           <span class="icon">
             <font-awesome-icon icon="paint-roller" />
           </span>
-              <span>Kontrast</span>
+              <span>{{ t("contrast") }}</span>
             </a>
             <a class="button navbar-item out-nav" @click="openHelpPopUp()">
           <span class="icon">
             <font-awesome-icon icon="question" />
           </span>
-              <span>Info</span>
+              <span>{{ t("help") }}</span>
             </a>
           </div>
         </div>
@@ -301,6 +300,8 @@ import EventDisplay from "@/components/EventDisplay.vue";
 import TimePane from "@/components/TimePane.vue";
 import { initEvent, type ZBEvent } from "@/data/ZBEvent";
 import HelpDialogue from "@/components/HelpDialogue.vue";
+import de from "@/de";
+import en from "@/en";
 
 export default {
   name: "TimeGraph",
@@ -691,6 +692,10 @@ export default {
     },
     onLangChange(event: any) {
       store.commit("settings/changeLanguage", event.target.value);
+    },
+    t(prop: string) {
+      const trans: any = this.lang === "de" ? de :  en;
+      return trans[prop];
     },
   },
 };

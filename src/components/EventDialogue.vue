@@ -88,7 +88,7 @@
       "
     >
       <input type="checkbox" v-model="tempEvent.isOpenEnd" />
-      Offenes Ende
+      {{ t("openend") }}
     </label>
     <br />
 
@@ -127,7 +127,7 @@
               :class="{'is-danger': tempEvent.description.length < 1}"
               v-model="tempEvent.description"
               type="text"
-              placeholder="Anzeigename des Events"
+              :placeholder="t('titleplaceholder')"
               id="eventNameId"
               required
             />
@@ -147,7 +147,7 @@
             <textarea
               class="textarea"
               v-model="tempEvent.notes"
-              placeholder="Notizen zum Event"
+              :placeholder="t('eventnotesplaceholder')"
               id="noteId"
             ></textarea>
           </div>
@@ -161,13 +161,13 @@
         class="button is-danger is-light"
         @click="removeEvent"
       >
-        Löschen
+        {{ t("delete") }}
       </button>
       <button
         class="button is-white"
         v-on:click="close"
       >
-        Abbrechen
+        {{ t("cancel") }}
       </button>
       <button
         v-if="isNewEvent"
@@ -175,7 +175,7 @@
         v-on:click="addEvent"
         :disabled="invalidEnd || tempEvent.description.length < 1"
       >
-        Fertig
+        {{ t("done") }}
       </button>
       <button
         v-if="!isNewEvent"
@@ -183,7 +183,7 @@
         v-on:click="editEvent"
         :disabled="invalidEnd || tempEvent.description.length < 1"
       >
-        Fertig
+        {{ t("done") }}
       </button>
    </div>
   </div>
@@ -223,13 +223,8 @@ export default {
     endDate() {
       return store.state.data.person.endDate;
     },
-<<<<<<< HEAD
     title() {
       return this.isNewEvent ? this.t("createentry") : this.t("editentry");
-=======
-    title(): string {
-      return this.isNewEvent ? "Eintrag erstellen" : "Eintrag bearbeiten";
->>>>>>> origin/brandNewVue
     },
     invalidEnd(): boolean {
       return (
@@ -282,7 +277,7 @@ export default {
     },
     t(prop: string) {
       const lang = store.state.settings.language;
-      const trans = lang === "de" ? de :  en;
+      const trans: any = lang === "de" ? de :  en;
       return trans[prop];
     },
   },

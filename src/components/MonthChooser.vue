@@ -72,9 +72,9 @@ const age = computed(() => {
     const ageMon =
       (year.value - minYear.value) * 12 + (month.value - minMonth.value);
     
-    const yearsLabel = selectedLanguage.value ? "Jahre" : "years";
-    const monthsLabel = selectedLanguage.value ? "Monate" : "months";
-    const invalidLabel = selectedLanguage.value ? "ungültig" : "invalid";
+    const yearsLabel = langIsGerman.value ? "Jahre" : "years";
+    const monthsLabel = langIsGerman.value ? "Monate" : "months";
+    const invalidLabel = langIsGerman.value ? "ungültig" : "invalid";
 
     return ageMon >= 0
       ? `${Math.floor(ageMon / 12)} ${yearsLabel}, ${ageMon % 12} ${monthsLabel}`
@@ -130,7 +130,7 @@ const setFromProperties = (newModelValue: string | undefined) => {
   }
 };
 
-const selectedLanguage = computed(() => {
+const langIsGerman = computed(() => {
   return store.state.settings.language == "de";
 })
 
@@ -167,7 +167,7 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
   <div class="control">
     <div class="select">
       <select v-model="month" :disabled="disabled">
-        <option v-for="(label, i) in selectedLanguage ? AVAIL_MONTHS : AVAIL_MONTHS_ENG" :key="i" :value="i">
+        <option v-for="(label, i) in langIsGerman ? AVAIL_MONTHS : AVAIL_MONTHS_ENG" :key="i" :value="i">
           {{ label }}
         </option>
       </select>

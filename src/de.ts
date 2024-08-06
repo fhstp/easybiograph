@@ -1,4 +1,17 @@
 export default {
+  //TimeGraph: {
+  createevent: "Event erstellen",
+  resetzoom: "Zoom zurücksetzen",
+  totheleft: "10% nach links bewegen",
+  totheright: "10% nach rechts bewegen",
+  new: "Neu",
+  open: "Öffnen",
+  save: "Speichern",
+  edittimebar: "Zeitbalken bearbeiten",
+  contrast: "Kontrast",
+  help: "Info",
+  //}
+  //eventDialogue: {
   createentry: "Eintrag erstellen",
   editentry: "Eintrag bearbeiten",
   eventtyp: "Typ",
@@ -9,5 +22,26 @@ export default {
   notes: "Notizen",
   period: "Zeitraum",
   moment: "Zeitpunkt",
-  periodmsg: "Ende darf nicht vor dem Start liegen!"
+  periodmsg: "Ende darf nicht vor dem Start liegen!",
+  openend: "Offenes Ende",
+  delete: "Löschen",
+  cancel: "Abrechen",
+  done: "Ferig",
+  titleplaceholder: "Anzeigename des Events",
+  eventnotesplaceholder: "Notizen zum Event",
+  //},
+  //personDialogue: {
+  general: "Allgemein",
+  dimensions: "Dimensionen",
+  createtimebar: "Neuen Zeitbalken erstellen",
+  name: "Name",
+  birthday: "Geburtsdatum",
+  timebaruntil: "Zeitbalken bis",
+  createdon: "Erstellt am",
+  birthplace: "Geburtsort",
+  creator: "Ersteller*in",
+  birthplaceplaceholder: "Geburtsort der Person",
+  creatorplaceholder: "Name der Erstellerin/des Erstellers",
+  personnotesplaceholder: "Notizen zur Person"
+  //}
 };
