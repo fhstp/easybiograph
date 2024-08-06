@@ -1,7 +1,7 @@
 <template>
   <div class="axis">
-    <div class="head year">Jahr</div>
-    <div class="headAge age">Alter</div>
+    <div class="head year">{{ t("year") }}</div>
+    <div class="headAge age">{{ t("age") }}</div>
     <div class="brush" ref="brushRef">
     <div class="substrate" ref="substrateRef">
       <div
@@ -30,6 +30,8 @@ import {computed, ref, onMounted, onBeforeUnmount, watch} from "vue";
 import * as d3 from "d3";
 import {debounce, germanTimeFormat} from "@/assets/util";
 import { useStore } from "@/store";
+import de from "@/de";
+import en from "@/en";
 
 const brushRef = ref<InstanceType<typeof HTMLDivElement> | null>(null);
 let brush: any = null;
@@ -344,6 +346,12 @@ const ageTicks = computed(() => {
     ];
   }
 });
+
+function t(prop: string) {
+  const lang = store.state.settings.language;
+      const trans: any = lang === "de" ? de :  en;
+      return trans[prop];
+}
 </script>
 
 <style scoped lang="scss">

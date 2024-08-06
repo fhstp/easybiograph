@@ -184,7 +184,7 @@
         </div>
       </div>
       <div class="years-text" v-show="!showIntro && isZoomed">
-        Zoom: {{ zoomedYears }} von {{ totalYears }} Jahren
+        Zoom: {{ zoomedYears }} {{t("outof")}} {{ totalYears }} {{ t("years") }}
       <div class="horizontal-bar-container">
         <div class="white-bar">
           <div class="grey-bar" :style="{ width: greyBarWidth, left: greyBarLeft }"></div>
@@ -204,17 +204,14 @@
   <!-- Intro for easybiograph -->
   <div class="welcome" v-if="showIntro">
     <embed src="easybiographWelcome.svg" alt="Welcome to easybiograph" />
-    <h2 class="title is-2">Willkommen bei easyBiograph!</h2>
-    <p class="block">
-      Erstellen Sie einen neuen Zeitbalken oder öffnen Sie einen bestehenden
-      Zeitbalken, um fortzufahren.
-    </p>
+    <h2 class="title is-2">{{ t("welcome") }}</h2>
+    <p class="block">{{ t("textunderwelcome") }}</p>
     <div class="buttons is-centered">
       <a class="button is-primary" @click="newData">
         <span class="icon is-small">
           <font-awesome-icon icon="file" />
         </span>
-        <span>Neu</span>
+        <span>{{ t("new") }}</span>
       </a>
       &nbsp;
       <a class="file is-primary" :value="contrastMode ? true : false" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
@@ -224,7 +221,7 @@
             <span class="file-icon icon is-small">
               <font-awesome-icon icon="folder-open" />
             </span>
-            <span class="file-label">Öffnen</span>
+            <span class="file-label">{{ t("open") }}</span>
           </span>
         </label>
       </a>

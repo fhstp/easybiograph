@@ -5,7 +5,7 @@
       {{ $store.state.data.person.name }}
       ({{ $store.state.data.person.birthDate.substring(5, 7) > $store.state.data.person.creationDate.substring(5, 7) ?
         ($store.state.data.person.creationDate.substring(0, 4) - $store.state.data.person.birthDate.substring(0, 4)) - 1
-      : ($store.state.data.person.creationDate.substring(0, 4) - $store.state.data.person.birthDate.substring(0, 4))}}a), geboren am
+      : ($store.state.data.person.creationDate.substring(0, 4) - $store.state.data.person.birthDate.substring(0, 4))}}a), {{ t("bornonthe") }}
       {{ $store.state.data.person.birthDate.substring(8, 10) }}.{{
         $store.state.data.person.birthDate.substring(5, 7)
       }}.{{ $store.state.data.person.birthDate.substring(0, 4) }}
@@ -14,9 +14,9 @@
       </span>
     </p>
     <p class="same interviewer" style="float: right; text-align: right; margin-right: 1%">
-      erstellt
+      {{ t("created") }}
       <span v-if="$store.state.data.person.interviewers">
-        von: {{ $store.state.data.person.interviewers }},
+        {{ t("by") }} {{ $store.state.data.person.interviewers }},
       </span>
       {{ $store.state.data.person.creationDate.substring(8, 10) }}.{{
         $store.state.data.person.creationDate.substring(5, 7)
@@ -29,6 +29,10 @@
 </template>
 
 <script>
+import { store } from "../store";
+import de from "@/de";
+import en from "@/en";
+
 export default {
   name: "PersonInfo",
   props: {
@@ -37,6 +41,13 @@ export default {
       required: true,
     },
   },
+  methods: {
+    t(prop) {
+      const lang = store.state.settings.language;
+      const trans = lang === "de" ? de :  en;
+      return trans[prop];
+    },
+  }
 };
 </script>
 

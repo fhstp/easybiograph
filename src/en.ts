@@ -10,6 +10,10 @@ export default {
   edittimebar: "Edit time bar",
   contrast: "Contrast",
   help: "Help",
+  outof: "out of",
+  years: "years",
+  welcome: "Welcome to easyBiograph!",
+  textunderwelcome: "Create or open an existing time bar to continue.",
   //}
   //eventDialogue: {
   createentry: "Create a new entry",
@@ -42,6 +46,20 @@ export default {
   creator: "Created by",
   birthplaceplaceholder: "Place of birth of the person",
   creatorplaceholder: "Name of the creator",
-  personnotesplaceholder: "Notes about the person"
+  personnotesplaceholder: "Notes about the person",
   //}
+  //personInfo{
+  bornonthe: "born on the",
+  created: "created",
+  by: "by:",
+  //}
+  //TimeAxis{
+    year: "Year",
+    age: "Age",
+  //}
+  //popUpNew{
+    attention: "Attention, if the current time bar hasn't been saved, it will be lost!",
+    continuemsg: "Do you still want to continue?",
+    continue: "Continue"
+    //}
 };

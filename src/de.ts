@@ -10,6 +10,10 @@ export default {
   edittimebar: "Zeitbalken bearbeiten",
   contrast: "Kontrast",
   help: "Info",
+  outof: "von",
+  years: "Jahren",
+  welcome: "Willkommen bei easyBiograph!",
+  textunderwelcome: "Erstellen Sie einen neuen Zeitbalken oder öffnen Sie einen bestehenden Zeitbalken, um fortzufahren.",
   //}
   //eventDialogue: {
   createentry: "Eintrag erstellen",
@@ -25,7 +29,7 @@ export default {
   periodmsg: "Ende darf nicht vor dem Start liegen!",
   openend: "Offenes Ende",
   delete: "Löschen",
-  cancel: "Abrechen",
+  cancel: "Abbrechen",
   done: "Ferig",
   titleplaceholder: "Anzeigename des Events",
   eventnotesplaceholder: "Notizen zum Event",
@@ -42,6 +46,20 @@ export default {
   creator: "Ersteller*in",
   birthplaceplaceholder: "Geburtsort der Person",
   creatorplaceholder: "Name der Erstellerin/des Erstellers",
-  personnotesplaceholder: "Notizen zur Person"
+  personnotesplaceholder: "Notizen zur Person",
+  //}
+  //personInfo{
+  bornonthe: "geboren am",
+  created: "erstellt",
+  by: "von:",
+  //}
+  //timeAxis{
+  year: "Jahr",
+  age: "Alter",
+  //}
+  //popUpNew{
+  attention: "Achtung, wenn der aktuelle Zeitbalken noch nicht gespeichtert wurde, dann geht dieser verloren!",
+  continuemsg: "Wollen Sie dennoch fortfahren?",
+  continue: "Weiter"
   //}
 };
