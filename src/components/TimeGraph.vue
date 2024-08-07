@@ -624,15 +624,15 @@ export default {
         const newDim = initDimension();
         newDim.title = defaultDims[i];
         //@ts-ignore
-        store.commit("data/addDimension", newDim);
+        store.commit("data/addDimension", newDim); // TODO AR, 7 Aug: default dims in initZeitbalken oder newZeitbalken mutation anlegen
         count = count + 1
-        console.log(count)
+        console.log(count+ " " + i) // TODO AR, 7 Aug: warum count?, sonst löschen!
       }
-      if (count == 5) {
-        console.log("jetzt")
-        //@ts-ignore
-        this.showCreateBiograph = true;
-      }
+      // if (count == 5) {
+      //   console.log("jetzt")
+      //   //@ts-ignore
+      this.showCreateBiograph = true;
+      // }
 
     },
     showEditEventDialogue() {
