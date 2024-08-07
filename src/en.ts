@@ -81,6 +81,9 @@ export default {
   education: "Education",
   work: "Work",
   health: "Health",
-  treatment: "Treatment/Help"
+  treatment: "Treatment/Help",
+  //}
+  //timeEvent{
+  toopen: "Ongoing"
   //}
 };

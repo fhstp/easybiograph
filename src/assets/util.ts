@@ -1,5 +1,7 @@
 // import * as d3 from "d3";
 
+import { store } from "@/store";
+
 // based on <https://gist.github.com/ca0v/73a31f57b397606c9813472f7493a940?permalink_comment_id=3052014#gistcomment-3052014>
 export const debounce = <F extends (...args: any[]) => void>(
   func: F,
@@ -64,10 +66,59 @@ export const germanTimeFormat = {
   ],
 };
 
+export const englishTimeFormat = {
+  dateTime: "%a %b %e %X %Y",
+  date: "%m/%d/%Y",
+  time: "%I:%M:%S %p",
+  periods: ["AM", "PM"],
+  days: [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ],
+  shortDays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  months: [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ],
+  shortMonths: [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ],
+};
+
 export function format(input: string): string {
   const month = Number(input.substring(5, 7));
   const year = Number(input.substring(0, 4));
+  if (store.state.settings.language == "de") {
   return germanTimeFormat.shortMonths[month - 1] + " " + year;
+  } else {
+    return englishTimeFormat.shortMonths[month - 1] + " " + year;
+  }
 }
 
 export function utcIncompleteDate(input: string): Date {

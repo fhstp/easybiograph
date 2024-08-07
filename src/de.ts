@@ -81,6 +81,9 @@ export default {
   education: "Bildung",
   work: "Arbeit",
   health: "Gesundheit",
-  treatment: "Behandlung"
+  treatment: "Behandlung",
+  //}
+  //timeEvent{
+  toopen: "Offen"
   //}
 };
