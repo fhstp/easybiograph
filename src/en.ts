@@ -49,7 +49,7 @@ export default {
   personnotesplaceholder: "Notes about the person",
   //}
   //personInfo{
-  bornonthe: "born on the",
+  bornon: "born on",
   created: "created",
   by: "by:",
   //}
@@ -84,6 +84,7 @@ export default {
   treatment: "Treatment/Help",
   //}
   //timeEvent{
-  toopen: "Ongoing"
+  toopen: "Ongoing",
   //}
+  language: "en-EN"
 };

@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import {computed, ref, onMounted, onBeforeUnmount, watch} from "vue";
 import * as d3 from "d3";
-import {debounce, germanTimeFormat} from "@/assets/util";
+import {debounce, englishTimeFormat, germanTimeFormat} from "@/assets/util";
 import { useStore } from "@/store";
 import de from "@/de";
 import en from "@/en";
@@ -174,10 +174,13 @@ watch(() => props.zoomMode, (newVal, oldVal) => {
   }
 });
 
-// @ts-ignore
-d3.timeFormatDefaultLocale(germanTimeFormat);
-
 const store = useStore();
+// @ts-ignore
+if (store.state.settings.language == "de") {
+  d3.timeFormatDefaultLocale(germanTimeFormat);
+} else {
+d3.timeFormatDefaultLocale(englishTimeFormat);
+}
 
 let timeScale: any = null;
 

@@ -74,11 +74,14 @@ const eventTypeAsString = computed(() => {
 
 const timeInfo = computed(() => {
   if (props.selectedEvent) {
+    const start = props.selectedEvent.startDate;
+    const end = props.selectedEvent.endDate;
+    
     return props.selectedEvent.isOpenEnd
-      ? props.selectedEvent.startDate + t("toopenend")
+      ? formatDate(start) + t("toopenend")
       : props.selectedEvent.isInterval
-      ? props.selectedEvent.startDate + t("to") + props.selectedEvent.endDate
-      : props.selectedEvent.startDate;
+      ? formatDate(start) + t("to") + formatDate(end)
+      : formatDate(start);
   } else {
     return "";
   }
@@ -88,6 +91,20 @@ function t(prop: string) {
   const lang = store.state.settings.language;
       const trans: any = lang === "de" ? de :  en;
       return trans[prop];
+}
+function formatDate(date: string) {
+  if (date.length > 7) {
+    return new Date(date).toLocaleDateString(t("language"), {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+  } else {
+      return new Date(date).toLocaleDateString(t("language"), {
+        month: 'short',
+        year: 'numeric'
+      });
+    }
 }
 </script>
 
