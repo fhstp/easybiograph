@@ -75,6 +75,12 @@ export default {
   //dimensionDialogue{
   editdimension: "Dimension bearbeiten",
   adddimension: "Dimension hinzufügen",
-  dimensionplaceholder: "Titel der neuen Dimension"
+  dimensionplaceholder: "Titel der neuen Dimension",
+  family: "Familie",
+  living: "Wohnen",
+  education: "Bildung",
+  work: "Arbeit",
+  health: "Gesundheit",
+  treatment: "Behandlung"
   //}
 };

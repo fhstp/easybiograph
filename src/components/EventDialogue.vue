@@ -102,11 +102,11 @@
             <div class="select is-fullwidth">
               <select v-model="tempEvent.dimensionId">
                 <option
-                  v-for="dim in dimensionOptions"
+                  v-for="(dim, index) in dimensionOptions"
                   :key="dim.id"
                   :value="dim.id"
                 >
-                  {{ dim.title }}
+                  {{ translateDim(dim.title, index) }}
                 </option>
               </select>
             </div>
@@ -279,6 +279,16 @@ export default {
       const lang = store.state.settings.language;
       const trans: any = lang === "de" ? de :  en;
       return trans[prop];
+    },
+    translateDim(title:string, index:number) {
+      const translationKeys = ["family", "living", "education", "work", "health", "treatment"];
+
+      if (index < 6) {
+        const lang = store.state.settings.language;
+        const trans: any = lang === "de" ? de :  en;
+        return trans[translationKeys[index]];
+      }
+      return title;
     },
   },
   watch: {

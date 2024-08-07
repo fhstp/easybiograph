@@ -67,7 +67,7 @@ export default {
   toopenend: " to open end",
   //}
   //helpDialogue{
-  help1: "easyBiograph is free and open source software. You can find the source code at",
+  help1: "easyBiograph is a free and open source software. You can find the source code at",
   help2: "This software was developed as part of the Erasmus+ project",
   help3: ", co-financed by the European Union.",
   close: "Close",
@@ -75,6 +75,12 @@ export default {
   //dimensionDialogue{
   editdimension: "Edit dimension",
   adddimension: "Add dimension",
-  dimensionplaceholder: "Title of the new dimension"
+  dimensionplaceholder: "Title of the new dimension",
+  family: "Family",
+  living: "Living",
+  education: "Education",
+  work: "Work",
+  health: "Health",
+  treatment: "Treatment/Help"
   //}
 };
