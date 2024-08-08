@@ -57,8 +57,7 @@
           <select
               id="langselect"
               name="lang"
-              v-model="lang"
-              @change="onLangChange($event)">
+              v-model="lang">
               <option value="de">Deutsch</option>
               <option value="en">English</option>
             </select>
@@ -332,7 +331,6 @@ export default {
       newDimDetails: {
         title: "",
       },
-      lang: store.state.settings.language,
     };
   },
   computed: {
@@ -387,6 +385,14 @@ export default {
       // eslint-disable-next-line no-undef
       return __APP_VERSION__;
     },
+    lang: {
+      get() {
+        return store.state.settings.language;
+      },
+      set(newValue: string) {
+        store.commit("settings/changeLanguage", newValue);
+      }
+    }
   },
   watch: {
     displayYears: {
@@ -686,9 +692,6 @@ export default {
         this.$router.go(0);
       };
       fr.readAsText(files.item(0));
-    },
-    onLangChange(event: any) {
-      store.commit("settings/changeLanguage", event.target.value);
     },
     t(prop: string) {
       const trans: any = this.lang === "de" ? de :  en;
