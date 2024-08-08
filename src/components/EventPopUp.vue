@@ -58,6 +58,7 @@ export default {
       // this.displayPersonYears();
       //@ts-ignore
       this.events = store.getters.getEvents;
+      // TODO AR 8 Aug 2024 why filter events? still needed
       const dims = ref(DimensionA);
       for (let i = 0; i < DimensionA.length; i++) {
         //@ts-ignore

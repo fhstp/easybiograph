@@ -1,6 +1,7 @@
 // import * as d3 from "d3";
 
 import { store } from "@/store";
+import type { TimeLocaleDefinition } from "d3";
 
 // based on <https://gist.github.com/ca0v/73a31f57b397606c9813472f7493a940?permalink_comment_id=3052014#gistcomment-3052014>
 export const debounce = <F extends (...args: any[]) => void>(
@@ -64,7 +65,7 @@ export const germanTimeFormat = {
     "Nov",
     "Dez",
   ],
-};
+} as TimeLocaleDefinition;
 
 export const englishTimeFormat = {
   dateTime: "%a %b %e %X %Y",
@@ -109,7 +110,7 @@ export const englishTimeFormat = {
     "Nov",
     "Dec",
   ],
-};
+} as TimeLocaleDefinition;
 
 export function format(input: string): string {
   const month = Number(input.substring(5, 7));

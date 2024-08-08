@@ -77,7 +77,7 @@ export default {
   adddimension: "Add dimension",
   dimensionplaceholder: "Title of the new dimension",
   family: "Family",
-  living: "Living",
+  living: "Housing",
   education: "Education",
   work: "Work",
   health: "Health",

@@ -1,3 +1,4 @@
+// TODO AR 8 aug 2024 not needed anymore?
 export const DimensionA = [
   "Familie", // 0
   "Wohnen", // 1
@@ -20,6 +21,16 @@ export function initDimension(): ZBDimension {
     title: "",
     visible: true,
   };
+}
+
+export function translateDim(title: string, index: number, t: (key: string) => string): string {
+  const translationKeys = ['family', 'living', 'education', 'work', 'health', 'treatment']
+
+  if (index < 6) {
+    return t(translationKeys[index])
+  } else {
+    return title
+  }
 }
 
 export enum Dimension {

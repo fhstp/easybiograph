@@ -106,7 +106,7 @@
                   :key="dim.id"
                   :value="dim.id"
                 >
-                  {{ translateDim(dim.title, index) }}
+                  {{ translateDim(dim.title, index, t) }}
                 </option>
               </select>
             </div>
@@ -194,6 +194,7 @@ import MonthChooser from "./MonthChooser.vue";
 import { store } from "../store";
 import { initEvent } from "../data/ZBEvent";
 import type { ZBEvent } from "../data/ZBEvent";
+import { translateDim } from "@/data/Dimension";
 import { ref, computed } from "vue";
 import type { defineComponent, PropType } from "vue";
 import de from "@/de";
@@ -280,16 +281,7 @@ export default {
       const trans: any = lang === "de" ? de :  en;
       return trans[prop];
     },
-    translateDim(title:string, index:number) {
-      const translationKeys = ["family", "living", "education", "work", "health", "treatment"];
-
-      if (index < 6) {
-        const lang = store.state.settings.language;
-        const trans: any = lang === "de" ? de :  en;
-        return trans[translationKeys[index]];
-      }
-      return title;
-    },
+    translateDim,
   },
   watch: {
     event: function () {

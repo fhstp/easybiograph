@@ -5,7 +5,7 @@
   <div>
     <div v-for="(dimension, index) in Dimension" :key="dimension.id" class="checkbox-container">
       <label v-if="!isEditing[index]">
-        <input type="checkbox" @click="toggleDim(dimension.id)" :checked="dimension.visible" v-if="dimension.id > 6"> {{ translateDim(dimension.title, index) }}
+        <input type="checkbox" @click="toggleDim(dimension.id)" :checked="dimension.visible" v-if="dimension.id > 6"> {{ translateDim(dimension.title, index, t) }}
       </label>
       <input v-if="isEditing[index]" v-model="editedDimension" @blur="cancelEdit(index)" @keyup.enter="saveEdit(index)" />
       <div class="buttons">
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { translateDim } from "@/data/Dimension";
 import {DimensionA, initDimension} from "@/data/Dimension";
 import de from "@/de";
 import en from "@/en";
@@ -52,6 +53,7 @@ export default {
   name: "DimensionDialogue",
   data() {
     return {
+      // TODO AR 8 Aug : how does this work with custom dimensions
       isEditing: Array(DimensionA.length).fill(false),
       editedDimension: "",
       dimensionString: [],
@@ -142,16 +144,7 @@ export default {
       const trans = lang === "de" ? de :  en;
       return trans[prop];
     },
-    translateDim(title, index) {
-      const translationKeys = ["family", "living", "education", "work", "health", "treatment"];
-
-      if (index < 6) {
-        const lang = store.state.settings.language;
-        const trans = lang === "de" ? de :  en;
-        return trans[translationKeys[index]];
-      }
-      return title;
-    },
+    translateDim,
   },
 };
 </script>

@@ -21,7 +21,7 @@
           }"
         ></div>
         <div class="dlabel">
-          {{ translateDim(dim.label, index) }}
+          {{ translateDim(dim.label, index, t) }}
         </div>
 
         <div
@@ -56,6 +56,7 @@
 import {computed, getCurrentInstance, onMounted} from "vue";
 import { useStore } from "@/store";
 import type { ZBEvent } from "@/data/ZBEvent";
+import { translateDim } from "@/data/Dimension";
 import * as d3 from "d3";
 import TimeAxis from "./TimeAxis.vue";
 import { germanTimeFormat } from "../assets/util";
@@ -320,15 +321,11 @@ const layout = computed((): Array<DimensionLayout> => {
 
   return buffer;
 });
-function translateDim(title:string, index:number) {
-  const translationKeys = ["family", "living", "education", "work", "health", "treatment"];
-  if (index < 6) {
-    const lang = store.state.settings.language;
-    const trans: any = lang === "de" ? de :  en;
-    return trans[translationKeys[index]];
-  }
-  return title;
-};
+function t(prop: string): string {
+  const lang = store.state.settings.language;
+  const trans = lang === "de" ? de :  en as any;
+  return trans[prop];
+}
 </script>
 
 <style scoped lang="scss">

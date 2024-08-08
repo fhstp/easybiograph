@@ -175,13 +175,6 @@ watch(() => props.zoomMode, (newVal, oldVal) => {
 });
 
 const store = useStore();
-// @ts-ignore
-if (store.state.settings.language == "de") {
-  d3.timeFormatDefaultLocale(germanTimeFormat);
-} else {
-d3.timeFormatDefaultLocale(englishTimeFormat);
-}
-
 let timeScale: any = null;
 
 if(store.state.data.zoom.birthDate.length >= 1){
@@ -258,12 +251,18 @@ const yearTicks = computed(() => {
   const ticks = props.scale.ticks(idealtickCount);
   // console.log(ticks);
 
+  if (store.state.settings.language == "de") {
+    d3.timeFormatDefaultLocale(germanTimeFormat);
+  } else {
+    d3.timeFormatDefaultLocale(englishTimeFormat);
+  }
+
   function format(date: Date) {
     return (
       d3.utcMonth(date) < date
-        ? d3.timeFormat("%-d. %b.")
+        ? d3.timeFormat("%-d %b")
         : d3.utcYear(date) < date
-        ? d3.timeFormat("%b.")
+        ? d3.timeFormat("%b")
         : d3.timeFormat("%Y")
     )(date);
   }
