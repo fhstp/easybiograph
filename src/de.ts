@@ -82,6 +82,7 @@ export default {
   work: "Arbeit",
   health: "Gesundheit",
   treatment: "Behandlung",
+  dimother: "Sonstiges",
   //}
   //timeEvent{
   toopen: "Offen",

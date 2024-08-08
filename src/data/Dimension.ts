@@ -1,3 +1,5 @@
+import { t } from "@/assets/util";
+
 // TODO AR 8 aug 2024 not needed anymore?
 export const DimensionA = [
   "Familie", // 0
@@ -8,6 +10,12 @@ export const DimensionA = [
   "Behandlung/Hilfe", //5
   "Sonstiges", //6
 ];
+
+/** 7 dimensions are prepared for a new Zeitbalken (these are keys for the language file) */
+const DEFAULT_DIMENSION_KEYS = ['family', 'living', 'education', 'work', 'health', 'treatment', 'dimother'];
+
+/** first 6 dimensions are unmutable (ids 1..6) */
+const FIXED_DIMENSION_COUNT = 6;
 
 export interface ZBDimension {
   id: number;
@@ -23,11 +31,16 @@ export function initDimension(): ZBDimension {
   };
 }
 
-export function translateDim(title: string, index: number, t: (key: string) => string): string {
-  const translationKeys = ['family', 'living', 'education', 'work', 'health', 'treatment']
+export function initDefaultDimensions(): ZBDimension[] {
+  return DEFAULT_DIMENSION_KEYS.map((key, i) => {
+    return { id: i + 1, title: t(key), visible: true }
+  }).reverse()
+  // n.b. dimensions array is reversely sorted (for unknown reasons)
+}
 
-  if (index < 6) {
-    return t(translationKeys[index])
+export function translateDim(title: string, index: number): string {
+  if (index < FIXED_DIMENSION_COUNT) {
+    return t(DEFAULT_DIMENSION_KEYS[index])
   } else {
     return title
   }

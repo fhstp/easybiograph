@@ -5,7 +5,7 @@
   <div>
     <div v-for="(dimension, index) in Dimension" :key="dimension.id" class="checkbox-container">
       <label v-if="!isEditing[index]">
-        <input type="checkbox" @click="toggleDim(dimension.id)" :checked="dimension.visible" v-if="dimension.id > 6"> {{ translateDim(dimension.title, index, t) }}
+        <input type="checkbox" @click="toggleDim(dimension.id)" :checked="dimension.visible" v-if="dimension.id > 6"> {{ translateDim(dimension.title, index) }}
       </label>
       <input v-if="isEditing[index]" v-model="editedDimension" @blur="cancelEdit(index)" @keyup.enter="saveEdit(index)" />
       <div class="buttons">

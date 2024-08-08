@@ -286,12 +286,11 @@
 </template>
 
 <script lang="ts">
-import {Dimension, initDimension} from "@/data/Dimension";
+import {initDimension} from "@/data/Dimension";
 import { store } from "@/store";
 import PersonDialogue from "@/components/PersonDialogue.vue";
 import PopUpNew from "@/components/PopUpNew.vue";
 import EventDialogue from "@/components/EventDialogue.vue";
-import EventPopUp from "@/components/EventPopUp.vue";
 import EventDisplay from "@/components/EventDisplay.vue";
 import TimePane from "@/components/TimePane.vue";
 import { initEvent, type ZBEvent } from "@/data/ZBEvent";
@@ -307,7 +306,6 @@ export default {
     EventDialogue,
     PopUpNew,
     PersonDialogue,
-    EventPopUp,
     EventDisplay,
   },
 
@@ -623,23 +621,7 @@ export default {
       store.commit("data/newZeitbalken");
       //@ts-ignore
       this.temporaryPerson = Object.assign({}, store.state.data.person); // shallow clone (ok for ZBPerson)
-      let defaultDims = ["Familie", "Wohnen", "Bildung", "Arbeit", "Gesundheit" , "Behandlung" , "Sonstiges"] ;
-      let count = 0
-      //@ts-ignore
-      for (var i=0; i < defaultDims.length ; i++) {
-        const newDim = initDimension();
-        newDim.title = defaultDims[i];
-        //@ts-ignore
-        store.commit("data/addDimension", newDim); // TODO AR, 7 Aug: default dims in initZeitbalken oder newZeitbalken mutation anlegen
-        count = count + 1
-        console.log(count+ " " + i) // TODO AR, 7 Aug: warum count?, sonst löschen!
-      }
-      // if (count == 5) {
-      //   console.log("jetzt")
-      //   //@ts-ignore
       this.showCreateBiograph = true;
-      // }
-
     },
     showEditEventDialogue() {
       // this.selectedEvent has already been set before opening the modal event display

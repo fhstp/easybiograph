@@ -2,6 +2,14 @@
 
 import { store } from "@/store";
 import type { TimeLocaleDefinition } from "d3";
+import de from "@/de";
+import en from "@/en";
+
+export function t(key: string): string {
+  const lang = store.state.settings.language
+  const trans: any = lang === 'de' ? de : en
+  return trans[key]
+}
 
 // based on <https://gist.github.com/ca0v/73a31f57b397606c9813472f7493a940?permalink_comment_id=3052014#gistcomment-3052014>
 export const debounce = <F extends (...args: any[]) => void>(

@@ -21,7 +21,7 @@
           }"
         ></div>
         <div class="dlabel">
-          {{ translateDim(dim.label, index, t) }}
+          {{ translateDim(dim.label, index) }}
         </div>
 
         <div
@@ -63,8 +63,6 @@ import { germanTimeFormat } from "../assets/util";
 import PersonInfo from "@/components/PersonInfo.vue";
 import TimeEvent from "@/components/TimeEvent.vue";
 import {brushX, zoom} from "d3";
-import de from "@/de";
-import en from "@/en";
 
 interface EventMark {
   datum: ZBEvent;
@@ -321,11 +319,6 @@ const layout = computed((): Array<DimensionLayout> => {
 
   return buffer;
 });
-function t(prop: string): string {
-  const lang = store.state.settings.language;
-  const trans = lang === "de" ? de :  en as any;
-  return trans[prop];
-}
 </script>
 
 <style scoped lang="scss">

@@ -106,7 +106,7 @@
                   :key="dim.id"
                   :value="dim.id"
                 >
-                  {{ translateDim(dim.title, index, t) }}
+                  {{ translateDim(dim.title, index) }}
                 </option>
               </select>
             </div>
