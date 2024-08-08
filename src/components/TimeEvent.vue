@@ -34,6 +34,9 @@
 
 <script>
 import { format } from "../assets/util";
+import { store } from "@/store";
+import de from "@/de";
+import en from "@/en";
 
 export default {
   name: "TimeEvent",
@@ -52,7 +55,7 @@ export default {
       const start = format(this.event.startDate);
 
       return this.event.isOpenEnd
-        ? start + " - " + "Offen"
+        ? start + " - " + this.t("toopen")
         : this.event.isInterval
         ? start + " - " + format(this.event.endDate)
         : this.event.startDate.substring(8, 10) > 0
@@ -80,6 +83,11 @@ export default {
       }
     },
     */
+    t(prop) {
+      const lang = store.state.settings.language;
+      const trans = lang === "de" ? de :  en;
+      return trans[prop];
+    }
   },
 };
 </script>

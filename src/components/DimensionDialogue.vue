@@ -1,11 +1,11 @@
 <template>
   <br />
-  <h1 id="edit" class="title block">Dimension bearbeiten</h1>
+  <h1 id="edit" class="title block">{{ t("editdimension") }}</h1>
   <br />
   <div>
     <div v-for="(dimension, index) in Dimension" :key="dimension.id" class="checkbox-container">
       <label v-if="!isEditing[index]">
-        <input type="checkbox" @click="toggleDim(dimension.id)" :checked="dimension.visible" v-if="dimension.id > 6"> {{ dimension.title }}
+        <input type="checkbox" @click="toggleDim(dimension.id)" :checked="dimension.visible" v-if="dimension.id > 6"> {{ translateDim(dimension.title, index) }}
       </label>
       <input v-if="isEditing[index]" v-model="editedDimension" @blur="cancelEdit(index)" @keyup.enter="saveEdit(index)" />
       <div class="buttons">
@@ -32,26 +32,28 @@
           v-model="newDimDetails.title"
           class="input"
           type="text"
-          placeholder="Titel der neuen Dimension"
+          :placeholder="t('dimensionplaceholder')"
         />
       </p>
       <p class="control">
-        <a class="button is-link is-light" @click="addDimension">
-          Dimension hinzufügen
-        </a>
+        <a class="button is-link is-light" @click="addDimension"> {{ t("adddimension") }}</a>
       </p>
     </div>
   </form>
 </template>
 
 <script>
+import { translateDim } from "@/data/Dimension";
 import {DimensionA, initDimension} from "@/data/Dimension";
+import de from "@/de";
+import en from "@/en";
 import {store} from "@/store";
 
 export default {
   name: "DimensionDialogue",
   data() {
     return {
+      // TODO AR 8 Aug : how does this work with custom dimensions
       isEditing: Array(DimensionA.length).fill(false),
       editedDimension: "",
       dimensionString: [],
@@ -137,8 +139,12 @@ export default {
         });
       }
     },
-
-
+    t(prop) {
+      const lang = store.state.settings.language;
+      const trans = lang === "de" ? de :  en;
+      return trans[prop];
+    },
+    translateDim,
   },
 };
 </script>

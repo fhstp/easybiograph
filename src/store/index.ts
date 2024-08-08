@@ -29,9 +29,9 @@ const getters = {
   getEventById: (state: IStoreState) => (id: number) => {
     return state.data.events.find((x) => x.eventId === id);
   },
-  getTimeline(state: IStoreState): Array<any> {
-    return state.data.timeline;
-  },
+  // getTimeline(state: IStoreState): Array<any> {
+  //   return state.data.timeline;
+  // },
   getDimensions(state: IStoreState): Array<any> {
     return state.data.dimensions;
   },
@@ -41,7 +41,7 @@ const getters = {
   getDownloadData(state: IStoreState): Object {
     const downloadObject = {
       person: state.data.person,
-      timeline: state.data.timeline,
+      // timeline: state.data.timeline,
       events: state.data.events,
       dimensions: state.data.dimensions,
     };

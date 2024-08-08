@@ -21,7 +21,7 @@
           }"
         ></div>
         <div class="dlabel">
-          {{ dim.label }}
+          {{ translateDim(dim.label, index) }}
         </div>
 
         <div
@@ -42,7 +42,7 @@
             :labelSpace="(100 * mark.spx) / mark.w"
             class="events"
             :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * 1.8}rem; height: 1.8rem`"
-            @click="$emit('displayEvent', mark.datum)"
+            @click="$emit('display-event', mark.datum)"
             :contrastMode="contrastMode"
           />
         </div>
@@ -56,6 +56,7 @@
 import {computed, getCurrentInstance, onMounted} from "vue";
 import { useStore } from "@/store";
 import type { ZBEvent } from "@/data/ZBEvent";
+import { translateDim } from "@/data/Dimension";
 import * as d3 from "d3";
 import TimeAxis from "./TimeAxis.vue";
 import { germanTimeFormat } from "../assets/util";
@@ -218,7 +219,7 @@ const handleMouseRelease = () => {
   isMouseDown = false;
 };
 
-const emits = defineEmits(["open-edit"]);
+const emits = defineEmits(["open-edit", "display-event"]);
 
 let pressedDate: string | null = null;
 let releasedDate: string | null = null;
@@ -248,17 +249,16 @@ const layout = computed((): Array<DimensionLayout> => {
   // TODO filter visible events (possibly as a vuex getter)
   // TODO use interval tree for filter and sort <https://www.npmjs.com/package/@flatten-js/interval-tree> or <https://github.com/ieg-vienna/TimeBench/blob/master/src/timeBench/data/util/IntervalTree.java>
   const visibleEvents = d3.group(
-    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-    store.state.data.events.sort((a, b) =>
-      a.startDate.localeCompare(b.startDate)
-    ),
-    // store.state.data.events,
+    store.state.data.events,
     (d) => d.dimensionId
   );
   // console.log(visibleEvents);
 
   buffer.forEach((dim) => {
     const eventsInDim = visibleEvents.get(dim.id) || [];
+    eventsInDim.sort((a, b) =>
+      a.startDate.localeCompare(b.startDate)
+    );
     // keep track how far to the right rows inside a dimension are occupied
     const rowOccup: number[] = [];
     const rightEventbyRow: (EventMark | null)[] = [];

@@ -5,13 +5,13 @@
         <span class="icon">
           <font-awesome-icon icon="sliders" />
         </span>
-        <span>Allgemein</span>
+        <span>{{ t("general") }}</span>
       </button>
       <button class="button is-primary is-light" @click="openTab($event, 'Dimensionen')">
         <span class="icon">
           <font-awesome-icon icon="table-list" />
         </span>
-        <span>Dimensionen</span>
+        <span>{{ t("dimensions") }}</span>
       </button>
       <!--
       <button class="button is-primary is-light" @click="openTab($event, 'Farben')" disabled>
@@ -28,7 +28,7 @@
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Name</label>
+        <label class="label" style="text-align: left">{{ t("name") }}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -45,7 +45,7 @@
     </div>
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Geburtsdatum</label>
+        <label class="label" style="text-align: left">{{ t("birthday") }}</label>
       </div>
       <div class="field-body">
         <MonthChooser v-model="newPersonDetails.birthDate" require-day :disabled="false" />
@@ -53,7 +53,7 @@
     </div>
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Zeitbalken bis</label>
+        <label class="label" style="text-align: left">{{ t("timebaruntil") }}</label>
       </div>
       <div class="field-body">
         <MonthChooser v-model="newPersonDetails.endDate" require-day :disabled="false" />
@@ -61,7 +61,7 @@
     </div>
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Erstellt am</label>
+        <label class="label" style="text-align: left">{{ t("createdon") }}</label>
       </div>
       <div class="field-body">
         <MonthChooser v-model="newPersonDetails.creationDate" require-day :disabled="false" />
@@ -69,7 +69,7 @@
     </div>
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Geburtsort</label>
+        <label class="label" style="text-align: left">{{ t("birthplace") }}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -78,7 +78,7 @@
               class="input"
               type="text"
               v-model="newPersonDetails.birthplace"
-              placeholder="Geburtsort der Person"
+              :placeholder="t('birthplaceplaceholder')"
             />
           </div>
         </div>
@@ -87,7 +87,7 @@
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Ersteller*in</label>
+        <label class="label" style="text-align: left">{{ t("creator") }}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -95,7 +95,7 @@
             <input
               class="input"
               type="text"
-              placeholder="Name der Erstellerin/des Erstellers"
+              :placeholder="t('creatorplaceholder')"
               v-model="newPersonDetails.interviewers"
             />
           </div>
@@ -105,7 +105,7 @@
     <br />
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Notizen</label>
+        <label class="label" style="text-align: left">{{ t("notes") }}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -113,7 +113,7 @@
             <textarea
                 class="textarea"
                 v-model="newPersonDetails.notes"
-                placeholder="Notizen zur Person"
+                :placeholder="t('personnotesplaceholder')"
                 id="noteId"
             ></textarea>
           </div>
@@ -130,10 +130,10 @@
     <br>
     <div class="buttons is-right">
       <button class="button is-white" @click="abort">
-        Abbrechen
+        {{ t("cancel") }}
       </button>
       <button class="button is-link" @click="savePerson">
-        Fertig
+        {{ t("done") }}
       </button>
     </div>
   </div>
@@ -144,6 +144,8 @@ import { store } from "@/store";
 import MonthChooser from "./MonthChooser.vue";
 import DimensionDialogue from "@/components/DimensionDialogue.vue";
 import ColourDialogue from "@/components/ColourDialogue.vue";
+import de from "@/de";
+import en from "@/en";
 
 export default {
   name: "PersonDialogue",
@@ -163,7 +165,7 @@ export default {
       startYear: "",
       endYear: "",
       creationYear: "",
-      personYears: [] as number[],
+      // personYears: [] as number[],
       showBiograph: false,
       // newPersonDetails: {},
     };
@@ -215,21 +217,21 @@ export default {
       document.getElementById(tabName).style.display = "block";
     },
 
-    chooseYear() {
-      //@ts-ignore
-      let startValue = +this.startYear.substring(0, 4);
-      //@ts-ignore
-      let endValue = +this.endYear.substring(0, 4);
+    // chooseYear() {
+    //   //@ts-ignore
+    //   let startValue = +this.startYear.substring(0, 4);
+    //   //@ts-ignore
+    //   let endValue = +this.endYear.substring(0, 4);
 
-      for (let i = startValue; i <= endValue; i++) {
-        //@ts-ignore
-        this.personYears.push(i);
-      }
-    },
+    //   for (let i = startValue; i <= endValue; i++) {
+    //     //@ts-ignore
+    //     this.personYears.push(i);
+    //   }
+    // },
     close() {
-      this.chooseYear();
+      // this.chooseYear();
       //@ts-ignore
-      store.commit("data/addTimeline", this.personYears);
+      // store.commit("data/addTimeline", this.personYears);
       //store.commit("data/addDimensions");
       //@ts-ignore
       this.$router.go(0);
@@ -241,29 +243,34 @@ export default {
       this.$emit("abort");
     },
 
-    displayPersonYears(): Array<number> {
-      let displayedArray: number[] = [];
-      //@ts-ignore
-      let years: number[] = this.personYears;
-      console.log(years);
+    // displayPersonYears(): Array<number> {
+    //   let displayedArray: number[] = [];
+    //   //@ts-ignore
+    //   let years: number[] = this.personYears;
+    //   console.log(years);
 
-      const displayMaximum: number = 20;
+    //   const displayMaximum: number = 20;
 
-      if (years.length <= displayMaximum) return years;
+    //   if (years.length <= displayMaximum) return years;
 
-      let gap = years.length / displayMaximum;
-      const firstYear: number = years.shift() || 0;
-      const lastYear: number = years.pop() || 0;
+    //   let gap = years.length / displayMaximum;
+    //   const firstYear: number = years.shift() || 0;
+    //   const lastYear: number = years.pop() || 0;
 
-      console.log(gap);
-      displayedArray.push(firstYear);
-      for (let i = gap; i < years.length; i += gap + 1) {
-        displayedArray.push(years[i]);
-      }
-      displayedArray.push(lastYear);
+    //   console.log(gap);
+    //   displayedArray.push(firstYear);
+    //   for (let i = gap; i < years.length; i += gap + 1) {
+    //     displayedArray.push(years[i]);
+    //   }
+    //   displayedArray.push(lastYear);
 
-      console.log(displayedArray);
-      return displayedArray;
+    //   console.log(displayedArray);
+    //   return displayedArray;
+    // },
+    t(prop: string) {
+      const lang = store.state.settings.language;
+      const trans: any = lang === "de" ? de :  en;
+      return trans[prop];
     },
   },
 };

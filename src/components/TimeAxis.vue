@@ -1,7 +1,7 @@
 <template>
   <div class="axis">
-    <div class="head year">Jahr</div>
-    <div class="headAge age">Alter</div>
+    <div class="head year">{{ t("year") }}</div>
+    <div class="headAge age">{{ t("age") }}</div>
     <div class="brush" ref="brushRef">
     <div class="substrate" ref="substrateRef">
       <div
@@ -28,8 +28,10 @@
 <script setup lang="ts">
 import {computed, ref, onMounted, onBeforeUnmount, watch} from "vue";
 import * as d3 from "d3";
-import {debounce, germanTimeFormat} from "@/assets/util";
+import {debounce, englishTimeFormat, germanTimeFormat} from "@/assets/util";
 import { useStore } from "@/store";
+import de from "@/de";
+import en from "@/en";
 
 const brushRef = ref<InstanceType<typeof HTMLDivElement> | null>(null);
 let brush: any = null;
@@ -143,8 +145,10 @@ watch(() => props.zoomMode, (newVal, oldVal) => {
       const timeAxisWidth = rect.width;
 
       const centerDateZoom = calculateDateFromClick(centerClickX, timeAxisWidth);
-      const centerDate = new Date(centerDateZoom);
       console.log("HERE" + store.state.data.zoom.birthDate)
+
+      if (centerDateZoom != null) {
+        const centerDate = new Date(centerDateZoom);
 
       const currentStartDate = store.state.data.zoom.birthDate.length <= 0 ? new Date(store.state.data.person.birthDate) : new Date(store.state.data.zoom.birthDate);
       const currentEndDate = store.state.data.zoom.endDate.length <= 0 ? new Date(store.state.data.person.endDate) : new Date(store.state.data.zoom.endDate);
@@ -164,15 +168,13 @@ watch(() => props.zoomMode, (newVal, oldVal) => {
 
       console.log("Zoom committed with new range ±25%");
       updateAfterZoom();
+
+      }
     }
   }
 });
 
-// @ts-ignore
-d3.timeFormatDefaultLocale(germanTimeFormat);
-
 const store = useStore();
-
 let timeScale: any = null;
 
 if(store.state.data.zoom.birthDate.length >= 1){
@@ -207,7 +209,6 @@ const calculateDateFromClick = (clickX: number, axisWidth: number): string | nul
     const formattedDate = `${clickedDate.getFullYear()}-${String(clickedDate.getMonth() + 1).padStart(2, '0')}-${String(clickedDate.getDate()).padStart(2, '0')}`;
 
     return formattedDate;
-
   }
 
   return null;
@@ -250,12 +251,18 @@ const yearTicks = computed(() => {
   const ticks = props.scale.ticks(idealtickCount);
   // console.log(ticks);
 
+  if (store.state.settings.language == "de") {
+    d3.timeFormatDefaultLocale(germanTimeFormat);
+  } else {
+    d3.timeFormatDefaultLocale(englishTimeFormat);
+  }
+
   function format(date: Date) {
     return (
       d3.utcMonth(date) < date
-        ? d3.timeFormat("%-d. %b.")
+        ? d3.timeFormat("%-d %b")
         : d3.utcYear(date) < date
-        ? d3.timeFormat("%b.")
+        ? d3.timeFormat("%b")
         : d3.timeFormat("%Y")
     )(date);
   }
@@ -341,6 +348,12 @@ const ageTicks = computed(() => {
     ];
   }
 });
+
+function t(prop: string) {
+  const lang = store.state.settings.language;
+      const trans: any = lang === "de" ? de :  en;
+      return trans[prop];
+}
 </script>
 
 <style scoped lang="scss">
