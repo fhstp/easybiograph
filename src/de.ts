@@ -30,7 +30,7 @@ export default {
   openend: "Offenes Ende",
   delete: "Löschen",
   cancel: "Abbrechen",
-  done: "Ferig",
+  done: "Fertig",
   titleplaceholder: "Anzeigename des Events",
   eventnotesplaceholder: "Notizen zum Event",
   //},
