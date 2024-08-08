@@ -1,4 +1,4 @@
-import { initDefaultDimensions, type ZBDimension } from "./Dimension";
+import type { ZBDimension } from "./Dimension";
 import type { ZBEvent } from "./ZBEvent";
 import { initPerson, type ZBPerson } from "./ZBPerson";
 import { initZoom, type ZBZoom } from "@/data/ZBZoom";
@@ -16,7 +16,7 @@ export function initZeitbalkenAsJSON(): string {
     person: initPerson(),
     events: [],
     // timeline: [],
-    dimensions: initDefaultDimensions(),
+    dimensions: [],
     zoom: initZoom(),
   });
 }

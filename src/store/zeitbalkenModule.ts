@@ -6,7 +6,7 @@ import { initZeitbalkenAsJSON, loadZeitbalken } from "@/data/Zeitbalken";
 import { initPerson } from "@/data/ZBPerson";
 
 import { loadZeitbalkenFromStore } from "./localStoragePlugin";
-import { initDimension } from "@/data/Dimension";
+import { initDefaultDimensions, initDimension } from "@/data/Dimension";
 import type { ZBDimension } from "@/data/Dimension";
 import type { ZBZoom } from "@/data/ZBZoom";
 import { initZoom } from "@/data/ZBZoom";
@@ -24,6 +24,7 @@ const state = compatibilityChecks(JSON.parse(loadZeitbalkenFromStore()));
 const mutations = {
   newZeitbalken(state: Zeitbalken): void {
     loadZeitbalken(state, initZeitbalkenAsJSON());
+    state.dimensions = initDefaultDimensions();
   },
 
   loadZeitbalken(state: Zeitbalken, payload: string): void {
