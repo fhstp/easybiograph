@@ -35,6 +35,7 @@
           <div class="control">
             <input
               class="input"
+              :class="{'is-danger': newPersonDetails.name.length < 1}"
               type="text"
               placeholder="Name"
               v-model="newPersonDetails.name"
@@ -132,7 +133,7 @@
       <button class="button is-white" @click="abort">
         {{ t("cancel") }}
       </button>
-      <button class="button is-link" @click="savePerson">
+      <button class="button is-link" @click="savePerson" :disabled="newPersonDetails.name.length < 1">
         {{ t("done") }}
       </button>
     </div>
