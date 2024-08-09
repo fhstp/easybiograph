@@ -1,5 +1,5 @@
 <template>
-  <div class="box position" style="height: 96vh; width: 35em">
+  <div class="box position" style="height: 96vh; width: 35em; overflow-y: scroll;">
     <div class="buttons">
       <button class="button is-primary is-light" @click="openTab($event, 'Allgemein')">
         <span class="icon">
