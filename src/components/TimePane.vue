@@ -1,7 +1,7 @@
 <template>
   <div class="pane">
     <PersonInfo :contrastMode="contrastMode" />
-    <TimeAxis :scale="timeScale" :zoomMode="zoomMode" style="z-index: 2" :show-long-ticks="gridState" />
+    <TimeAxis :scale="timeScale" :zoomMode="zoomMode" style="z-index: 2"/>
     <div class="pane2">
       <div
         v-for="(dim, index) in layout"
@@ -97,7 +97,6 @@ onMounted(() => {
 
 const contrastMode = computed(() => props.contrastMode);
 const zoomMode = computed(() => props.zoomMode);
-const gridState = computed(() => store.state.settings.showGrid);
       
 
 const initializeBrushing = () => {

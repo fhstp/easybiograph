@@ -15,7 +15,7 @@
       <div
           v-for="(age, index) in ageTicks"
           :key="age.label"
-          :class="[index % 5 === 0 && age.show ? 'tick age' : 'no-tick']"
+          :class="[index % 5 === 0 && gridState ? 'tick age' : 'no-tick']"
           :style="age.style"
         >
         {{ age.label }}
@@ -131,10 +131,10 @@ let releasedDateZoom: string | null = null;
 const props = defineProps<{
   scale: d3.ScaleTime<number, number, never>;
   zoomMode: boolean;
-  showLongTicks: boolean;
 }>();
 
 const zoomModeUse = ref(props.zoomMode);
+const gridState = computed(() => store.state.settings.showGrid);
 
 watch(() => props.zoomMode, (newVal, oldVal) => {
   zoomModeUse.value = newVal;
@@ -337,7 +337,6 @@ const ageTicks = computed(() => {
             width: `calc(${width}% - 2px)`,
             "border-left": i > 0 ? "1px solid black" : "",
           },
-          show: props.showLongTicks
         };
       });
   } else {
@@ -346,7 +345,6 @@ const ageTicks = computed(() => {
       {
         label: i.toString(),
         style: { left: "0%", width: "calc(100% - 2px)" },
-        show: props.showLongTicks
       },
     ];
   }
@@ -429,10 +427,8 @@ div.substrate {
     position: absolute;
     top: 1.5em;
     left: -1px;
-    width: 1px; 
-    height: 100vh; 
-    background-color: black;
-    
+    height: 100vh;
+    border-left: 1px solid black;
   }
 }
 
