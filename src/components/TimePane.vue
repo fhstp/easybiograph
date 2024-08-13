@@ -1,7 +1,7 @@
 <template>
   <div class="pane">
     <PersonInfo :contrastMode="contrastMode" />
-    <TimeAxis :scale="timeScale" :zoomMode="zoomMode" style="z-index: 2" />
+    <TimeAxis :scale="timeScale" :zoomMode="zoomMode" style="z-index: 2" :show-long-ticks="gridState" />
     <div class="pane2">
       <div
         v-for="(dim, index) in layout"
@@ -41,7 +41,7 @@
             :event="mark.datum"
             :labelSpace="(100 * mark.spx) / mark.w"
             class="events"
-            :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * 1.8}rem; height: 1.8rem`"
+            :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * 1.8}rem; height: 1.8rem; z-index: 2`"
             @click="$emit('display-event', mark.datum)"
             :contrastMode="contrastMode"
           />
@@ -96,7 +96,9 @@ onMounted(() => {
 });
 
 const contrastMode = computed(() => props.contrastMode);
-const zoomMode = computed(() => props.zoomMode)
+const zoomMode = computed(() => props.zoomMode);
+const gridState = computed(() => store.state.settings.showGrid);
+      
 
 const initializeBrushing = () => {
   const dimensions = store.state.data.dimensions;

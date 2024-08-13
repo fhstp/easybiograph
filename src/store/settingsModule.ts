@@ -20,6 +20,9 @@ const mutations = {
   changeLanguage(state: ZBSettings, newLanguage: string): void {
     state.language = newLanguage;
   },
+  changeGridState(state: ZBSettings, newGridState: boolean): void {
+    state.showGrid = newGridState;
+  },
 };
 
 export const settingsModule = {

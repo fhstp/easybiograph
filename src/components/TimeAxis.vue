@@ -13,11 +13,11 @@
         {{ year.label }}
       </div>
       <div
-        class="tick age"
-        v-for="age in ageTicks"
-        :key="age.label"
-        :style="age.style"
-      >
+          v-for="(age, index) in ageTicks"
+          :key="age.label"
+          :class="[index % 5 === 0 && age.show ? 'tick age' : 'no-tick']"
+          :style="age.style"
+        >
         {{ age.label }}
       </div>
     </div>
@@ -131,6 +131,7 @@ let releasedDateZoom: string | null = null;
 const props = defineProps<{
   scale: d3.ScaleTime<number, number, never>;
   zoomMode: boolean;
+  showLongTicks: boolean;
 }>();
 
 const zoomModeUse = ref(props.zoomMode);
@@ -336,6 +337,7 @@ const ageTicks = computed(() => {
             width: `calc(${width}% - 2px)`,
             "border-left": i > 0 ? "1px solid black" : "",
           },
+          show: props.showLongTicks
         };
       });
   } else {
@@ -344,6 +346,7 @@ const ageTicks = computed(() => {
       {
         label: i.toString(),
         style: { left: "0%", width: "calc(100% - 2px)" },
+        show: props.showLongTicks
       },
     ];
   }
@@ -420,5 +423,23 @@ div.substrate {
 
 .tick.age {
   text-align: right;
+  
+  &::before {
+    content: "";
+    position: absolute;
+    top: 1.5em;
+    left: -1px;
+    width: 1px; 
+    height: 100vh; 
+    background-color: black;
+    
+  }
+}
+
+.no-tick {
+  position: absolute;
+  height: 1.5em;
+  text-align: right;
+  top: 1.5em;
 }
 </style>

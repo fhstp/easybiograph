@@ -2,7 +2,7 @@
 
 export interface ZBSettingsFlags {
   // put boolean settings here
-  showOnboarding: boolean;
+  showGrid: boolean;
 }
 
 export interface ZBSettings extends ZBSettingsFlags {
@@ -12,7 +12,7 @@ export interface ZBSettings extends ZBSettingsFlags {
 
 export function initSettingsAsJSON(): string {
   return JSON.stringify({
-    showOnboarding: true,
+    showGrid: false,
     language: "de", // TODO set from browser prefs
   });
 }

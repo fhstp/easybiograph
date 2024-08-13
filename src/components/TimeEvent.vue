@@ -163,6 +163,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0 2px 0 2px;
+  background-color: white;
 }
 
 .eventText.int {

@@ -173,6 +173,12 @@
           </span>
               <span>{{ t("contrast") }}</span>
             </a>
+            <a class="button navbar-item out-nav" @click="changeGridState(!showGrid)">
+          <span class="icon">
+            <font-awesome-icon icon="table-columns" />
+          </span>
+              <span>{{ t("grid") }}</span>
+            </a>
             <a class="button navbar-item out-nav" @click="openHelpPopUp()">
           <span class="icon">
             <font-awesome-icon icon="question" />
@@ -390,6 +396,9 @@ export default {
       set(newValue: string) {
         store.commit("settings/changeLanguage", newValue);
       }
+    },
+    showGrid(): boolean {
+      return store.state.settings.showGrid;
     }
   },
   watch: {
@@ -679,6 +688,9 @@ export default {
       const trans: any = this.lang === "de" ? de :  en;
       return trans[prop];
     },
+    changeGridState(newValue: boolean) {
+        store.commit("settings/changeGridState", newValue);
+      }
   },
 };
 </script>
