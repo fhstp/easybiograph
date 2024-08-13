@@ -421,15 +421,8 @@ div.substrate {
 
 .tick.age {
   text-align: right;
-  
-  &::before {
-    content: "";
-    position: absolute;
-    top: 1.5em;
-    left: -1px;
-    height: 100vh;
-    border-left: 1px solid black;
-  }
+  position: absolute;
+  height: 100vh;
 }
 
 .no-tick {
