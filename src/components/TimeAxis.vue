@@ -13,9 +13,9 @@
         {{ year.label }}
       </div>
       <div
-          v-for="(age, index) in ageTicks"
+          v-for="(age) in ageTicks"
           :key="age.label"
-          :class="[index % 5 === 0 && gridState ? 'tick age' : 'no-tick']"
+          :class="[age.tick && gridState ? 'tick age' : 'no-tick']"
           :style="age.style"
         >
         {{ age.label }}
@@ -330,8 +330,10 @@ const ageTicks = computed(() => {
     return birthdays
       .filter((_, index) => index % steps === steps - 1)
       .map((d, i) => {
+        const tick = (d.age - 1) % 5 === 0;
         return {
           label: d.age.toString(),
+          tick: tick,
           style: {
             left: `${props.scale(d.date) - width}%`,
             width: `calc(${width}% - 2px)`,
@@ -344,6 +346,7 @@ const ageTicks = computed(() => {
     return [
       {
         label: i.toString(),
+        tick: (i - 1) % 5 === 0,
         style: { left: "0%", width: "calc(100% - 2px)" },
       },
     ];
