@@ -173,12 +173,13 @@
           </span>
               <span>{{ t("contrast") }}</span>
             </a>
-            <a class="button navbar-item out-nav" @click="changeGridState(!showGrid)">
+            <span style="padding: 10px; margin-right: 20%;">
+            <input type="checkbox" :checked="showGrid" @change="changeGridState(!showGrid)">
           <span class="icon">
             <font-awesome-icon icon="table-columns" />
           </span>
               <span>{{ t("grid") }}</span>
-            </a>
+        </span>
             <a class="button navbar-item out-nav" @click="openHelpPopUp()">
           <span class="icon">
             <font-awesome-icon icon="question" />

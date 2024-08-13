@@ -12,7 +12,7 @@ export interface ZBSettings extends ZBSettingsFlags {
 
 export function initSettingsAsJSON(): string {
   return JSON.stringify({
-    showGrid: false,
+    showGrid: true,
     language: "de", // TODO set from browser prefs
   });
 }
