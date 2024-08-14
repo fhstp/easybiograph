@@ -23,6 +23,9 @@ const mutations = {
   changeGridState(state: ZBSettings, newGridState: boolean): void {
     state.showGrid = newGridState;
   },
+  changeColorMode(state: ZBSettings, newColorMode: string): void {
+    state.colorMode = newColorMode;
+  },
 };
 
 export const settingsModule = {

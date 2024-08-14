@@ -1,5 +1,5 @@
 <template>
-  <div class="personInfo">
+  <div :class="['personInfo', 'colorMode']">
     <!-- TODO: Aktuelles Datum statt Erstellungsdatum -->
     <p class="same interviewee">
       {{ $store.state.data.person.name }}
@@ -31,12 +31,6 @@ import en from "@/en";
 
 export default {
   name: "PersonInfo",
-  props: {
-    contrastMode: {
-      type: Boolean,
-      required: true,
-    },
-  },
   methods: {
     t(prop) {
       const lang = store.state.settings.language;
@@ -84,5 +78,10 @@ export default {
 .interviewer {
   margin-left: 2vw;
   font-size: smaller;
+}
+
+.colorMode {
+  background-color: var(--secondary-color);
+  color: var(--secondary-text-color);
 }
 </style>

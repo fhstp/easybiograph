@@ -8,6 +8,7 @@ export interface ZBSettingsFlags {
 export interface ZBSettings extends ZBSettingsFlags {
   // put non-boolean settings here
   language: string; // "de" or "en"
+  colorMode: string;
 }
 
 export function initSettingsAsJSON(): string {

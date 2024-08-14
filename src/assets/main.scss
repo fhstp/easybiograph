@@ -9,6 +9,13 @@ $primary: #42ABC2;
 $info: #42ABC2;
 $link: #42ABC2;
 
+:root {
+  --main-color: #488193;
+  --secondary-color: #d2dee2;
+  --text-color: white;
+  --secondary-text-color: black;
+}
+
 
 // box and panel should have no shadow
 //$box-shadow: none;

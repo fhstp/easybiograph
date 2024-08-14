@@ -6,7 +6,6 @@
       {{ temporalExtentLabel }}
     </span>
     <div
-      :value="contrastMode ? true : false"
       class="ebox"
       :class="[
         event.isInterval && event.isOpenEnd
@@ -44,10 +43,6 @@ export default {
     event: Object,
     labelSpace: Number,
     showNotes: Boolean,
-    contrastMode: {
-      type: Boolean,
-      required: true,
-    },
   },
   computed: {
     temporalExtentLabel() {
@@ -101,41 +96,21 @@ export default {
   border-radius: 3px;
 }
 
-.openEnd[value="false"] {
-  border: 2px solid $periodborderblue;
-  background: linear-gradient(90deg, rgba(230,242,248,1) 0%, rgba(175,211,227,1) 90%, rgba(137,182,203,1) 100%);
+.openEnd {
+  border: 2px solid var(--main-color);
+  background: linear-gradient(90deg, rgba(230,242,248,1) 0%, rgba(175,211,227,1) 90%, rgba(2,182,203,1) 100%);
   box-shadow: #2c3e50;
   border-right: none;
   border-top-right-radius: 100px;
 }
 
-.event[value="false"] {
-  border-left: 3px solid $eventgreen;
+.event {
+  border-left: 3px solid var(--main-color);
 }
 
-.period[value="false"] {
+.period{
   background-color: $periodblue;
-  border: 2px solid $periodborderblue;
-  box-shadow: #2c3e50;
-}
-
-.openEnd[value="true"] {
-  border: 1.5px solid #488193;
-  background: linear-gradient(90deg, rgba(230,242,248,1) 0%, rgba(175,211,227,1) 90%, rgba(137,182,203,1) 100%);
-  box-shadow: #2c3e50;
-  border-right: none;
-  border-top-right-radius: 100px;
-}
-
-.event[value="true"] {
-  background-color: $eventgrey;
-  border-left: 3px solid #FFA500;
-  width: 50px;
-}
-
-.period[value="true"] {
-  background-color: $periodblue;
-  border: 1.5px solid #488193;
+  border: 2px solid var(--main-color);
   box-shadow: #2c3e50;
 }
 

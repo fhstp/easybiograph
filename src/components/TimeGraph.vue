@@ -27,19 +27,18 @@
   />
   <!--:showButton="true"-->
 
-  <div :class="['ebcontainer', { contrast: contrastMode }]">
+  <div class="ebcontainer">
     <nav
-        class="navbar is-black"
-        :style="{ 'background-color': contrastMode ? '#0074CC' : '#488193' }"
+        :class="['navbar', 'colorMode']"
         v-show="!showCreateBiograph"
         role="navigation"
         aria-label="main navigation"
     >
       <div class="navbar-brand">
-
+        
         <a
             role="button"
-            class="navbar-burger"
+            :class="['navbar-burger', 'colorMode']"
             aria-label="menu"
             aria-expanded="false"
             data-target="navbarBasicExample"
@@ -49,7 +48,7 @@
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
-        <div class="navbar-item" :title="`easyBiograph version ${appVersion}`">
+        <div :class="['navbar-item', 'colorMode']" :title="`easyBiograph version ${appVersion}`">
           easyBiograph
         </div>
 
@@ -63,6 +62,17 @@
             </select>
         </div>
 
+        <div class=" navbar-item">
+            <span class="icon" :style="{ color: selectedMode !== 'yellow-mode' ? 'white' : 'inherit' }">
+              <font-awesome-icon icon="paint-roller" />
+            </span>
+            <select  v-model="selectedMode" @change="changeColorMode">
+              <option value="green-mode">Grün</option>
+              <option value="yellow-mode">Gelb</option>
+              <option value="black-mode">Schwarz</option>
+            </select>
+          </div>
+        
         <div class="buttons">
         <a
             class="button is-dark navbar-item in-nav"
@@ -144,10 +154,10 @@
           </span>
               <span>{{ t("new") }}</span>
             </a>
-            <a class="file navbar-item" :value="contrastMode ? true : false" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
+            <a class="file navbar-item" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
               <label class="file-label">
                 <input class="file-input" type="file" @change="importData" />
-                <span class="file-cta" :style="{ 'background-color': contrastMode ? '#FFFFFF' : '#FFFFFF' }">
+                <span class="file-cta">
               <span class="file-icon icon is-small">
                 <font-awesome-icon icon="folder-open" />
               </span>
@@ -166,12 +176,6 @@
             <font-awesome-icon icon="pencil-alt" />
           </span>
               <span>{{ t("edittimebar") }}</span>
-            </a>
-            <a class="button navbar-item out-nav" @click="toggleContrastMode">
-          <span class="icon">
-            <font-awesome-icon icon="paint-roller" />
-          </span>
-              <span>{{ t("contrast") }}</span>
             </a>
             <span style="padding: 10px; margin-right: 20%;">
             <input type="checkbox" :checked="showGrid" @change="changeGridState(!showGrid)">
@@ -201,7 +205,7 @@
 
     <TimePane
       v-if="!showCreateBiograph && !showIntro"
-      :contrastMode="contrastMode"
+      :isBlackMode="selectedMode === 'black-mode'"
       :zoomMode="zoomMode"
       @display-event="openEventDisplay"
       @open-edit="setSelectedEvent"
@@ -220,10 +224,10 @@
         <span>{{ t("new") }}</span>
       </a>
       &nbsp;
-      <a class="file is-primary" :value="contrastMode ? true : false" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
+      <a class="file is-primary"  style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
         <label class="file-label is-primary">
           <input class="file-input" type="file" @change="importData" />
-          <span class="file-cta" :style="{ 'background-color': contrastMode ? '#FFFFFF' : '#42ABC2' }">
+          <span class="file-cta">
             <span class="file-icon icon is-small">
               <font-awesome-icon icon="folder-open" />
             </span>
@@ -305,6 +309,12 @@ import HelpDialogue from "@/components/HelpDialogue.vue";
 import de from "@/de";
 import en from "@/en";
 
+const colorModes = {
+  'green-mode': { primary: '#488193', secondary: '#d2dee2', text: 'white', secondaryText: 'black' },
+  'yellow-mode': { primary: '#F2BC1B', secondary: '#F2DC99', text: 'black', secondaryText: 'black' },
+  'black-mode': { primary: '#333333', secondary: '#666666', text: 'white', secondaryText: 'white' }
+};
+
 export default {
   name: "TimeGraph",
   components: {
@@ -323,7 +333,6 @@ export default {
       Dimension: [...dimensions].reverse(),
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       newPerson: true,
-      contrastMode: false,
       zoomMode: false,
       selectedEvent: null as ZBEvent | null,
       showEventPopUp: false,
@@ -336,6 +345,7 @@ export default {
       newDimDetails: {
         title: "",
       },
+      selectedMode: "green-mode"
     };
   },
   computed: {
@@ -400,7 +410,7 @@ export default {
     },
     showGrid(): boolean {
       return store.state.settings.showGrid;
-    }
+    },
   },
   watch: {
     displayYears: {
@@ -462,9 +472,13 @@ export default {
       console.log("Zoom moved 10% to the right");
     },
 
-    toggleContrastMode() {
-      this.contrastMode = !this.contrastMode;
-
+    changeColorMode() {
+      const colors = colorModes[this.selectedMode];
+      console.log(colors)
+      document.documentElement.style.setProperty('--main-color', colors.primary);
+      document.documentElement.style.setProperty('--secondary-color', colors.secondary);
+      document.documentElement.style.setProperty('--text-color', colors.text);
+      document.documentElement.style.setProperty('--secondary-text-color', colors.secondaryText);
       console.log("Kontrast clicked")
 
     },
@@ -839,6 +853,11 @@ export default {
 #langselect {
   height: 2.25em;
   margin-left: 0.5em;
+}
+
+.colorMode {
+  background-color: var(--main-color);
+  color: var(--text-color);
 }
 
 @media screen {

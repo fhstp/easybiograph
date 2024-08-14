@@ -1,14 +1,14 @@
 <template>
   <div class="pane">
-    <PersonInfo :contrastMode="contrastMode" />
+    <PersonInfo/>
     <TimeAxis :scale="timeScale" :zoomMode="zoomMode" style="z-index: 2"/>
     <div class="pane2">
       <div
         v-for="(dim, index) in layout"
-        :value="contrastMode ? true : false"
+        :value="isBlackMode ? true : false"
         :key="dim.id"
         :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
-        :style="`height: ${100 / layout.length}%`"
+        :style="`height: ${100 / layout.length}%;`"
       >
         <!-- , {'border-style': contrastMode ? 'groove hidden groove hidden' : 'hidden'} -->
         <div
@@ -43,7 +43,6 @@
             class="events"
             :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * 1.8}rem; height: 1.8rem; z-index: 2`"
             @click="$emit('display-event', mark.datum)"
-            :contrastMode="contrastMode"
           />
         </div>
       </div>
@@ -89,13 +88,13 @@ interface DimensionLayout {
 // }
 
 const store = useStore();
-const props = defineProps(['contrastMode', 'zoomMode']);
+const props = defineProps(['isBlackMode', 'zoomMode']);
 
 onMounted(() => {
   initializeBrushing();
 });
 
-const contrastMode = computed(() => props.contrastMode);
+const isBlackMode = computed(() => props.isBlackMode);
 const zoomMode = computed(() => props.zoomMode);
       
 
@@ -364,7 +363,7 @@ div.events {
 
   &:hover::before,
   &:hover::after {
-    background-color: forestgreen;
+    background-color: var(--main-color);
   }
 }
 
