@@ -328,25 +328,28 @@ const ageTicks = computed(() => {
     // console.log(`space ${spacePerTick}px - steps ${steps} - width ${width}%`);
 
     return birthdays
-      .filter((_, index) => index % steps === steps - 1)
       .map((d, i) => {
         const tick = (d.age - 1) % 5 === 0;
+        const axisTick = i % steps === steps - 1;
         return {
           label: d.age.toString(),
           tick: tick,
+          axisTick: axisTick,
           style: {
             left: `${props.scale(d.date) - width}%`,
             width: `calc(${width}% - 2px)`,
             "border-left": i > 0 ? "1px solid black" : "",
           },
         };
-      });
+      })
+      .filter((d) => d.tick || d.axisTick);
   } else {
     // edge case: no birthday -> 1 tick at 100% -- maybe needs testing(?)
     return [
       {
         label: i.toString(),
         tick: (i - 1) % 5 === 0,
+        axisTick: true,
         style: { left: "0%", width: "calc(100% - 2px)" },
       },
     ];
