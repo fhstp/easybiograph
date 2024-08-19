@@ -9,7 +9,7 @@ export default {
   save: "Save",
   edittimebar: "Edit time bar",
   contrast: "Contrast",
-  grid: "Grid",
+  grid: "5-Year Line",
   help: "Help",
   outof: "out of",
   years: "years",

@@ -7,7 +7,7 @@
         v-for="(dim, index) in layout"
         :value="isBlackMode ? true : false"
         :key="dim.id"
-        :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
+        :class="{ 'dim': true, 'white-background': store.state.settings.colorMode == 'black-mode' ? true : index % 2 !== 0, 'grey-background': store.state.settings.colorMode == 'black-mode' ? false : index % 2 === 0 }"
         :style="`height: ${100 / layout.length}%;`"
       >
         <!-- , {'border-style': contrastMode ? 'groove hidden groove hidden' : 'hidden'} -->
@@ -16,8 +16,9 @@
           class="dimensionlabel"
           :class="{
             dim: true,
-            'white-background': index % 2 !== 0,
-            'grey-background': index % 2 === 0,
+            'white-background': store.state.settings.colorMode == 'black-mode' ? true : index % 2 !== 0,
+            'grey-background': store.state.settings.colorMode == 'black-mode' ? false : index % 2 === 0,
+            'border-enabled': store.state.settings.colorMode == 'black-mode',
           }"
         ></div>
         <div class="dlabel">
@@ -27,8 +28,9 @@
         <div
           class="substrate"
           :class="{
-            'white-background': index % 2 !== 0,
-            'grey-background': index % 2 === 0,
+            'white-background': store.state.settings.colorMode == 'black-mode' ? true : index % 2 !== 0,
+            'grey-background': store.state.settings.colorMode == 'black-mode' ? false : index % 2 === 0,
+            'border-enabled': store.state.settings.colorMode == 'black-mode',
         }"
           ref="substrateRef"
         >
@@ -323,16 +325,16 @@ const layout = computed((): Array<DimensionLayout> => {
 
 <style scoped lang="scss">
 
-.grey-background[value="false"] {
+.grey-background {
   background-color: #f2f2f2;
 }
-.grey-background[value="true"] {
-  background-color: #f2f2f2;
-  border-style: groove hidden groove hidden;
-  border-width: 2px;
-}
+
 .white-background {
   background-color: #fcfcfc;
+  &.border-enabled {
+    border-style: groove groove groove hidden;
+    border-width: 1px;
+  }
 }
 
 div.events {

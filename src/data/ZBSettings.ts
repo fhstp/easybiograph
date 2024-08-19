@@ -15,6 +15,7 @@ export function initSettingsAsJSON(): string {
   return JSON.stringify({
     showGrid: true,
     language: "de", // TODO set from browser prefs
+    colorMode: "green-mode",
   });
 }
 

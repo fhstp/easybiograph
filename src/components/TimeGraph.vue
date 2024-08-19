@@ -52,26 +52,6 @@
           easyBiograph
         </div>
 
-        <div class="navbar-item">
-          <select
-              id="langselect"
-              name="lang"
-              v-model="lang">
-              <option value="de">Deutsch</option>
-              <option value="en">English</option>
-            </select>
-        </div>
-
-        <div class=" navbar-item">
-            <span class="icon" :style="{ color: selectedMode !== 'yellow-mode' ? 'white' : 'inherit' }">
-              <font-awesome-icon icon="paint-roller" />
-            </span>
-            <select  v-model="selectedMode" @change="changeColorMode">
-              <option value="green-mode">Grün</option>
-              <option value="yellow-mode">Gelb</option>
-              <option value="black-mode">Schwarz</option>
-            </select>
-          </div>
         
         <div class="buttons">
         <a
@@ -177,13 +157,7 @@
           </span>
               <span>{{ t("edittimebar") }}</span>
             </a>
-            <span style="padding: 10px; margin-right: 20%;">
-            <input type="checkbox" :checked="showGrid" @change="changeGridState(!showGrid)">
-          <span class="icon">
-            <font-awesome-icon icon="table-columns" />
-          </span>
-              <span>{{ t("grid") }}</span>
-        </span>
+            
             <a class="button navbar-item out-nav" @click="openHelpPopUp()">
           <span class="icon">
             <font-awesome-icon icon="question" />
@@ -200,6 +174,35 @@
           <div class="grey-bar" :style="{ width: greyBarWidth, left: greyBarLeft }"></div>
         </div>
       </div>
+      </div>
+
+      <div class="navbar-end">
+        <div class=" navbar-item">
+            <span class="icon" :style="{ color: selectedMode !== 'yellow-mode' ? 'white' : 'inherit' }">
+              <font-awesome-icon icon="paint-roller" />
+            </span>
+            <select id="colorselect" name="selectedMode" v-model="selectedMode">
+              <option value="green-mode">Grün</option>
+              <option value="yellow-mode">Gelb</option>
+              <option value="black-mode">Schwarz</option>
+            </select>
+          </div>
+          <span>
+            <input type="checkbox" :checked="showGrid" @change="changeGridState(!showGrid)">
+          <span class="icon">
+            <font-awesome-icon icon="table-columns" />
+          </span>
+              <span>{{ t("grid") }}</span>
+        </span>
+          <div class="navbar-item in-nav">
+          <select
+              id="langselect"
+              name="lang"
+              v-model="lang">
+              <option value="de">Deutsch</option>
+              <option value="en">English</option>
+            </select>
+        </div>
       </div>
   </nav>
 
@@ -310,9 +313,9 @@ import de from "@/de";
 import en from "@/en";
 
 const colorModes = {
-  'green-mode': { primary: '#488193', secondary: '#d2dee2', text: 'white', secondaryText: 'black' },
-  'yellow-mode': { primary: '#F2BC1B', secondary: '#F2DC99', text: 'black', secondaryText: 'black' },
-  'black-mode': { primary: '#333333', secondary: '#666666', text: 'white', secondaryText: 'white' }
+  'green-mode': { primary: '#488193', secondary: '#d2dee2', text: 'white', secondaryText: 'black', moment: "#a1d592", button: "#333", buttonText: "white" },
+  'yellow-mode': { primary: '#F2BC1B', secondary: '#F2DC99', text: 'black', secondaryText: 'black', moment: "#FF0000", button: "#333", buttonText: "white" },
+  'black-mode': { primary: '#333333', secondary: '#666666', text: 'white', secondaryText: 'white', moment: "black",button: "#e3e3e3", buttonText: "black" }
 };
 
 export default {
@@ -345,7 +348,6 @@ export default {
       newDimDetails: {
         title: "",
       },
-      selectedMode: "green-mode"
     };
   },
   computed: {
@@ -406,6 +408,15 @@ export default {
       },
       set(newValue: string) {
         store.commit("settings/changeLanguage", newValue);
+      }
+    },
+    selectedMode: {
+      get() {
+        return store.state.settings.colorMode;
+      },
+      set(newValue: string) {
+        store.commit("settings/changeColorMode", newValue);
+        this.changeColorMode(newValue);
       }
     },
     showGrid(): boolean {
@@ -472,13 +483,16 @@ export default {
       console.log("Zoom moved 10% to the right");
     },
 
-    changeColorMode() {
-      const colors = colorModes[this.selectedMode];
+    changeColorMode(newMode: string) {
+      const colors = colorModes[newMode];
       console.log(colors)
       document.documentElement.style.setProperty('--main-color', colors.primary);
       document.documentElement.style.setProperty('--secondary-color', colors.secondary);
       document.documentElement.style.setProperty('--text-color', colors.text);
       document.documentElement.style.setProperty('--secondary-text-color', colors.secondaryText);
+      document.documentElement.style.setProperty('--moment-color', colors.moment);
+      document.documentElement.style.setProperty('--button-color', colors.button);
+      document.documentElement.style.setProperty('--button-text-color', colors.buttonText);
       console.log("Kontrast clicked")
 
     },
@@ -707,6 +721,9 @@ export default {
         store.commit("settings/changeGridState", newValue);
       }
   },
+  mounted() {
+    this.changeColorMode(this.selectedMode);
+  },
 };
 </script>
 
@@ -726,13 +743,9 @@ export default {
 }
 
 .button.navbar-item.in-nav {
-  background-color: #36626f;
+  background-color: var(--button-color);
   font-weight: normal;
-}
-
-.button.navbar-item.in-nav:hover {
-  background-color: #333;
-  font-weight: normal;
+  color: var(--button-text-color);
 }
 
 .button.navbar-item.out-nav {
@@ -842,6 +855,7 @@ export default {
   width: 100%;
   text-align: left;
   margin-bottom: 8px;
+  background-color: #333;
 }
 
 .navbar-brand {
@@ -858,6 +872,11 @@ export default {
 .colorMode {
   background-color: var(--main-color);
   color: var(--text-color);
+}
+
+.navbar-end {
+  align-items: center;
+  justify-content: flex-end;
 }
 
 @media screen {

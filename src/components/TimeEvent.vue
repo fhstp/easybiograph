@@ -98,18 +98,18 @@ export default {
 
 .openEnd {
   border: 2px solid var(--main-color);
-  background: linear-gradient(90deg, rgba(230,242,248,1) 0%, rgba(175,211,227,1) 90%, rgba(2,182,203,1) 100%);
+  background: linear-gradient(90deg, white 90%, var(--main-color) 100%);
   box-shadow: #2c3e50;
   border-right: none;
   border-top-right-radius: 100px;
 }
 
 .event {
-  border-left: 3px solid var(--main-color);
+  border-left: 3px solid var(--moment-color);
 }
 
 .period{
-  background-color: $periodblue;
+  background-color: white;
   border: 2px solid var(--main-color);
   box-shadow: #2c3e50;
 }
@@ -142,12 +142,12 @@ export default {
 }
 
 .eventText.int {
-  background: $periodblue;
+  background: white;
   padding: 0 2px 0 1px;
 }
 
 .subcontent {
-  color: darkgrey;
+  color: var(--main-color);
   font-size: smaller;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -163,8 +163,8 @@ export default {
   bottom: calc(100% + 5px);
   visibility: hidden;
   width: 140px;
-  background-color: darkgrey;
-  color: #fff;
+  background-color: var(--main-color);
+  color: var(--text-color);
   text-align: center;
   border-radius: 6px;
   padding: 5px 0;

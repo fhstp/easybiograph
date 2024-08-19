@@ -9,7 +9,7 @@ export default {
   save: "Speichern",
   edittimebar: "Zeitbalken bearbeiten",
   contrast: "Kontrast",
-  grid: "Raster",
+  grid: "5-Jahres-Linie",
   help: "Info",
   outof: "von",
   years: "Jahren",
