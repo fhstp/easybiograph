@@ -484,7 +484,7 @@ export default {
     },
 
     changeColorMode(newMode: string) {
-      const colors = colorModes[newMode];
+      const colors = colorModes[newMode as 'green-mode' | 'yellow-mode' | 'black-mode'];
       console.log(colors)
       document.documentElement.style.setProperty('--main-color', colors.primary);
       document.documentElement.style.setProperty('--secondary-color', colors.secondary);
