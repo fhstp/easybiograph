@@ -15,6 +15,9 @@ export default {
   years: "Jahren",
   welcome: "Willkommen bei easyBiograph!",
   textunderwelcome: "Erstellen Sie einen neuen Zeitbalken oder öffnen Sie einen bestehenden Zeitbalken, um fortzufahren.",
+  green: "Grün",
+  yellow: "Gelb",
+  black: "Schwarz-Weiß",
   //}
   //eventDialogue: {
   createentry: "Eintrag erstellen",

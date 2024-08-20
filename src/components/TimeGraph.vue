@@ -182,9 +182,9 @@
               <font-awesome-icon icon="paint-roller" />
             </span>
             <select id="colorselect" name="selectedMode" v-model="selectedMode">
-              <option value="green-mode">Grün</option>
-              <option value="yellow-mode">Gelb</option>
-              <option value="black-mode">Schwarz</option>
+              <option value="green-mode">{{ t("green") }}</option>
+              <option value="yellow-mode">{{ t("yellow") }}</option>
+              <option value="black-mode">{{ t("black") }}</option>
             </select>
           </div>
           <span>
