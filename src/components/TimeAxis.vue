@@ -329,16 +329,17 @@ const ageTicks = computed(() => {
 
     return birthdays
       .map((d, i) => {
-        const tick = (d.age - 1) % 5 === 0;
+        // 5-year lines shifted by steps because line on left border vs label right-aligned
+        const tick = d.age % 5 === steps;
         const axisTick = i % steps === steps - 1;
         return {
-          label: d.age.toString(),
+          label: axisTick ? d.age.toString() : " ",
           tick: tick,
           axisTick: axisTick,
           style: {
             left: `${props.scale(d.date) - width}%`,
             width: `calc(${width}% - 2px)`,
-            "border-left": i > 0 ? "1px solid black" : "",
+            "border-left": d.age > steps ? "1px solid black" : "",
           },
         };
       })
