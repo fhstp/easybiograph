@@ -31,12 +31,6 @@ import en from "@/en";
 
 export default {
   name: "PersonInfo",
-  props: {
-    contrastMode: {
-      type: Boolean,
-      required: true,
-    },
-  },
   methods: {
     t(prop) {
       const lang = store.state.settings.language;
@@ -64,7 +58,8 @@ export default {
   height: 2.5em;
   z-index: 5;
   white-space: nowrap;
-  background-color: #d2dee2;
+  background-color: var(--secondary-color);
+  color: var(--secondary-text-color);
 }
 
 .contrast .personInfo {

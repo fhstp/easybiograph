@@ -1,6 +1,12 @@
 # easyBiograph Version History
 
-## version 2.1.0 beta, released x Aug 2024
+## version 2.1.1 beta, released 21 Aug 2024
+
+* (feature) show 5 year grid lines (with setting to turn off)
+* (feature) three color modes green, yellow, black/white as setting with refactored implementation
+* (usability) improve dialogue for Zeitbalken (scrollbar, client name mandatory)
+
+## version 2.1.0 beta, released 8 Aug 2024
 
 * (feature) make the web app multi-linugal
 * (security) remove outdated code

@@ -6,7 +6,6 @@
       {{ temporalExtentLabel }}
     </span>
     <div
-      :value="contrastMode ? true : false"
       class="ebox"
       :class="[
         event.isInterval && event.isOpenEnd
@@ -44,10 +43,6 @@ export default {
     event: Object,
     labelSpace: Number,
     showNotes: Boolean,
-    contrastMode: {
-      type: Boolean,
-      required: true,
-    },
   },
   computed: {
     temporalExtentLabel() {
@@ -101,41 +96,21 @@ export default {
   border-radius: 3px;
 }
 
-.openEnd[value="false"] {
-  border: 2px solid $periodborderblue;
-  background: linear-gradient(90deg, rgba(230,242,248,1) 0%, rgba(175,211,227,1) 90%, rgba(137,182,203,1) 100%);
+.openEnd {
+  border: 2px solid var(--main-color);
+  background: linear-gradient(90deg, white 90%, var(--main-color) 100%);
   box-shadow: #2c3e50;
   border-right: none;
   border-top-right-radius: 100px;
 }
 
-.event[value="false"] {
-  border-left: 3px solid $eventgreen;
+.event {
+  border-left: 3px solid var(--moment-color);
 }
 
-.period[value="false"] {
-  background-color: $periodblue;
-  border: 2px solid $periodborderblue;
-  box-shadow: #2c3e50;
-}
-
-.openEnd[value="true"] {
-  border: 1.5px solid #488193;
-  background: linear-gradient(90deg, rgba(230,242,248,1) 0%, rgba(175,211,227,1) 90%, rgba(137,182,203,1) 100%);
-  box-shadow: #2c3e50;
-  border-right: none;
-  border-top-right-radius: 100px;
-}
-
-.event[value="true"] {
-  background-color: $eventgrey;
-  border-left: 3px solid #FFA500;
-  width: 50px;
-}
-
-.period[value="true"] {
-  background-color: $periodblue;
-  border: 1.5px solid #488193;
+.period{
+  background-color: white;
+  border: 2px solid var(--main-color);
   box-shadow: #2c3e50;
 }
 
@@ -163,15 +138,16 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0 2px 0 2px;
+  background-color: white;
 }
 
 .eventText.int {
-  background: $periodblue;
+  background: white;
   padding: 0 2px 0 1px;
 }
 
 .subcontent {
-  color: darkgrey;
+  color: var(--main-color);
   font-size: smaller;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -187,8 +163,8 @@ export default {
   bottom: calc(100% + 5px);
   visibility: hidden;
   width: 140px;
-  background-color: darkgrey;
-  color: #fff;
+  background-color: var(--main-color);
+  color: var(--text-color);
   text-align: center;
   border-radius: 6px;
   padding: 5px 0;

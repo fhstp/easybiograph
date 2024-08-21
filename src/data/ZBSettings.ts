@@ -2,18 +2,20 @@
 
 export interface ZBSettingsFlags {
   // put boolean settings here
-  showOnboarding: boolean;
+  showGrid: boolean;
 }
 
 export interface ZBSettings extends ZBSettingsFlags {
   // put non-boolean settings here
   language: string; // "de" or "en"
+  colorMode: string;
 }
 
 export function initSettingsAsJSON(): string {
   return JSON.stringify({
-    showOnboarding: true,
+    showGrid: true,
     language: "de", // TODO set from browser prefs
+    colorMode: "green-mode",
   });
 }
 

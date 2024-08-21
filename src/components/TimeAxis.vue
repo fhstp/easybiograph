@@ -13,11 +13,11 @@
         {{ year.label }}
       </div>
       <div
-        class="tick age"
-        v-for="age in ageTicks"
-        :key="age.label"
-        :style="age.style"
-      >
+          v-for="(age) in ageTicks"
+          :key="age.label"
+          :class="[ gridState ? (age.tick ? (age.label == ' ' ? 'tick-when-no-age' : 'tick age') : 'no-tick') : ((age.tick) && age.label == ' ' ? 'no-tick-when-no-age' : 'no-tick')]"
+          :style="age.style"
+        >
         {{ age.label }}
       </div>
     </div>
@@ -134,6 +134,7 @@ const props = defineProps<{
 }>();
 
 const zoomModeUse = ref(props.zoomMode);
+const gridState = computed(() => store.state.settings.showGrid);
 
 watch(() => props.zoomMode, (newVal, oldVal) => {
   zoomModeUse.value = newVal;
@@ -327,22 +328,29 @@ const ageTicks = computed(() => {
     // console.log(`space ${spacePerTick}px - steps ${steps} - width ${width}%`);
 
     return birthdays
-      .filter((_, index) => index % steps === steps - 1)
       .map((d, i) => {
+        // 5-year lines shifted by steps because line on left border vs label right-aligned
+        const tick = d.age % 5 === steps;
+        const axisTick = i % steps === steps - 1;
         return {
-          label: d.age.toString(),
+          label: axisTick ? d.age.toString() : " ",
+          tick: tick,
+          axisTick: axisTick,
           style: {
             left: `${props.scale(d.date) - width}%`,
             width: `calc(${width}% - 2px)`,
-            "border-left": i > 0 ? "1px solid black" : "",
+            "border-left": d.age > steps ? "1px solid black" : "",
           },
         };
-      });
+      })
+      .filter((d) => d.tick || d.axisTick);
   } else {
     // edge case: no birthday -> 1 tick at 100% -- maybe needs testing(?)
     return [
       {
         label: i.toString(),
+        tick: (i - 1) % 5 === 0,
+        axisTick: true,
         style: { left: "0%", width: "calc(100% - 2px)" },
       },
     ];
@@ -420,5 +428,29 @@ div.substrate {
 
 .tick.age {
   text-align: right;
+  position: absolute;
+  height: 100vh;
 }
+
+.tick-when-no-age {
+  position: absolute;
+  height: 100vh;
+  text-align: right;
+  top: 3em;
+}
+
+.no-tick {
+  position: absolute;
+  height: 1.5em;
+  text-align: right;
+  top: 1.5em;
+}
+
+.no-tick-when-no-age {
+  position: absolute;
+  height: 0em;
+  text-align: right;
+  top: 1.5em;
+}
+
 </style>

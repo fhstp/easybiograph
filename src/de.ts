@@ -9,11 +9,15 @@ export default {
   save: "Speichern",
   edittimebar: "Zeitbalken bearbeiten",
   contrast: "Kontrast",
+  grid: "5-Jahres-Linien",
   help: "Info",
   outof: "von",
   years: "Jahren",
   welcome: "Willkommen bei easyBiograph!",
   textunderwelcome: "Erstellen Sie einen neuen Zeitbalken oder öffnen Sie einen bestehenden Zeitbalken, um fortzufahren.",
+  greenmode: "Grün",
+  yellowmode: "Gelb",
+  blackmode: "Schwarz-Weiß",
   //}
   //eventDialogue: {
   createentry: "Eintrag erstellen",

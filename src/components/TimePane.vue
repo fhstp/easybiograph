@@ -1,14 +1,14 @@
 <template>
   <div class="pane">
-    <PersonInfo :contrastMode="contrastMode" />
-    <TimeAxis :scale="timeScale" :zoomMode="zoomMode" style="z-index: 2" />
+    <PersonInfo/>
+    <TimeAxis :scale="timeScale" :zoomMode="zoomMode" style="z-index: 2"/>
     <div class="pane2">
       <div
         v-for="(dim, index) in layout"
-        :value="contrastMode ? true : false"
+        :value="isBlackMode ? true : false"
         :key="dim.id"
-        :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
-        :style="`height: ${100 / layout.length}%`"
+        :class="{ 'dim': true, 'white-background': store.state.settings.colorMode == 'black-mode' ? true : index % 2 !== 0, 'grey-background': store.state.settings.colorMode == 'black-mode' ? false : index % 2 === 0 }"
+        :style="`height: ${100 / layout.length}%;`"
       >
         <!-- , {'border-style': contrastMode ? 'groove hidden groove hidden' : 'hidden'} -->
         <div
@@ -16,8 +16,9 @@
           class="dimensionlabel"
           :class="{
             dim: true,
-            'white-background': index % 2 !== 0,
-            'grey-background': index % 2 === 0,
+            'white-background': store.state.settings.colorMode == 'black-mode' ? true : index % 2 !== 0,
+            'grey-background': store.state.settings.colorMode == 'black-mode' ? false : index % 2 === 0,
+            'border-enabled': store.state.settings.colorMode == 'black-mode',
           }"
         ></div>
         <div class="dlabel">
@@ -27,8 +28,9 @@
         <div
           class="substrate"
           :class="{
-            'white-background': index % 2 !== 0,
-            'grey-background': index % 2 === 0,
+            'white-background': store.state.settings.colorMode == 'black-mode' ? true : index % 2 !== 0,
+            'grey-background': store.state.settings.colorMode == 'black-mode' ? false : index % 2 === 0,
+            'border-enabled': store.state.settings.colorMode == 'black-mode',
         }"
           ref="substrateRef"
         >
@@ -41,9 +43,8 @@
             :event="mark.datum"
             :labelSpace="(100 * mark.spx) / mark.w"
             class="events"
-            :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * 1.8}rem; height: 1.8rem`"
+            :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * 1.8}rem; height: 1.8rem; z-index: 2`"
             @click="$emit('display-event', mark.datum)"
-            :contrastMode="contrastMode"
           />
         </div>
       </div>
@@ -89,14 +90,15 @@ interface DimensionLayout {
 // }
 
 const store = useStore();
-const props = defineProps(['contrastMode', 'zoomMode']);
+const props = defineProps(['isBlackMode', 'zoomMode']);
 
 onMounted(() => {
   initializeBrushing();
 });
 
-const contrastMode = computed(() => props.contrastMode);
-const zoomMode = computed(() => props.zoomMode)
+const isBlackMode = computed(() => props.isBlackMode);
+const zoomMode = computed(() => props.zoomMode);
+      
 
 const initializeBrushing = () => {
   const dimensions = store.state.data.dimensions;
@@ -323,16 +325,16 @@ const layout = computed((): Array<DimensionLayout> => {
 
 <style scoped lang="scss">
 
-.grey-background[value="false"] {
+.grey-background {
   background-color: #f2f2f2;
 }
-.grey-background[value="true"] {
-  background-color: #f2f2f2;
-  border-style: groove hidden groove hidden;
-  border-width: 2px;
-}
+
 .white-background {
   background-color: #fcfcfc;
+  &.border-enabled {
+    border-style: groove groove groove hidden;
+    border-width: 1px;
+  }
 }
 
 div.events {
@@ -363,7 +365,7 @@ div.events {
 
   &:hover::before,
   &:hover::after {
-    background-color: forestgreen;
+    background-color: var(--main-color);
   }
 }
 

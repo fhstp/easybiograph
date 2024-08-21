@@ -27,19 +27,18 @@
   />
   <!--:showButton="true"-->
 
-  <div :class="['ebcontainer', { contrast: contrastMode }]">
+  <div class="ebcontainer">
     <nav
-        class="navbar is-black"
-        :style="{ 'background-color': contrastMode ? '#0074CC' : '#488193' }"
+        :class="['navbar', 'colorMode']"
         v-show="!showCreateBiograph"
         role="navigation"
         aria-label="main navigation"
     >
       <div class="navbar-brand">
-
+        
         <a
             role="button"
-            class="navbar-burger"
+            :class="['navbar-burger', 'colorMode']"
             aria-label="menu"
             aria-expanded="false"
             data-target="navbarBasicExample"
@@ -49,20 +48,11 @@
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
-        <div class="navbar-item" :title="`easyBiograph version ${appVersion}`">
+        <div :class="['navbar-item', 'colorMode']" :title="`easyBiograph version ${appVersion}`">
           easyBiograph
         </div>
 
-        <div class="navbar-item">
-          <select
-              id="langselect"
-              name="lang"
-              v-model="lang">
-              <option value="de">Deutsch</option>
-              <option value="en">English</option>
-            </select>
-        </div>
-
+        
         <div class="buttons">
         <a
             class="button is-dark navbar-item in-nav"
@@ -144,10 +134,10 @@
           </span>
               <span>{{ t("new") }}</span>
             </a>
-            <a class="file navbar-item" :value="contrastMode ? true : false" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
+            <a class="file navbar-item" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
               <label class="file-label">
                 <input class="file-input" type="file" @change="importData" />
-                <span class="file-cta" :style="{ 'background-color': contrastMode ? '#FFFFFF' : '#FFFFFF' }">
+                <span class="file-cta">
               <span class="file-icon icon is-small">
                 <font-awesome-icon icon="folder-open" />
               </span>
@@ -167,12 +157,7 @@
           </span>
               <span>{{ t("edittimebar") }}</span>
             </a>
-            <a class="button navbar-item out-nav" @click="toggleContrastMode">
-          <span class="icon">
-            <font-awesome-icon icon="paint-roller" />
-          </span>
-              <span>{{ t("contrast") }}</span>
-            </a>
+            
             <a class="button navbar-item out-nav" @click="openHelpPopUp()">
           <span class="icon">
             <font-awesome-icon icon="question" />
@@ -190,11 +175,40 @@
         </div>
       </div>
       </div>
+
+      <div class="navbar-end">
+        <div class=" navbar-item">
+            <span class="icon" :style="{ color: selectedMode !== 'yellow-mode' ? 'white' : 'inherit' }">
+              <font-awesome-icon icon="paint-roller" />
+            </span>
+            <select id="colorselect" name="selectedMode" v-model="selectedMode">
+              <option value="green-mode">{{ t("greenmode") }}</option>
+              <option value="yellow-mode">{{ t("yellowmode") }}</option>
+              <option value="black-mode">{{ t("blackmode") }}</option>
+            </select>
+          </div>
+          <span>
+            <input type="checkbox" :checked="showGrid" @change="changeGridState(!showGrid)">
+          <span class="icon">
+            <font-awesome-icon icon="table-columns" />
+          </span>
+              <span>{{ t("grid") }}</span>
+        </span>
+          <div class="navbar-item in-nav">
+          <select
+              id="langselect"
+              name="lang"
+              v-model="lang">
+              <option value="de">Deutsch</option>
+              <option value="en">English</option>
+            </select>
+        </div>
+      </div>
   </nav>
 
     <TimePane
       v-if="!showCreateBiograph && !showIntro"
-      :contrastMode="contrastMode"
+      :isBlackMode="selectedMode === 'black-mode'"
       :zoomMode="zoomMode"
       @display-event="openEventDisplay"
       @open-edit="setSelectedEvent"
@@ -213,10 +227,10 @@
         <span>{{ t("new") }}</span>
       </a>
       &nbsp;
-      <a class="file is-primary" :value="contrastMode ? true : false" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
+      <a class="file is-primary"  style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
         <label class="file-label is-primary">
           <input class="file-input" type="file" @change="importData" />
-          <span class="file-cta" :style="{ 'background-color': contrastMode ? '#FFFFFF' : '#42ABC2' }">
+          <span class="file-cta">
             <span class="file-icon icon is-small">
               <font-awesome-icon icon="folder-open" />
             </span>
@@ -297,6 +311,8 @@ import { initEvent, type ZBEvent } from "@/data/ZBEvent";
 import HelpDialogue from "@/components/HelpDialogue.vue";
 import de from "@/de";
 import en from "@/en";
+import { changeColorMode } from "@/assets/ColorMode"
+
 
 export default {
   name: "TimeGraph",
@@ -316,7 +332,6 @@ export default {
       Dimension: [...dimensions].reverse(),
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       newPerson: true,
-      contrastMode: false,
       zoomMode: false,
       selectedEvent: null as ZBEvent | null,
       showEventPopUp: false,
@@ -390,7 +405,18 @@ export default {
       set(newValue: string) {
         store.commit("settings/changeLanguage", newValue);
       }
-    }
+    },
+    selectedMode: {
+      get() {
+        return store.state.settings.colorMode;
+      },
+      set(newValue: string) {
+        store.commit("settings/changeColorMode", newValue);
+      }
+    },
+    showGrid(): boolean {
+      return store.state.settings.showGrid;
+    },
   },
   watch: {
     displayYears: {
@@ -450,13 +476,6 @@ export default {
 
       store.commit("data/addZoom", newZoom);
       console.log("Zoom moved 10% to the right");
-    },
-
-    toggleContrastMode() {
-      this.contrastMode = !this.contrastMode;
-
-      console.log("Kontrast clicked")
-
     },
     toggleZoomMode() {
       this.zoomMode = !this.zoomMode;
@@ -679,6 +698,12 @@ export default {
       const trans: any = this.lang === "de" ? de :  en;
       return trans[prop];
     },
+    changeGridState(newValue: boolean) {
+        store.commit("settings/changeGridState", newValue);
+      }
+  },
+  mounted() {
+    changeColorMode(this.selectedMode);
   },
 };
 </script>
@@ -699,13 +724,9 @@ export default {
 }
 
 .button.navbar-item.in-nav {
-  background-color: #36626f;
+  background-color: var(--button-color);
   font-weight: normal;
-}
-
-.button.navbar-item.in-nav:hover {
-  background-color: #333;
-  font-weight: normal;
+  color: var(--button-text-color);
 }
 
 .button.navbar-item.out-nav {
@@ -815,6 +836,7 @@ export default {
   width: 100%;
   text-align: left;
   margin-bottom: 8px;
+  background-color: #333;
 }
 
 .navbar-brand {
@@ -826,6 +848,16 @@ export default {
 #langselect {
   height: 2.25em;
   margin-left: 0.5em;
+}
+
+.colorMode {
+  background-color: var(--main-color);
+  color: var(--text-color);
+}
+
+.navbar-end {
+  align-items: center;
+  justify-content: flex-end;
 }
 
 @media screen {

@@ -10,6 +10,7 @@
       right: auto;
       width: 50em;
       z-index: 10;
+      overflow-y: scroll;
     "
   >
     <h1 class="title block">{{ title }}</h1>

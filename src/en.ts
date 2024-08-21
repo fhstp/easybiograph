@@ -9,11 +9,15 @@ export default {
   save: "Save",
   edittimebar: "Edit time bar",
   contrast: "Contrast",
+  grid: "5-Year Lines",
   help: "Help",
   outof: "out of",
   years: "years",
   welcome: "Welcome to easyBiograph!",
   textunderwelcome: "Create or open an existing time bar to continue.",
+  greenmode: "Green",
+  yellowmode: "Yellow",
+  blackmode: "Black-White",
   //}
   //eventDialogue: {
   createentry: "Create a new entry",
