@@ -15,9 +15,9 @@ export default {
   years: "years",
   welcome: "Welcome to easyBiograph!",
   textunderwelcome: "Create or open an existing time bar to continue.",
-  green: "Green",
-  yellow: "Yellow",
-  black: "Black-White",
+  greenmode: "Green",
+  yellowmode: "Yellow",
+  blackmode: "Black-White",
   //}
   //eventDialogue: {
   createentry: "Create a new entry",

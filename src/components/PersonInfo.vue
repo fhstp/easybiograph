@@ -1,5 +1,5 @@
 <template>
-  <div :class="['personInfo', 'colorMode']">
+  <div class="personInfo">
     <!-- TODO: Aktuelles Datum statt Erstellungsdatum -->
     <p class="same interviewee">
       {{ $store.state.data.person.name }}
@@ -58,7 +58,8 @@ export default {
   height: 2.5em;
   z-index: 5;
   white-space: nowrap;
-  background-color: #d2dee2;
+  background-color: var(--secondary-color);
+  color: var(--secondary-text-color);
 }
 
 .contrast .personInfo {
@@ -78,10 +79,5 @@ export default {
 .interviewer {
   margin-left: 2vw;
   font-size: smaller;
-}
-
-.colorMode {
-  background-color: var(--secondary-color);
-  color: var(--secondary-text-color);
 }
 </style>

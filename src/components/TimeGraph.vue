@@ -182,9 +182,9 @@
               <font-awesome-icon icon="paint-roller" />
             </span>
             <select id="colorselect" name="selectedMode" v-model="selectedMode">
-              <option value="green-mode">{{ t("green") }}</option>
-              <option value="yellow-mode">{{ t("yellow") }}</option>
-              <option value="black-mode">{{ t("black") }}</option>
+              <option value="green-mode">{{ t("greenmode") }}</option>
+              <option value="yellow-mode">{{ t("yellowmode") }}</option>
+              <option value="black-mode">{{ t("blackmode") }}</option>
             </select>
           </div>
           <span>
@@ -311,12 +311,8 @@ import { initEvent, type ZBEvent } from "@/data/ZBEvent";
 import HelpDialogue from "@/components/HelpDialogue.vue";
 import de from "@/de";
 import en from "@/en";
+import { changeColorMode } from "@/assets/ColorMode"
 
-const colorModes = {
-  'green-mode': { primary: '#488193', secondary: '#d2dee2', text: 'white', secondaryText: 'black', moment: "#a1d592", button: "#333", buttonText: "white" },
-  'yellow-mode': { primary: '#F2BC1B', secondary: '#F2DC99', text: 'black', secondaryText: 'black', moment: "#FF0000", button: "#333", buttonText: "white" },
-  'black-mode': { primary: '#333333', secondary: '#666666', text: 'white', secondaryText: 'white', moment: "black",button: "#e3e3e3", buttonText: "black" }
-};
 
 export default {
   name: "TimeGraph",
@@ -416,7 +412,6 @@ export default {
       },
       set(newValue: string) {
         store.commit("settings/changeColorMode", newValue);
-        this.changeColorMode(newValue);
       }
     },
     showGrid(): boolean {
@@ -481,20 +476,6 @@ export default {
 
       store.commit("data/addZoom", newZoom);
       console.log("Zoom moved 10% to the right");
-    },
-
-    changeColorMode(newMode: string) {
-      const colors = colorModes[newMode as 'green-mode' | 'yellow-mode' | 'black-mode'];
-      console.log(colors)
-      document.documentElement.style.setProperty('--main-color', colors.primary);
-      document.documentElement.style.setProperty('--secondary-color', colors.secondary);
-      document.documentElement.style.setProperty('--text-color', colors.text);
-      document.documentElement.style.setProperty('--secondary-text-color', colors.secondaryText);
-      document.documentElement.style.setProperty('--moment-color', colors.moment);
-      document.documentElement.style.setProperty('--button-color', colors.button);
-      document.documentElement.style.setProperty('--button-text-color', colors.buttonText);
-      console.log("Kontrast clicked")
-
     },
     toggleZoomMode() {
       this.zoomMode = !this.zoomMode;
@@ -722,7 +703,7 @@ export default {
       }
   },
   mounted() {
-    this.changeColorMode(this.selectedMode);
+    changeColorMode(this.selectedMode);
   },
 };
 </script>

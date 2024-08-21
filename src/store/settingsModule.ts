@@ -1,5 +1,6 @@
 import type { ZBSettings, ZBSettingsFlags } from "@/data/ZBSettings";
 import { loadSettingsFromStore } from "./localStoragePlugin";
+import { changeColorMode } from "@/assets/ColorMode";
 
 // module state object
 const state = JSON.parse(loadSettingsFromStore());
@@ -25,6 +26,7 @@ const mutations = {
   },
   changeColorMode(state: ZBSettings, newColorMode: string): void {
     state.colorMode = newColorMode;
+    changeColorMode(newColorMode);
   },
 };
 
