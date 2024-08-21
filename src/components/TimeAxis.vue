@@ -15,7 +15,7 @@
       <div
           v-for="(age) in ageTicks"
           :key="age.label"
-          :class="[age.tick && gridState ? 'tick age' : 'no-tick']"
+          :class="[ gridState ? (age.tick ? (age.label == ' ' ? 'tick-when-no-age' : 'tick age') : 'no-tick') : ((age.tick) && age.label == ' ' ? 'no-tick-when-no-age' : 'no-tick')]"
           :style="age.style"
         >
         {{ age.label }}
@@ -432,10 +432,25 @@ div.substrate {
   height: 100vh;
 }
 
+.tick-when-no-age {
+  position: absolute;
+  height: 100vh;
+  text-align: right;
+  top: 3em;
+}
+
 .no-tick {
   position: absolute;
   height: 1.5em;
   text-align: right;
   top: 1.5em;
 }
+
+.no-tick-when-no-age {
+  position: absolute;
+  height: 0em;
+  text-align: right;
+  top: 1.5em;
+}
+
 </style>
