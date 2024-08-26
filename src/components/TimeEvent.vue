@@ -23,6 +23,7 @@
       :class="{ int: event.isInterval }"
       :style="`max-width: ${labelSpace}%`"
     >
+    {{ event.emoji }}
       {{ event.description }}
     </p>
     <p class="subcontent" v-show="showNotes">

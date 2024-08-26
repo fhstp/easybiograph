@@ -140,6 +140,63 @@
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
+        <label class="label" style="text-align: left">Emoji</label>
+      </div>
+      <br />
+      <div class="field-body">
+        <div>
+          <div style="display: flex; align-items: center;">
+            <div>
+              {{
+                tempEvent.emoji == null || tempEvent.emoji.length < 1
+                  ? "Noch kein Emoji gewählt"
+                  : "Gewähltes Emoji: " + tempEvent.emoji
+              }}
+            </div>
+            <button
+              v-if="tempEvent.emoji != null && tempEvent.emoji.length > 0"
+              @click="removeEmoji"
+              class="delete"
+              aria-label="remove emoji"
+              style="margin-left: 5px;"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">{{ t("selectEmoji") }}</label>
+      </div>
+      <div class="field-body">
+        <div class="dropdown" :class="{ 'is-active': showEmojiPicker }">
+          <div >
+            <button
+              class="button is-small"
+              @click="toggleEmojiPicker"
+            >
+            <span>Emoji auswählen</span>
+            </button>
+          </div>
+          <div class="dropdown-menu" >
+            <div>
+              <div>
+                <EmojiPicker
+                  v-model="tempEvent.emoji"
+                  :native="true"
+                  :disableSkinTones="true"
+                  @select="onSelectEmoji"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field is-horizontal">
+      <div class="field-label is-normal">
         <label class="label" style="text-align: left">{{t("notes")}}</label>
       </div>
       <div class="field-body">
@@ -200,10 +257,12 @@ import { ref, computed } from "vue";
 import type { defineComponent, PropType } from "vue";
 import de from "@/de";
 import en from "@/en";
+import EmojiPicker from "vue3-emoji-picker"
+import "vue3-emoji-picker/css";
 
 export default {
   name: "EventDialogue",
-  components: { MonthChooser },
+  components: { MonthChooser, EmojiPicker },
   props: {
     event: { type: Object as PropType<ZBEvent | null> },
   },
@@ -212,10 +271,28 @@ export default {
       [...store.state.data.dimensions].reverse().filter((dim) => dim.visible)
     );
     const tempEvent = ref(initEvent());
+    const showEmojiPicker = ref(false);
+
+    function onSelectEmoji(emoji: any) {
+      tempEvent.value.emoji = emoji.i;
+      showEmojiPicker.value = false;
+    }
+    
+    function removeEmoji() {
+      tempEvent.value.emoji = "";
+    }
+
+    function toggleEmojiPicker() {
+      showEmojiPicker.value = !showEmojiPicker.value;
+    }
 
     return {
       tempEvent,
       dimensionOptions,
+      onSelectEmoji,
+      removeEmoji,
+      showEmojiPicker,
+      toggleEmojiPicker,
     };
   },
   computed: {
@@ -303,6 +380,17 @@ export default {
   margin-left: 10vw;
   margin-top: 4vh;
   z-index: 10;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  z-index: 1000;
+  width: 20em;
+}
+
+.dropdown.is-active .dropdown-menu {
+  display: block;
 }
 
 @media screen and (min-width: 769px), print {
