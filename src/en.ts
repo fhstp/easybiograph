@@ -18,6 +18,8 @@ export default {
   greenmode: "Green",
   yellowmode: "Yellow",
   blackmode: "Black-White",
+  enabled: "On",
+  disabled: "Off",
   //}
   //eventDialogue: {
   createentry: "Create a new entry",

@@ -177,6 +177,12 @@
       </div>
 
       <div class="navbar-end">
+        <a @click="changeGridState(!showGrid)" class="button is-dark navbar-item in-nav">
+            <span class="icon">
+              <font-awesome-icon icon="table-columns" />
+            </span>
+            <span>{{ showGrid ? t("enabled") : t("disabled") }}</span>
+          </a>
         <div class=" navbar-item">
             <span class="icon" :style="{ color: selectedMode !== 'yellow-mode' ? 'white' : 'inherit' }">
               <font-awesome-icon icon="paint-roller" />
@@ -187,13 +193,6 @@
               <option value="black-mode">{{ t("blackmode") }}</option>
             </select>
           </div>
-          <span>
-            <input type="checkbox" :checked="showGrid" @change="changeGridState(!showGrid)">
-          <span class="icon">
-            <font-awesome-icon icon="table-columns" />
-          </span>
-              <span>{{ t("grid") }}</span>
-        </span>
           <div class="navbar-item in-nav">
           <select
               id="langselect"
