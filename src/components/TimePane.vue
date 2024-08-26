@@ -43,7 +43,7 @@
             :event="mark.datum"
             :labelSpace="(100 * mark.spx) / mark.w"
             class="events"
-            :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * 1.8}rem; height: 1.8rem; z-index: 2`"
+            :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * 1.8}rem; height: 1.8rem`"
             @click="$emit('display-event', mark.datum)"
           />
         </div>
