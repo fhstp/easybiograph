@@ -5,6 +5,7 @@
     v-show="showEventDialogue"
     @close="showEventDialogue = false"
     :event="selectedEvent"
+    style="z-index: 100;"
   />
 
   <PersonDialogue
@@ -52,39 +53,44 @@
           easyBiograph
         </div>
 
-        
-        <div class="buttons">
-        <a
+        <div class="navbar-item"> 
+          <div class="buttons">
+            <a
             class="button is-dark navbar-item in-nav"
             @click="showAddEventDialogue()"
             v-show="!showIntro"
-        >
-              <span class="icon">
-                <font-awesome-icon icon="plus" />
-              </span>
-          <span>{{ t("createevent") }}</span>
-        </a>
-
-        <a
+            >
+            <span class="icon">
+              <font-awesome-icon icon="plus" />
+            </span>
+            <span>{{ t("createevent") }}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+      
+      <div class="navbar-item">
+        <div class="buttons">
+          <a
             class="button is-dark navbar-item in-nav"
             @click="toggleZoomMode"
             v-show="!showIntro"
-        >
-              <span class="icon">
-                <font-awesome-icon icon="magnifying-glass-plus" />
-              </span>
-          <span>Zoom</span>
-        </a>
-        <a
+            >
+            <span class="icon">
+              <font-awesome-icon icon="magnifying-glass-plus" />
+            </span>
+            <span>Zoom</span>
+          </a>
+          <a
             class="button is-dark navbar-item in-nav"
             @click="zoomUndo"
             v-show="!showIntro && isZoomed"
             :title="t('resetzoom')"
-        >
-              <span class="icon">
-                <font-awesome-icon icon="magnifying-glass-minus" />
-              </span>
-        </a>
+            >
+            <span class="icon">
+              <font-awesome-icon icon="magnifying-glass-minus" />
+            </span>
+          </a>
           <a
               class="button is-dark navbar-item in-nav"
               @click="moveZoomLeft"
@@ -94,7 +100,23 @@
           >
             &lt;
           </a>
-          
+          <div class="years-text" style="color: var(--text-color);" v-show="!showIntro && isZoomed">
+            Zoom: {{ zoomedYears }} {{t("outof")}} {{ totalYears }} {{ t("years") }}
+            <div class="horizontal-bar-container">
+              <div class="white-bar">
+                <div class="grey-bar" :style="{ width: greyBarWidth, left: greyBarLeft }"></div>
+              </div>
+            </div>
+          </div>
+          <a 
+            class="button is-dark navbar-item in-nav"
+            @click="moveZoomRight"
+            v-show="!showIntro && isZoomed"
+            :title="t('totheright')"
+            style="margin-left: 1vw"
+          >
+          >
+          </a>
         </div>
       </div>
 
@@ -160,37 +182,17 @@
           </div>
         </div>
       </div>
-      <div class="years-text" v-show="!showIntro && isZoomed">
-        Zoom: {{ zoomedYears }} {{t("outof")}} {{ totalYears }} {{ t("years") }}
-      <div class="horizontal-bar-container">
-        <div class="white-bar">
-          <div class="grey-bar" :style="{ width: greyBarWidth, left: greyBarLeft }"></div>
-        </div>
-      </div>
-      </div>
-
-      <div class="navbar-brand">
-      <div class="buttons">
-        <a 
-          class="button is-dark navbar-item in-nav"
-          @click="moveZoomRight"
-          v-show="!showIntro && isZoomed"
-          :title="t('totheright')"
-          style="margin-left: 1vw"
-        >
-          >
-        </a>
-      </div>
-      </div>
+      
 
       <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="buttons">
         <a @click="changeGridState(!showGrid)" class="button is-dark navbar-item in-nav">
             <span class="icon">
               <font-awesome-icon icon="table-columns" />
             </span>
             <span>{{ showGrid ? t("enabled") : t("disabled") }}</span>
           </a>
-        <div class=" navbar-item">
             <span class="icon" :style="{ color: selectedMode !== 'yellow-mode' ? 'white' : 'inherit' }">
               <font-awesome-icon icon="paint-roller" />
             </span>
@@ -199,17 +201,18 @@
               <option value="yellow-mode">{{ t("yellowmode") }}</option>
               <option value="black-mode">{{ t("blackmode") }}</option>
             </select>
-          </div>
-          <div class="navbar-item in-nav">
+        
           <select
+              style="margin-right: 1vw;"
               id="langselect"
               name="lang"
               v-model="lang">
               <option value="de">Deutsch</option>
               <option value="en">English</option>
             </select>
+          </div>
+          </div>
         </div>
-      </div>
   </nav>
 
     <TimePane
