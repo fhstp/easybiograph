@@ -385,7 +385,7 @@ export default {
 .dropdown-menu {
   display: none;
   position: absolute;
-  z-index: 1000;
+  z-index: 10;
   width: 20em;
 }
 

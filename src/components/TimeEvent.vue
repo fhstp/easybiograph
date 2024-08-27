@@ -158,6 +158,7 @@ export default {
 .ttParent {
   display: inline-block;
   padding: 2px 0;
+  z-index: 2;
 }
 
 .ttParent:hover {
