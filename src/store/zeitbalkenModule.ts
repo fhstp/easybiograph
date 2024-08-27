@@ -6,7 +6,7 @@ import { initZeitbalkenAsJSON, loadZeitbalken } from "@/data/Zeitbalken";
 import { initPerson } from "@/data/ZBPerson";
 
 import { loadZeitbalkenFromStore } from "./localStoragePlugin";
-import { initDimension } from "@/data/Dimension";
+import { initDefaultDimensions, initDimension } from "@/data/Dimension";
 import type { ZBDimension } from "@/data/Dimension";
 import type { ZBZoom } from "@/data/ZBZoom";
 import { initZoom } from "@/data/ZBZoom";
@@ -24,6 +24,7 @@ const state = compatibilityChecks(JSON.parse(loadZeitbalkenFromStore()));
 const mutations = {
   newZeitbalken(state: Zeitbalken): void {
     loadZeitbalken(state, initZeitbalkenAsJSON());
+    state.dimensions = initDefaultDimensions();
   },
 
   loadZeitbalken(state: Zeitbalken, payload: string): void {
@@ -60,9 +61,9 @@ const mutations = {
   },
 
   // TODO check if still needed
-  addTimeline(state: Zeitbalken, timeline: Array<number>): void {
-    state.timeline = timeline;
-  },
+  // addTimeline(state: Zeitbalken, timeline: Array<number>): void {
+  //   state.timeline = timeline;
+  // },
 
   //dimensions: Array<string>
   /*addDimensions(state: Zeitbalken, payload: { index: number; dimensions: Array<string> } ): void {
@@ -91,7 +92,7 @@ const mutations = {
     payload: { id: number; changes: Partial<ZBDimension> }
   ) {
     const dimension = state.dimensions.find((dim) => dim.id === payload.id);
-    if (dimension) {
+    if (dimension && payload.changes.title) {
       dimension.title = payload.changes.title;
     }
   },
@@ -106,34 +107,35 @@ const mutations = {
     }
   },
 
-  editDimension(
-    state: Zeitbalken,
-    payload: { index: number; changes: Partial<ZBDimension> }
-  ): void {
-    // based oen vuex\examples\composition\todomvc\store\mutations.js
-    // const index = state.alteri.indexOf(payload.alter);
+  // XXX AR 2 Aug 2024 unused & buggy (mix events and dimensions)
+  // editDimension(
+  //   state: Zeitbalken,
+  //   payload: { index: number; changes: Partial<ZBDimension> }
+  // ): void {
+  //   // based oen vuex\examples\composition\todomvc\store\mutations.js
+  //   // const index = state.alteri.indexOf(payload.alter);
 
-    // lookup does not work for 2 parallel mutations (form change & map click)
-    if (
-      payload.index != null &&
-      payload.index >= 0 &&
-      payload.index < state.dimensions.length
-    ) {
-      // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
-      const changedDimension = {
-        ...state.dimensions[payload.index],
-        ...payload.changes,
-      };
-      // applyAdaptiveNWKDefaults(changedAlter, payload.changes);
-      state.events.splice(payload.index, 1, changedDimension);
-    } else {
-      console.warn("dimension index out of bounds: " + payload.index);
-    }
-  },
+  //   // lookup does not work for 2 parallel mutations (form change & map click)
+  //   if (
+  //     payload.index != null &&
+  //     payload.index >= 0 &&
+  //     payload.index < state.dimensions.length
+  //   ) {
+  //     // using spread to merge objects <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals>
+  //     const changedDimension = {
+  //       ...state.dimensions[payload.index],
+  //       ...payload.changes,
+  //     };
+  //     // applyAdaptiveNWKDefaults(changedAlter, payload.changes);
+  //     state.events.splice(payload.index, 1, changedDimension);
+  //   } else {
+  //     console.warn("dimension index out of bounds: " + payload.index);
+  //   }
+  // },
 
   switchDimensions(
     state: Zeitbalken,
-    payload: { dimensionOne: number; dimensionTwo: number }
+    payload: { dimensionOne: ZBDimension; dimensionTwo: ZBDimension }
   ) {
     const indexToMoveUp = state.dimensions.indexOf(payload.dimensionOne);
     const indexToMoveDown = state.dimensions.indexOf(payload.dimensionTwo);

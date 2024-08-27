@@ -1,7 +1,7 @@
 <template>
   <div class="axis">
-    <div class="head year">Jahr</div>
-    <div class="headAge age">Alter</div>
+    <div class="head year">{{ t("year") }}</div>
+    <div class="headAge age">{{ t("age") }}</div>
     <div class="brush" ref="brushRef">
     <div class="substrate" ref="substrateRef">
       <div
@@ -13,11 +13,11 @@
         {{ year.label }}
       </div>
       <div
-        class="tick age"
-        v-for="age in ageTicks"
-        :key="age.label"
-        :style="age.style"
-      >
+          v-for="(age) in ageTicks"
+          :key="age.label"
+          :class="[ gridState ? (age.tick ? (age.label == ' ' ? 'tick-when-no-age' : 'tick age') : 'no-tick') : ((age.tick) && age.label == ' ' ? 'no-tick-when-no-age' : 'no-tick')]"
+          :style="age.style"
+        >
         {{ age.label }}
       </div>
     </div>
@@ -28,8 +28,10 @@
 <script setup lang="ts">
 import {computed, ref, onMounted, onBeforeUnmount, watch} from "vue";
 import * as d3 from "d3";
-import {debounce, germanTimeFormat} from "@/assets/util";
+import {debounce, englishTimeFormat, germanTimeFormat} from "@/assets/util";
 import { useStore } from "@/store";
+import de from "@/de";
+import en from "@/en";
 
 const brushRef = ref<InstanceType<typeof HTMLDivElement> | null>(null);
 let brush: any = null;
@@ -132,6 +134,7 @@ const props = defineProps<{
 }>();
 
 const zoomModeUse = ref(props.zoomMode);
+const gridState = computed(() => store.state.settings.showGrid);
 
 watch(() => props.zoomMode, (newVal, oldVal) => {
   zoomModeUse.value = newVal;
@@ -143,8 +146,10 @@ watch(() => props.zoomMode, (newVal, oldVal) => {
       const timeAxisWidth = rect.width;
 
       const centerDateZoom = calculateDateFromClick(centerClickX, timeAxisWidth);
-      const centerDate = new Date(centerDateZoom);
       console.log("HERE" + store.state.data.zoom.birthDate)
+
+      if (centerDateZoom != null) {
+        const centerDate = new Date(centerDateZoom);
 
       const currentStartDate = store.state.data.zoom.birthDate.length <= 0 ? new Date(store.state.data.person.birthDate) : new Date(store.state.data.zoom.birthDate);
       const currentEndDate = store.state.data.zoom.endDate.length <= 0 ? new Date(store.state.data.person.endDate) : new Date(store.state.data.zoom.endDate);
@@ -164,15 +169,13 @@ watch(() => props.zoomMode, (newVal, oldVal) => {
 
       console.log("Zoom committed with new range ±25%");
       updateAfterZoom();
+
+      }
     }
   }
 });
 
-// @ts-ignore
-d3.timeFormatDefaultLocale(germanTimeFormat);
-
 const store = useStore();
-
 let timeScale: any = null;
 
 if(store.state.data.zoom.birthDate.length >= 1){
@@ -207,7 +210,6 @@ const calculateDateFromClick = (clickX: number, axisWidth: number): string | nul
     const formattedDate = `${clickedDate.getFullYear()}-${String(clickedDate.getMonth() + 1).padStart(2, '0')}-${String(clickedDate.getDate()).padStart(2, '0')}`;
 
     return formattedDate;
-
   }
 
   return null;
@@ -250,12 +252,18 @@ const yearTicks = computed(() => {
   const ticks = props.scale.ticks(idealtickCount);
   // console.log(ticks);
 
+  if (store.state.settings.language == "de") {
+    d3.timeFormatDefaultLocale(germanTimeFormat);
+  } else {
+    d3.timeFormatDefaultLocale(englishTimeFormat);
+  }
+
   function format(date: Date) {
     return (
       d3.utcMonth(date) < date
-        ? d3.timeFormat("%-d. %b.")
+        ? d3.timeFormat("%-d %b")
         : d3.utcYear(date) < date
-        ? d3.timeFormat("%b.")
+        ? d3.timeFormat("%b")
         : d3.timeFormat("%Y")
     )(date);
   }
@@ -320,27 +328,40 @@ const ageTicks = computed(() => {
     // console.log(`space ${spacePerTick}px - steps ${steps} - width ${width}%`);
 
     return birthdays
-      .filter((_, index) => index % steps === steps - 1)
       .map((d, i) => {
+        // 5-year lines shifted by steps because line on left border vs label right-aligned
+        const tick = d.age % 5 === steps;
+        const axisTick = i % steps === steps - 1;
         return {
-          label: d.age.toString(),
+          label: axisTick ? d.age.toString() : " ",
+          tick: tick,
+          axisTick: axisTick,
           style: {
             left: `${props.scale(d.date) - width}%`,
             width: `calc(${width}% - 2px)`,
-            "border-left": i > 0 ? "1px solid black" : "",
+            "border-left": d.age > steps ? "1px solid black" : "",
           },
         };
-      });
+      })
+      .filter((d) => d.tick || d.axisTick);
   } else {
     // edge case: no birthday -> 1 tick at 100% -- maybe needs testing(?)
     return [
       {
         label: i.toString(),
+        tick: (i - 1) % 5 === 0,
+        axisTick: true,
         style: { left: "0%", width: "calc(100% - 2px)" },
       },
     ];
   }
 });
+
+function t(prop: string) {
+  const lang = store.state.settings.language;
+      const trans: any = lang === "de" ? de :  en;
+      return trans[prop];
+}
 </script>
 
 <style scoped lang="scss">
@@ -407,5 +428,29 @@ div.substrate {
 
 .tick.age {
   text-align: right;
+  position: absolute;
+  height: 100vh;
 }
+
+.tick-when-no-age {
+  position: absolute;
+  height: 100vh;
+  text-align: right;
+  top: 3em;
+}
+
+.no-tick {
+  position: absolute;
+  height: 1.5em;
+  text-align: right;
+  top: 1.5em;
+}
+
+.no-tick-when-no-age {
+  position: absolute;
+  height: 0em;
+  text-align: right;
+  top: 1.5em;
+}
+
 </style>

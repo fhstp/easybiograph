@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import ScatterPlotDemo from "@/components/ScatterPlotDemo.vue";
 </script>
 
 <template>
   <main>
-    <ScatterPlotDemo />
+    This view is currently not in use. The default view is TimeGraph.vue.
   </main>
 </template>

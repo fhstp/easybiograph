@@ -5,22 +5,18 @@
       {{ $store.state.data.person.name }}
       ({{ $store.state.data.person.birthDate.substring(5, 7) > $store.state.data.person.creationDate.substring(5, 7) ?
         ($store.state.data.person.creationDate.substring(0, 4) - $store.state.data.person.birthDate.substring(0, 4)) - 1
-      : ($store.state.data.person.creationDate.substring(0, 4) - $store.state.data.person.birthDate.substring(0, 4))}}a), geboren am
-      {{ $store.state.data.person.birthDate.substring(8, 10) }}.{{
-        $store.state.data.person.birthDate.substring(5, 7)
-      }}.{{ $store.state.data.person.birthDate.substring(0, 4) }}
+      : ($store.state.data.person.creationDate.substring(0, 4) - $store.state.data.person.birthDate.substring(0, 4))}}a), {{ t("bornon") }}
+      {{ formatDate($store.state.data.person.birthDate)}}
       <span v-if="$store.state.data.person.birthplace">
         in {{ $store.state.data.person.birthplace }}
       </span>
     </p>
     <p class="same interviewer" style="float: right; text-align: right; margin-right: 1%">
-      erstellt
+      {{ t("created") }}
       <span v-if="$store.state.data.person.interviewers">
-        von: {{ $store.state.data.person.interviewers }},
+        {{ t("by") }} {{ $store.state.data.person.interviewers }},
       </span>
-      {{ $store.state.data.person.creationDate.substring(8, 10) }}.{{
-        $store.state.data.person.creationDate.substring(5, 7)
-      }}.{{ $store.state.data.person.creationDate.substring(0, 4) }}
+      {{ formatDate($store.state.data.person.creationDate)}}
       &nbsp;
     </p>
     <!-- TODO fill from stored ZBPerson -->
@@ -29,14 +25,26 @@
 </template>
 
 <script>
+import { store } from "../store";
+import de from "@/de";
+import en from "@/en";
+
 export default {
   name: "PersonInfo",
-  props: {
-    contrastMode: {
-      type: Boolean,
-      required: true,
+  methods: {
+    t(prop) {
+      const lang = store.state.settings.language;
+      const trans = lang === "de" ? de :  en;
+      return trans[prop];
     },
-  },
+    formatDate(date) {
+      return new Date(date).toLocaleDateString(this.t("language"), {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+  }
 };
 </script>
 
@@ -50,7 +58,8 @@ export default {
   height: 2.5em;
   z-index: 5;
   white-space: nowrap;
-  background-color: #d2dee2;
+  background-color: var(--secondary-color);
+  color: var(--secondary-text-color);
 }
 
 .contrast .personInfo {

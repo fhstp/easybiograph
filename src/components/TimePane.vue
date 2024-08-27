@@ -1,14 +1,14 @@
 <template>
   <div class="pane">
-    <PersonInfo :contrastMode="contrastMode" />
-    <TimeAxis :scale="timeScale" :zoomMode="zoomMode" style="z-index: 2" />
+    <PersonInfo/>
+    <TimeAxis :scale="timeScale" :zoomMode="zoomMode" style="z-index: 2"/>
     <div class="pane2">
       <div
         v-for="(dim, index) in layout"
-        :value="contrastMode ? true : false"
+        :value="isBlackMode ? true : false"
         :key="dim.id"
-        :class="{ 'dim': true, 'white-background': index % 2 !== 0, 'grey-background': index % 2 === 0 }"
-        :style="`height: ${100 / layout.length}%`"
+        :class="{ 'dim': true, 'white-background': store.state.settings.colorMode == 'black-mode' ? true : index % 2 !== 0, 'grey-background': store.state.settings.colorMode == 'black-mode' ? false : index % 2 === 0 }"
+        :style="`height: ${100 / layout.length}%;`"
       >
         <!-- , {'border-style': contrastMode ? 'groove hidden groove hidden' : 'hidden'} -->
         <div
@@ -16,19 +16,21 @@
           class="dimensionlabel"
           :class="{
             dim: true,
-            'white-background': index % 2 !== 0,
-            'grey-background': index % 2 === 0,
+            'white-background': store.state.settings.colorMode == 'black-mode' ? true : index % 2 !== 0,
+            'grey-background': store.state.settings.colorMode == 'black-mode' ? false : index % 2 === 0,
+            'border-enabled': store.state.settings.colorMode == 'black-mode',
           }"
         ></div>
         <div class="dlabel">
-          {{ dim.label }}
+          {{ translateDim(dim.label, index) }}
         </div>
 
         <div
           class="substrate"
           :class="{
-            'white-background': index % 2 !== 0,
-            'grey-background': index % 2 === 0,
+            'white-background': store.state.settings.colorMode == 'black-mode' ? true : index % 2 !== 0,
+            'grey-background': store.state.settings.colorMode == 'black-mode' ? false : index % 2 === 0,
+            'border-enabled': store.state.settings.colorMode == 'black-mode',
         }"
           ref="substrateRef"
         >
@@ -41,9 +43,8 @@
             :event="mark.datum"
             :labelSpace="(100 * mark.spx) / mark.w"
             class="events"
-            :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * 1.8}rem; height: 1.8rem`"
-            @click="$emit('displayEvent', mark.datum)"
-            :contrastMode="contrastMode"
+            :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * 1.8}rem; height: 1.8rem; z-index: 2`"
+            @click="$emit('display-event', mark.datum)"
           />
         </div>
       </div>
@@ -56,6 +57,7 @@
 import {computed, getCurrentInstance, onMounted} from "vue";
 import { useStore } from "@/store";
 import type { ZBEvent } from "@/data/ZBEvent";
+import { translateDim } from "@/data/Dimension";
 import * as d3 from "d3";
 import TimeAxis from "./TimeAxis.vue";
 import { germanTimeFormat } from "../assets/util";
@@ -88,14 +90,15 @@ interface DimensionLayout {
 // }
 
 const store = useStore();
-const props = defineProps(['contrastMode', 'zoomMode']);
+const props = defineProps(['isBlackMode', 'zoomMode']);
 
 onMounted(() => {
   initializeBrushing();
 });
 
-const contrastMode = computed(() => props.contrastMode);
-const zoomMode = computed(() => props.zoomMode)
+const isBlackMode = computed(() => props.isBlackMode);
+const zoomMode = computed(() => props.zoomMode);
+      
 
 const initializeBrushing = () => {
   const dimensions = store.state.data.dimensions;
@@ -218,7 +221,7 @@ const handleMouseRelease = () => {
   isMouseDown = false;
 };
 
-const emits = defineEmits(["open-edit"]);
+const emits = defineEmits(["open-edit", "display-event"]);
 
 let pressedDate: string | null = null;
 let releasedDate: string | null = null;
@@ -248,17 +251,16 @@ const layout = computed((): Array<DimensionLayout> => {
   // TODO filter visible events (possibly as a vuex getter)
   // TODO use interval tree for filter and sort <https://www.npmjs.com/package/@flatten-js/interval-tree> or <https://github.com/ieg-vienna/TimeBench/blob/master/src/timeBench/data/util/IntervalTree.java>
   const visibleEvents = d3.group(
-    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-    store.state.data.events.sort((a, b) =>
-      a.startDate.localeCompare(b.startDate)
-    ),
-    // store.state.data.events,
+    store.state.data.events,
     (d) => d.dimensionId
   );
   // console.log(visibleEvents);
 
   buffer.forEach((dim) => {
     const eventsInDim = visibleEvents.get(dim.id) || [];
+    eventsInDim.sort((a, b) =>
+      a.startDate.localeCompare(b.startDate)
+    );
     // keep track how far to the right rows inside a dimension are occupied
     const rowOccup: number[] = [];
     const rightEventbyRow: (EventMark | null)[] = [];
@@ -323,16 +325,16 @@ const layout = computed((): Array<DimensionLayout> => {
 
 <style scoped lang="scss">
 
-.grey-background[value="false"] {
+.grey-background {
   background-color: #f2f2f2;
 }
-.grey-background[value="true"] {
-  background-color: #f2f2f2;
-  border-style: groove hidden groove hidden;
-  border-width: 2px;
-}
+
 .white-background {
   background-color: #fcfcfc;
+  &.border-enabled {
+    border-style: groove groove groove hidden;
+    border-width: 1px;
+  }
 }
 
 div.events {
@@ -363,7 +365,7 @@ div.events {
 
   &:hover::before,
   &:hover::after {
-    background-color: forestgreen;
+    background-color: var(--main-color);
   }
 }
 

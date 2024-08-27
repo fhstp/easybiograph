@@ -1,6 +1,7 @@
 <!-- wrapper for MonthYear input with model-value is a string formatted YYYY-MM -->
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
+import { store } from "@/store";
 
 const props = defineProps<{
   modelValue?: string;
@@ -25,6 +26,21 @@ const AVAIL_MONTHS = [
   "Oktober",
   "November",
   "Dezember",
+];
+
+const AVAIL_MONTHS_ENG = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 const UNSET_DAY = "--";
@@ -55,10 +71,14 @@ const age = computed(() => {
   if (minYear.value && minMonth.value !== undefined) {
     const ageMon =
       (year.value - minYear.value) * 12 + (month.value - minMonth.value);
+    
+    const yearsLabel = langIsGerman.value ? "Jahre" : "years";
+    const monthsLabel = langIsGerman.value ? "Monate" : "months";
+    const invalidLabel = langIsGerman.value ? "ungültig" : "invalid";
 
     return ageMon >= 0
-      ? `${Math.floor(ageMon / 12)} Jahre, ${ageMon % 12} Monate`
-      : "ungültig"; // otherwise fix integer division of negative values
+      ? `${Math.floor(ageMon / 12)} ${yearsLabel}, ${ageMon % 12} ${monthsLabel}`
+      : invalidLabel; 
   } else {
     return undefined;
   }
@@ -110,6 +130,10 @@ const setFromProperties = (newModelValue: string | undefined) => {
   }
 };
 
+const langIsGerman = computed(() => {
+  return store.state.settings.language == "de";
+})
+
 setFromProperties(props.modelValue);
 watch(() => props.modelValue, setFromProperties);
 
@@ -143,7 +167,7 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
   <div class="control">
     <div class="select">
       <select v-model="month" :disabled="disabled">
-        <option v-for="(label, i) in AVAIL_MONTHS" :key="i" :value="i">
+        <option v-for="(label, i) in langIsGerman ? AVAIL_MONTHS : AVAIL_MONTHS_ENG" :key="i" :value="i">
           {{ label }}
         </option>
       </select>

@@ -5,11 +5,10 @@
 </template>
 
 <script>
+// ColourDialogue is not in use yet. It might be added as a third tab for PersonDialogue.vue according to the mockups by MB.
 export default {
-  name: "ColourDialogue"
-}
+  name: "ColourDialogue",
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

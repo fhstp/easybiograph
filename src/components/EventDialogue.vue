@@ -10,12 +10,13 @@
       right: auto;
       width: 50em;
       z-index: 10;
+      overflow-y: scroll;
     "
   >
     <h1 class="title block">{{ title }}</h1>
     <div class="field is-horizontal">
       <div class="field-label">
-        <label class="label" style="text-align: left">Typ</label>
+        <label class="label" style="text-align: left">{{ t("eventtyp") }}</label>
       </div>
       <div class="field-body">
         <div class="field is-narrow">
@@ -26,7 +27,7 @@
                 v-model="tempEvent.isInterval"
                 v-bind:value="true"
               />
-              Zeitraum
+              {{ t("period") }}
             </label>
             <label class="radio">
               <input
@@ -34,7 +35,7 @@
                 v-model="tempEvent.isInterval"
                 v-bind:value="false"
               />
-              Zeitpunkt
+              {{ t("moment") }}
             </label>
           </div>
         </div>
@@ -42,7 +43,7 @@
     </div>
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Datum</label>
+        <label class="label" style="text-align: left">{{t("eventdate")}}</label>
       </div>
       <div class="field-body">
         <MonthChooser
@@ -55,7 +56,7 @@
     </div>
     <div class="field is-horizontal" v-show="tempEvent.isInterval">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">bis</label>
+        <label class="label" style="text-align: left">{{t("until")}}</label>
       </div>
       <div class="field-body">
         <MonthChooser
@@ -74,7 +75,7 @@
         text-align: right;
         margin-right: 1%;
         font-size: smaller;
-      ">Ende darf nicht vor dem Start liegen!</p>
+      ">{{ t("periodmsg") }}</p>
     <br />
     <br v-if="invalidEnd" />
     <label
@@ -88,7 +89,7 @@
       "
     >
       <input type="checkbox" v-model="tempEvent.isOpenEnd" />
-      Offenes Ende
+      {{ t("openend") }}
     </label>
     <br />
 
@@ -102,11 +103,11 @@
             <div class="select is-fullwidth">
               <select v-model="tempEvent.dimensionId">
                 <option
-                  v-for="dim in dimensionOptions"
+                  v-for="(dim, index) in dimensionOptions"
                   :key="dim.id"
                   :value="dim.id"
                 >
-                  {{ dim.title }}
+                  {{ translateDim(dim.title, index) }}
                 </option>
               </select>
             </div>
@@ -116,7 +117,7 @@
     </div>
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Titel</label>
+        <label class="label" style="text-align: left">{{t("title")}}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -127,7 +128,7 @@
               :class="{'is-danger': tempEvent.description.length < 1}"
               v-model="tempEvent.description"
               type="text"
-              placeholder="Anzeigename des Events"
+              :placeholder="t('titleplaceholder')"
               id="eventNameId"
               required
             />
@@ -139,7 +140,7 @@
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <label class="label" style="text-align: left">Notizen</label>
+        <label class="label" style="text-align: left">{{t("notes")}}</label>
       </div>
       <div class="field-body">
         <div class="field">
@@ -147,7 +148,7 @@
             <textarea
               class="textarea"
               v-model="tempEvent.notes"
-              placeholder="Notizen zum Event"
+              :placeholder="t('eventnotesplaceholder')"
               id="noteId"
             ></textarea>
           </div>
@@ -161,29 +162,29 @@
         class="button is-danger is-light"
         @click="removeEvent"
       >
-        Löschen
+        {{ t("delete") }}
       </button>
       <button
         class="button is-white"
         v-on:click="close"
       >
-        Abbrechen
+        {{ t("cancel") }}
       </button>
       <button
         v-if="isNewEvent"
         class="button is-link"
         v-on:click="addEvent"
-        :disabled="invalidEnd || tempEvent.description < 1"
+        :disabled="invalidEnd || tempEvent.description.length < 1"
       >
-        Fertig
+        {{ t("done") }}
       </button>
       <button
         v-if="!isNewEvent"
         class="button is-link"
         v-on:click="editEvent"
-        :disabled="invalidEnd || tempEvent.description < 1"
+        :disabled="invalidEnd || tempEvent.description.length < 1"
       >
-        Fertig
+        {{ t("done") }}
       </button>
    </div>
   </div>
@@ -194,8 +195,11 @@ import MonthChooser from "./MonthChooser.vue";
 import { store } from "../store";
 import { initEvent } from "../data/ZBEvent";
 import type { ZBEvent } from "../data/ZBEvent";
+import { translateDim } from "@/data/Dimension";
 import { ref, computed } from "vue";
-import type { PropType } from "vue";
+import type { defineComponent, PropType } from "vue";
+import de from "@/de";
+import en from "@/en";
 
 export default {
   name: "EventDialogue",
@@ -222,9 +226,9 @@ export default {
       return store.state.data.person.endDate;
     },
     title() {
-      return this.isNewEvent ? "Eintrag erstellen" : "Eintrag bearbeiten";
+      return this.isNewEvent ? this.t("createentry") : this.t("editentry");
     },
-    invalidEnd() {
+    invalidEnd(): boolean {
       return (
         this.tempEvent.startDate > this.tempEvent.endDate &&
         this.tempEvent.isInterval &&
@@ -273,6 +277,12 @@ export default {
     close() {
       this.$emit("close");
     },
+    t(prop: string) {
+      const lang = store.state.settings.language;
+      const trans: any = lang === "de" ? de :  en;
+      return trans[prop];
+    },
+    translateDim,
   },
   watch: {
     event: function () {

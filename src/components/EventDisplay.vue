@@ -21,7 +21,7 @@
       <div class="content">
         <div class="field is-horizontal">
           <div class="field-label is-normal">
-            <label class="label" style="text-align: left">Datum</label>
+            <label class="label" style="text-align: left">{{ t("eventdate") }}</label>
           </div>
           <div class="field-body">
             <div class="field">
@@ -32,7 +32,7 @@
 
         <div class="field is-horizontal">
           <div class="field-label is-normal">
-            <label class="label" style="text-align: left">Notizen</label>
+            <label class="label" style="text-align: left">{{ t("notes") }}</label>
           </div>
           <div class="field-body">
             <div class="field">
@@ -47,6 +47,9 @@
 
 <script setup lang="ts">
 import type { ZBEvent } from "@/data/ZBEvent";
+import de from "@/de";
+import en from "@/en";
+import { store } from "@/store";
 import { computed } from "vue";
 
 const props = defineProps<{
@@ -63,7 +66,7 @@ const notes = computed(() =>
 
 const eventTypeAsString = computed(() => {
   if (props.selectedEvent) {
-    return props.selectedEvent.isInterval ? "Zeitraum" : "Zeitpunkt";
+    return props.selectedEvent.isInterval ? t("period") : t("moment");
   } else {
     return "";
   }
@@ -71,15 +74,38 @@ const eventTypeAsString = computed(() => {
 
 const timeInfo = computed(() => {
   if (props.selectedEvent) {
+    const start = props.selectedEvent.startDate;
+    const end = props.selectedEvent.endDate;
+    
     return props.selectedEvent.isOpenEnd
-      ? props.selectedEvent.startDate + " bis Offenes Ende"
+      ? formatDate(start) + t("toopenend")
       : props.selectedEvent.isInterval
-      ? props.selectedEvent.startDate + " bis " + props.selectedEvent.endDate
-      : props.selectedEvent.startDate;
+      ? formatDate(start) + t("to") + formatDate(end)
+      : formatDate(start);
   } else {
     return "";
   }
 });
+
+function t(prop: string) {
+  const lang = store.state.settings.language;
+      const trans: any = lang === "de" ? de :  en;
+      return trans[prop];
+}
+function formatDate(date: string) {
+  if (date.length > 7) {
+    return new Date(date).toLocaleDateString(t("language"), {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+  } else {
+      return new Date(date).toLocaleDateString(t("language"), {
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+}
 </script>
 
 <style scoped></style>

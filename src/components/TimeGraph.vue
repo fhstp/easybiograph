@@ -10,7 +10,7 @@
   <PersonDialogue
     v-show="showCreateBiograph"
     :newPersonDetails="temporaryPerson"
-    title="Neuen Zeitbalken erstellen"
+    :title= "t('createtimebar')"
     @close="closePerson"
     @abort="showIntroNew"
     v-if="newPerson"
@@ -20,26 +20,25 @@
   <PersonDialogue
     v-show="showCreateBiograph"
     :newPersonDetails="temporaryPerson"
-    title="Zeitbalken bearbeiten"
+    :title= "t('edittimebar')"
     @close="closePerson"
     @abort="showCreateBiograph = false"
     v-if="!newPerson"
   />
   <!--:showButton="true"-->
 
-  <div :class="['ebcontainer', { contrast: contrastMode }]">
+  <div class="ebcontainer">
     <nav
-        class="navbar is-black"
-        :style="{ 'background-color': contrastMode ? '#0074CC' : '#488193' }"
+        :class="['navbar', 'colorMode']"
         v-show="!showCreateBiograph"
         role="navigation"
         aria-label="main navigation"
     >
       <div class="navbar-brand">
-
+        
         <a
             role="button"
-            class="navbar-burger"
+            :class="['navbar-burger', 'colorMode']"
             aria-label="menu"
             aria-expanded="false"
             data-target="navbarBasicExample"
@@ -49,10 +48,11 @@
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
-        <div class="navbar-item" :title="`easyBiograph version ${appVersion}`">
+        <div :class="['navbar-item', 'colorMode']" :title="`easyBiograph version ${appVersion}`">
           easyBiograph
         </div>
 
+        
         <div class="buttons">
         <a
             class="button is-dark navbar-item in-nav"
@@ -62,7 +62,7 @@
               <span class="icon">
                 <font-awesome-icon icon="plus" />
               </span>
-          <span>Event erstellen</span>
+          <span>{{ t("createevent") }}</span>
         </a>
 
         <a
@@ -78,8 +78,8 @@
         <a
             class="button is-dark navbar-item in-nav"
             @click="zoomUndo"
-            v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
-            title="Zoom zurücksetzen"
+            v-show="!showIntro && isZoomed"
+            :title="t('resetzoom')"
         >
               <span class="icon">
                 <font-awesome-icon icon="magnifying-glass-minus" />
@@ -88,16 +88,16 @@
           <a
               class="button is-dark navbar-item in-nav"
               @click="moveZoomLeft"
-              v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
-              title="10% nach links bewegen"
+              v-show="!showIntro && isZoomed"
+              :title="t('totheleft')"
           >
             &lt;
           </a>
           <a
               class="button is-dark navbar-item in-nav"
               @click="moveZoomRight"
-              v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0"
-              title="10% nach rechts bewegen"
+              v-show="!showIntro && isZoomed"
+              :title="t('totheright')"
               style="margin-right: 2vw"
           >
             >
@@ -126,22 +126,22 @@
           <span class="icon is-small">
             <font-awesome-icon icon="file" />
           </span>
-              <span>Neu</span>
+              <span>{{ t("new") }}</span>
             </a>
             <a class="button navbar-item out-nav" @click="newData" v-if="showIntro">
           <span class="icon is-small">
             <font-awesome-icon icon="file" />
           </span>
-              <span>Neu</span>
+              <span>{{ t("new") }}</span>
             </a>
-            <a class="file navbar-item" :value="contrastMode ? true : false" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
+            <a class="file navbar-item" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
               <label class="file-label">
                 <input class="file-input" type="file" @change="importData" />
-                <span class="file-cta" :style="{ 'background-color': contrastMode ? '#FFFFFF' : '#FFFFFF' }">
+                <span class="file-cta">
               <span class="file-icon icon is-small">
                 <font-awesome-icon icon="folder-open" />
               </span>
-              <span class="file-label">Öffnen</span>
+              <span class="file-label">{{ t("open") }}</span>
             </span>
               </label>
             </a>
@@ -149,20 +149,15 @@
           <span class="icon is-small">
             <font-awesome-icon icon="save" />
           </span>
-              <span>Speichern</span>
+              <span>{{ t("save") }}</span>
             </a>
             <a class="button navbar-item out-nav" @click="showCreateBiograph = true; newPerson = false;" v-show="!showIntro">
           <span class="icon">
             <font-awesome-icon icon="pencil-alt" />
           </span>
-              <span>Zeitbalken bearbeiten</span>
+              <span>{{ t("edittimebar") }}</span>
             </a>
-            <a class="button navbar-item out-nav" @click="toggleContrastMode">
-          <span class="icon">
-            <font-awesome-icon icon="paint-roller" />
-          </span>
-              <span>Kontrast</span>
-            </a>
+
             <a class="button navbar-item out-nav" @click="openPrintView">
               <span class="icon">
                 <font-awesome-icon icon="print" />
@@ -170,29 +165,60 @@
               <span>Drucken</span>
             </a>
             <br>
+
+            
+
             <a class="button navbar-item out-nav" @click="openHelpPopUp()">
           <span class="icon">
             <font-awesome-icon icon="question" />
           </span>
-              <span>Info</span>
+              <span>{{ t("help") }}</span>
             </a>
           </div>
         </div>
       </div>
-      <div class="years-text"
-           v-show="!showIntro && $store.state.data.zoom.birthDate.length > 0">
-        Zoom: {{ zoomedYears }} von {{ totalYears }} Jahren
+      <div class="years-text" v-show="!showIntro && isZoomed">
+        Zoom: {{ zoomedYears }} {{t("outof")}} {{ totalYears }} {{ t("years") }}
       <div class="horizontal-bar-container">
         <div class="white-bar">
           <div class="grey-bar" :style="{ width: greyBarWidth, left: greyBarLeft }"></div>
         </div>
       </div>
       </div>
+
+      <div class="navbar-end">
+        <div class=" navbar-item">
+            <span class="icon" :style="{ color: selectedMode !== 'yellow-mode' ? 'white' : 'inherit' }">
+              <font-awesome-icon icon="paint-roller" />
+            </span>
+            <select id="colorselect" name="selectedMode" v-model="selectedMode">
+              <option value="green-mode">{{ t("greenmode") }}</option>
+              <option value="yellow-mode">{{ t("yellowmode") }}</option>
+              <option value="black-mode">{{ t("blackmode") }}</option>
+            </select>
+          </div>
+          <span>
+            <input type="checkbox" :checked="showGrid" @change="changeGridState(!showGrid)">
+          <span class="icon">
+            <font-awesome-icon icon="table-columns" />
+          </span>
+              <span>{{ t("grid") }}</span>
+        </span>
+          <div class="navbar-item in-nav">
+          <select
+              id="langselect"
+              name="lang"
+              v-model="lang">
+              <option value="de">Deutsch</option>
+              <option value="en">English</option>
+            </select>
+        </div>
+      </div>
   </nav>
 
     <TimePane
       v-if="!showCreateBiograph && !showIntro"
-      :contrastMode="contrastMode"
+      :isBlackMode="selectedMode === 'black-mode'"
       :zoomMode="zoomMode"
       @display-event="openEventDisplay"
       @open-edit="setSelectedEvent"
@@ -201,11 +227,28 @@
   <!-- Intro for easybiograph -->
   <div class="welcome" v-if="showIntro">
     <embed src="easybiographWelcome.svg" alt="Welcome to easybiograph" />
-    <h2 class="title is-2">Willkommen bei easyBiograph!</h2>
-    <p class="block">
-      Erstellen Sie einen neuen Zeitbalken oder öffnen Sie einen bestehenden
-      Zeitbalken, um fortzufahren.
-    </p>
+    <h2 class="title is-2">{{ t("welcome") }}</h2>
+    <p class="block">{{ t("textunderwelcome") }}</p>
+    <div class="buttons is-centered">
+      <a class="button is-primary" @click="newData">
+        <span class="icon is-small">
+          <font-awesome-icon icon="file" />
+        </span>
+        <span>{{ t("new") }}</span>
+      </a>
+      &nbsp;
+      <a class="file is-primary"  style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
+        <label class="file-label is-primary">
+          <input class="file-input" type="file" @change="importData" />
+          <span class="file-cta">
+            <span class="file-icon icon is-small">
+              <font-awesome-icon icon="folder-open" />
+            </span>
+            <span class="file-label">{{ t("open") }}</span>
+          </span>
+        </label>
+      </a>
+    </div>
   </div>
   </div>
 
@@ -267,16 +310,19 @@
 </template>
 
 <script lang="ts">
-import {Dimension, initDimension} from "@/data/Dimension";
+import {initDimension} from "@/data/Dimension";
 import { store } from "@/store";
 import PersonDialogue from "@/components/PersonDialogue.vue";
 import PopUpNew from "@/components/PopUpNew.vue";
 import EventDialogue from "@/components/EventDialogue.vue";
-import EventPopUp from "@/components/EventPopUp.vue";
 import EventDisplay from "@/components/EventDisplay.vue";
 import TimePane from "@/components/TimePane.vue";
 import { initEvent, type ZBEvent } from "@/data/ZBEvent";
 import HelpDialogue from "@/components/HelpDialogue.vue";
+import de from "@/de";
+import en from "@/en";
+import { changeColorMode } from "@/assets/ColorMode"
+
 
 export default {
   name: "TimeGraph",
@@ -286,7 +332,6 @@ export default {
     EventDialogue,
     PopUpNew,
     PersonDialogue,
-    EventPopUp,
     EventDisplay,
   },
 
@@ -297,13 +342,12 @@ export default {
       Dimension: [...dimensions].reverse(),
       temporaryPerson: Object.assign({}, store.state.data.person), // shallow clone (ok for ZBPerson)
       newPerson: true,
-      contrastMode: false,
       zoomMode: false,
       selectedEvent: null as ZBEvent | null,
       showEventPopUp: false,
       showEventDialogue: false,
       showHelpDialogue: false,
-      personYears: store.getters.getTimeline,
+      // personYears: store.getters.getTimeline,
       showEventDisplay: false,
       burgerMenuActive: false,
       showCreateBiograph: !store.getters.getPersonCreated,
@@ -313,19 +357,22 @@ export default {
     };
   },
   computed: {
-    greyBarWidth(): any {
-      const zoomStartDate = store.state.data.zoom ? store.state.data.zoom.birthDate : '';
-      const zoomEndDate = store.state.data.zoom ? store.state.data.zoom.endDate : '';
+    isZoomed(): boolean {
+      return store.state.data.zoom.birthDate.length > 0;
+    },
+    greyBarWidth(): string {
+      const zoomStartDate = store.state.data.zoom.birthDate;
+      const zoomEndDate = store.state.data.zoom.endDate;
       const personStartDate = store.state.data.person.birthDate;
       const personEndDate = store.state.data.person.endDate;
       //@ts-ignore
       const totalPersonDuration = new Date(personEndDate) - new Date(personStartDate);
       //@ts-ignore
       const zoomDuration = new Date(zoomEndDate) - new Date(zoomStartDate);
-      return (zoomDuration / totalPersonDuration) * 100 + '%';
+      return (zoomDuration / totalPersonDuration) * 100 + "%";
     },
-    greyBarLeft(): any {
-      const zoomStartDate = store.state.data.zoom ? store.state.data.zoom.birthDate : '';
+    greyBarLeft(): string {
+      const zoomStartDate = store.state.data.zoom.birthDate;
       const personStartDate = store.state.data.person.birthDate;
       const personEndDate = store.state.data.person.endDate;
 
@@ -333,15 +380,15 @@ export default {
       const totalPersonDuration = new Date(personEndDate) - new Date(personStartDate);
       //@ts-ignore
       const zoomDurationFromStart = new Date(zoomStartDate) - new Date(personStartDate);
-      return (zoomDurationFromStart / totalPersonDuration) * 100 + '%';
+      return (zoomDurationFromStart / totalPersonDuration) * 100 + "%";
     },
 
-    zoomedYears() {
-      const zoomStartDate = new Date(store.state.data.zoom ? store.state.data.zoom.birthDate : '');
-      const zoomEndDate = new Date(store.state.data.zoom ? store.state.data.zoom.endDate : '');
+    zoomedYears(): number {
+      const zoomStartDate = new Date(store.state.data.zoom.birthDate);
+      const zoomEndDate = new Date(store.state.data.zoom.endDate);
       return zoomEndDate.getFullYear() - zoomStartDate.getFullYear() + 1;
     },
-    totalYears() {
+    totalYears(): number {
       const personStartDate = new Date(store.state.data.person.birthDate);
       const personEndDate = new Date(store.state.data.person.endDate);
       return personEndDate.getFullYear() - personStartDate.getFullYear() + 1;
@@ -351,11 +398,34 @@ export default {
     },
     showIntro(): boolean {
       //@ts-ignore
-      return this.personYears < 1;
+      return !(
+        store.state.data.person &&
+        store.state.data.person.name &&
+        store.state.data.person.name.length > 0
+      );
     },
     appVersion(): string {
       // eslint-disable-next-line no-undef
       return __APP_VERSION__;
+    },
+    lang: {
+      get() {
+        return store.state.settings.language;
+      },
+      set(newValue: string) {
+        store.commit("settings/changeLanguage", newValue);
+      }
+    },
+    selectedMode: {
+      get() {
+        return store.state.settings.colorMode;
+      },
+      set(newValue: string) {
+        store.commit("settings/changeColorMode", newValue);
+      }
+    },
+    showGrid(): boolean {
+      return store.state.settings.showGrid;
     },
   },
   watch: {
@@ -376,54 +446,50 @@ export default {
       const zoomEndDate = new Date(store.state.data.zoom.endDate);
       const personStartDate = new Date(store.state.data.person.birthDate);
 
-      const maxZoomStartDate = new Date(personStartDate);
+      //@ts-ignore
+      const zoomDuration = zoomEndDate - zoomStartDate;
+      const shiftDuration = zoomDuration * 0.10;
 
-      if (zoomStartDate > maxZoomStartDate) {
-        const newZoomStartDate = new Date(zoomStartDate);
-        newZoomStartDate.setFullYear(zoomStartDate.getFullYear() - 5);
-        const newZoomEndDate = new Date(zoomEndDate);
-        newZoomEndDate.setFullYear(zoomEndDate.getFullYear() - 5);
+      let newZoomStartDate = new Date(zoomStartDate.getTime() - shiftDuration);
+      let newZoomEndDate = new Date(zoomEndDate.getTime() - shiftDuration);
 
-        const newZoom = {
-          birthDate: newZoomStartDate.toISOString().split("T")[0],
-          endDate: newZoomEndDate.toISOString().split("T")[0],
-        };
-
-        store.commit("data/addZoom", newZoom);
-        console.log("Zoom moved 5 years to the left");
-      } else {
-        console.log("Cannot zoom further left, already at the minimum");
+      if (newZoomStartDate < personStartDate) {
+        newZoomStartDate = personStartDate;
+        newZoomEndDate = new Date(personStartDate.getTime() + zoomDuration);
       }
+
+      const newZoom = {
+        birthDate: newZoomStartDate.toISOString().split("T")[0],
+        endDate: newZoomEndDate.toISOString().split("T")[0],
+      };
+
+      store.commit("data/addZoom", newZoom);
+      console.log("Zoom moved 10% to the left");
     },
     moveZoomRight() {
       const zoomStartDate = new Date(store.state.data.zoom.birthDate);
       const zoomEndDate = new Date(store.state.data.zoom.endDate);
       const personEndDate = new Date(store.state.data.person.endDate);
 
-      const maxZoomEndDate = new Date(personEndDate);
+      //@ts-ignore
+      const zoomDuration = zoomEndDate - zoomStartDate;
+      const shiftDuration = zoomDuration * 0.10;
 
-      if (zoomEndDate < maxZoomEndDate) {
-        const newZoomStartDate = new Date(zoomStartDate);
-        newZoomStartDate.setFullYear(zoomStartDate.getFullYear() + 5);
-        const newZoomEndDate = new Date(zoomEndDate);
-        newZoomEndDate.setFullYear(zoomEndDate.getFullYear() + 5);
+      let newZoomStartDate = new Date(zoomStartDate.getTime() + shiftDuration);
+      let newZoomEndDate = new Date(zoomEndDate.getTime() + shiftDuration);
 
-        const newZoom = {
-          birthDate: newZoomStartDate.toISOString().split("T")[0],
-          endDate: newZoomEndDate.toISOString().split("T")[0],
-        };
-
-        store.commit("data/addZoom", newZoom);
-        console.log("Zoom moved 5 years to the right");
-      } else {
-        console.log("Cannot zoom further right, already at the maximum");
+      if (newZoomEndDate > personEndDate) {
+        newZoomEndDate = personEndDate;
+        newZoomStartDate = new Date(personEndDate.getTime() - zoomDuration);
       }
-    },
-    toggleContrastMode() {
-      this.contrastMode = !this.contrastMode;
 
-      console.log("Kontrast clicked")
+      const newZoom = {
+        birthDate: newZoomStartDate.toISOString().split("T")[0],
+        endDate: newZoomEndDate.toISOString().split("T")[0],
+      };
 
+      store.commit("data/addZoom", newZoom);
+      console.log("Zoom moved 10% to the right");
     },
     toggleZoomMode() {
       this.zoomMode = !this.zoomMode;
@@ -530,12 +596,12 @@ export default {
       this.showHelpDialogue = false;
     },
     closePerson() {
-      //@ts-ignore
-      this.personYears = store.getters.getTimeline;
+      // //@ts-ignore
+      // this.personYears = store.getters.getTimeline;
       //@ts-ignore
       this.showCreateBiograph = false;
-      //@ts-ignore
-      this.displayYears = this.displayPersonYears();
+      // //@ts-ignore
+      // this.displayYears = this.displayPersonYears();
       //@ts-ignore
       this.$forceUpdate();
 
@@ -552,58 +618,43 @@ export default {
       const modal = document.querySelector("#modal-event");
       if (modal) modal.classList.add("is-active");
     },
-    displayPersonYears(): object {
-      let displayedArray: number[] = [];
-      //@ts-ignore
-      let years: number[] = Object.values(this.personYears);
-      const displayMaximum: number = 15;
+    // XXX AR:not needed anymore?
+    // displayPersonYears(): object {
+    //   let displayedArray: number[] = [];
+    //   //@ts-ignore
+    //   let years: number[] = Object.values(this.personYears);
+    //   const displayMaximum: number = 15;
 
-      //@ts-ignore
-      if (years.length <= displayMaximum) return this.personYears;
+    //   //@ts-ignore
+    //   if (years.length <= displayMaximum) return this.personYears;
 
-      displayedArray = [years[0]];
-      let gap = Math.round(years.length / displayMaximum);
+    //   displayedArray = [years[0]];
+    //   let gap = Math.round(years.length / displayMaximum);
 
-      for (let i = 1; i < years.length - 1; i++) {
-        if (i % gap === 0) {
-          displayedArray.push(years[i]);
-        }
-      }
-      const gapYear = displayedArray[2] - displayedArray[1];
-      displayedArray.push(gapYear + displayedArray[displayedArray.length - 1]);
-      const born = years[0];
+    //   for (let i = 1; i < years.length - 1; i++) {
+    //     if (i % gap === 0) {
+    //       displayedArray.push(years[i]);
+    //     }
+    //   }
+    //   const gapYear = displayedArray[2] - displayedArray[1];
+    //   displayedArray.push(gapYear + displayedArray[displayedArray.length - 1]);
+    //   const born = years[0];
 
-      var displayObj = {};
-      displayedArray.forEach((year) => {
-        //@ts-ignore
-        displayObj[year - born] = year;
-      });
+    //   var displayObj = {};
+    //   displayedArray.forEach((year) => {
+    //     //@ts-ignore
+    //     displayObj[year - born] = year;
+    //   });
 
-      return displayObj;
-    },
+    //   return displayObj;
+    // },
     newData() {
       this.closeModal();
       console.log("jetzt")
       store.commit("data/newZeitbalken");
       //@ts-ignore
       this.temporaryPerson = Object.assign({}, store.state.data.person); // shallow clone (ok for ZBPerson)
-      let defaultDims = ["Familie", "Wohnen", "Bildung", "Arbeit", "Gesundheit" , "Behandlung" , "Sonstiges"] ;
-      let count = 0
-      //@ts-ignore
-      for (var i=0; i < defaultDims.length ; i++) {
-        const newDim = initDimension();
-        newDim.title = defaultDims[i];
-        //@ts-ignore
-        store.commit("data/addDimension", newDim);
-        count = count + 1
-        console.log(count)
-      }
-      if (count = 5){
-        console.log("jetzt")
-        //@ts-ignore
-        this.showCreateBiograph = true;
-      }
-
+      this.showCreateBiograph = true;
     },
     showEditEventDialogue() {
       // this.selectedEvent has already been set before opening the modal event display
@@ -657,6 +708,16 @@ export default {
       };
       fr.readAsText(files.item(0));
     },
+    t(prop: string) {
+      const trans: any = this.lang === "de" ? de :  en;
+      return trans[prop];
+    },
+    changeGridState(newValue: boolean) {
+        store.commit("settings/changeGridState", newValue);
+      }
+  },
+  mounted() {
+    changeColorMode(this.selectedMode);
   },
 };
 </script>
@@ -677,13 +738,9 @@ export default {
 }
 
 .button.navbar-item.in-nav {
-  background-color: #36626f;
+  background-color: var(--button-color);
   font-weight: normal;
-}
-
-.button.navbar-item.in-nav:hover {
-  background-color: #333;
-  font-weight: normal;
+  color: var(--button-text-color);
 }
 
 .button.navbar-item.out-nav {
@@ -793,8 +850,29 @@ export default {
   width: 100%;
   text-align: left;
   margin-bottom: 8px;
+  background-color: #333;
 }
 
+.navbar-brand {
+  .navbar-burger {
+    margin-left: 1rem;
+  }
+}
+
+#langselect {
+  height: 2.25em;
+  margin-left: 0.5em;
+}
+
+.colorMode {
+  background-color: var(--main-color);
+  color: var(--text-color);
+}
+
+.navbar-end {
+  align-items: center;
+  justify-content: flex-end;
+}
 
 @media screen {
   .navbar-menu {
