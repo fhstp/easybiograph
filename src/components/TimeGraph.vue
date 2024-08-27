@@ -90,18 +90,11 @@
               @click="moveZoomLeft"
               v-show="!showIntro && isZoomed"
               :title="t('totheleft')"
+              style="margin-right: 1vw"
           >
             &lt;
           </a>
-          <a
-              class="button is-dark navbar-item in-nav"
-              @click="moveZoomRight"
-              v-show="!showIntro && isZoomed"
-              :title="t('totheright')"
-              style="margin-right: 2vw"
-          >
-            >
-          </a>
+          
         </div>
       </div>
 
@@ -173,6 +166,20 @@
         <div class="white-bar">
           <div class="grey-bar" :style="{ width: greyBarWidth, left: greyBarLeft }"></div>
         </div>
+      </div>
+      </div>
+
+      <div class="navbar-brand">
+      <div class="buttons">
+        <a 
+          class="button is-dark navbar-item in-nav"
+          @click="moveZoomRight"
+          v-show="!showIntro && isZoomed"
+          :title="t('totheright')"
+          style="margin-left: 1vw"
+        >
+          >
+        </a>
       </div>
       </div>
 
@@ -561,12 +568,14 @@ export default {
       store.commit("data/removeEvent", 0);
     },
     openPopUp() {
+      this.toggleBurgerMenu()
       //@ts-ignore
       this.newPerson = true;
       const modal = document.querySelector("#modal-popUp"); // TODO: https://vuejs.org/guide/essentials/class-and-style.html#binding-html-classes
       if (modal) modal.classList.add("is-active");
     },
     openHelpPopUp() {
+      this.toggleBurgerMenu()
       this.showHelpDialogue = true;
     },
     closeModal() {
@@ -634,6 +643,7 @@ export default {
     //   return displayObj;
     // },
     newData() {
+      this.toggleBurgerMenu()
       this.closeModal();
       console.log("jetzt")
       store.commit("data/newZeitbalken");
@@ -652,6 +662,7 @@ export default {
       this.closeModalEvent();
     },
     downloadData() {
+      this.toggleBurgerMenu()
       // TODO move to utils.ts (consistent with easynwk)
       const filename = "easybiograph_" + store.state.data.person.name + ".json";
       const dataObject = store.getters.getDownloadData;
@@ -667,6 +678,7 @@ export default {
       document.body.removeChild(dlAnchorElem);
     },
     importData(event: any) {
+      this.toggleBurgerMenu()
       const temporaryZoom = {
         birthDate: "",
         endDate: "",
