@@ -12,11 +12,11 @@
       </div>
       <br />
       <div class="buttons">
-        <button @click="$emit('open-edit')" class="button is-link">
+        <button @click="$emit('open-edit')" class="button is-dark">
           {{ t("continue") }}
         </button>
 
-        <button @click="$emit('save-data')" class="button is-link">
+        <button @click="$emit('save-data')" class="button is-dark">
           {{ t("save") }}
         </button>
 

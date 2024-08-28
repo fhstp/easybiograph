@@ -133,7 +133,7 @@
       <button class="button is-white" @click="abort">
         {{ t("cancel") }}
       </button>
-      <button class="button is-link" @click="savePerson" :disabled="newPersonDetails.name.length < 1">
+      <button class="button is-dark" @click="savePerson" :disabled="newPersonDetails.name.length < 1">
         {{ t("done") }}
       </button>
     </div>

@@ -145,7 +145,7 @@
       <br />
       <div class="field-body">
         <div>
-          <div style="display: flex; align-items: center;">
+          <div style="display: flex; align-items: center; margin-top: 10px;">
             <div>
               {{
                 tempEvent.emoji == null || tempEvent.emoji.length < 1
@@ -174,7 +174,7 @@
             <button
               v-if="tempEvent.emoji != null && tempEvent.emoji.length > 0"
               @click="removeEmoji"
-              class="button is-small is-danger"
+              class="button is-small"
               style="margin-left: 10px;"
             >
             <span>{{t("removeemoji")}}</span>
@@ -230,7 +230,7 @@
       </button>
       <button
         v-if="isNewEvent"
-        class="button is-link"
+        class="button is-dark"
         v-on:click="addEvent"
         :disabled="invalidEnd || tempEvent.description.length < 1"
       >
@@ -238,7 +238,7 @@
       </button>
       <button
         v-if="!isNewEvent"
-        class="button is-link"
+        class="button is-dark"
         v-on:click="editEvent"
         :disabled="invalidEnd || tempEvent.description.length < 1"
       >

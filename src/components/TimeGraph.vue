@@ -787,7 +787,7 @@ export default {
 .horizontal-bar-container {
   display: flex;
   align-items: center;
-  height: 20px;
+  height: 19px;
 }
 
 .white-bar {
