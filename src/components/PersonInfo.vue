@@ -50,7 +50,7 @@ export default {
 
 <style scoped>
 .personInfo {
-  position: fixed;
+ 
   padding-left: 1vw;
   padding-top: 0.5vh;
   font-weight: normal;

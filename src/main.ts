@@ -63,6 +63,8 @@ import {
   faPaintRoller,
   faTimes,
   faPrint,
+  faFilePdf,
+  faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -113,7 +115,9 @@ library.add(
   faQuestion,
   faPaintRoller,
   faTimes,
-  faPrint
+  faPrint,
+  faFilePdf,
+  faArrowLeft,
 );
 
 app.component("font-awesome-icon", FontAwesomeIcon);
