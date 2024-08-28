@@ -196,14 +196,14 @@
             <span class="icon" :style="{ color: selectedMode !== 'yellow-mode' ? 'white' : 'inherit' }">
               <font-awesome-icon icon="paint-roller" />
             </span>
-            <select id="colorselect" name="selectedMode" v-model="selectedMode">
+            <select id="colorselect" name="selectedMode" v-model="selectedMode" style="height: 2em;">
               <option value="green-mode">{{ t("greenmode") }}</option>
               <option value="yellow-mode">{{ t("yellowmode") }}</option>
               <option value="black-mode">{{ t("blackmode") }}</option>
             </select>
         
           <select
-              style="margin-right: 1vw;"
+              style="margin-right: 1vw; height: 2em"
               id="langselect"
               name="lang"
               v-model="lang">
@@ -785,7 +785,6 @@ export default {
 }
 
 .horizontal-bar-container {
-  margin-top: 10px;
   display: flex;
   align-items: center;
   height: 20px;
@@ -793,7 +792,7 @@ export default {
 
 .white-bar {
   background-color: white;
-  width: 10vw;
+  width: 12em;
   height: 100%;
   border: 1px solid #ccc;
   position: relative;
@@ -869,9 +868,8 @@ export default {
   color: var(--text-color);
 }
 
-.navbar-end {
-  align-items: center;
-  justify-content: flex-end;
+.navbar {
+  flex-wrap: wrap; 
 }
 
 @media screen {

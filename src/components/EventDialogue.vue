@@ -149,17 +149,10 @@
             <div>
               {{
                 tempEvent.emoji == null || tempEvent.emoji.length < 1
-                  ? "Noch kein Emoji gewählt"
-                  : "Gewähltes Emoji: " + tempEvent.emoji
+                  ? t("noemoji")
+                  : tempEvent.emoji
               }}
             </div>
-            <button
-              v-if="tempEvent.emoji != null && tempEvent.emoji.length > 0"
-              @click="removeEmoji"
-              class="delete"
-              aria-label="remove emoji"
-              style="margin-left: 5px;"
-            ></button>
           </div>
         </div>
       </div>
@@ -176,7 +169,15 @@
               class="button is-small"
               @click="toggleEmojiPicker"
             >
-            <span>Emoji auswählen</span>
+            <span>{{ t("selectemoji") }}</span>
+            </button>
+            <button
+              v-if="tempEvent.emoji != null && tempEvent.emoji.length > 0"
+              @click="removeEmoji"
+              class="button is-small is-danger"
+              style="margin-left: 10px;"
+            >
+            <span>{{t("removeemoji")}}</span>
             </button>
           </div>
           <div class="dropdown-menu" >
