@@ -1,6 +1,6 @@
 <template>
   <div class="ttParent">
-    <span class="tooltiptext" style="z-index: 7"
+    <span class="tooltiptext"
       >{{ event.description }}
       <br />
       {{ temporalExtentLabel }}
@@ -23,6 +23,7 @@
       :class="{ int: event.isInterval }"
       :style="`max-width: ${labelSpace}%`"
     >
+    {{ event.emoji }}
       {{ event.description }}
     </p>
     <p class="subcontent" v-show="showNotes">
@@ -157,6 +158,11 @@ export default {
 .ttParent {
   display: inline-block;
   padding: 2px 0;
+  z-index: 2;
+}
+
+.ttParent:hover {
+  z-index: 10;
 }
 
 .ttParent .tooltiptext {

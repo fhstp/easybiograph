@@ -18,6 +18,8 @@ export default {
   greenmode: "Green",
   yellowmode: "Yellow",
   blackmode: "Black-White",
+  enabled: "On",
+  disabled: "Off",
   //}
   //eventDialogue: {
   createentry: "Create a new entry",
@@ -27,6 +29,9 @@ export default {
   until: "until",
   dimension: "Dimension",
   title: "Title",
+  noemoji: "No emoji chosen yet",
+  selectemoji: "Select emoji",
+  removeemoji: "Remove emoji",
   notes: "Notes",
   period: "Period",
   moment: "Moment",

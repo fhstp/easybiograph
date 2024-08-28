@@ -4,8 +4,9 @@
       <div class="media">
         <div class="media-content">
           <p class="title is-4">
+            {{ emoji }}
             {{ description }}
-            <button @click="$emit('open-edit')" class="button is-link is-small">
+            <button @click="$emit('open-edit')" class="button is-dark is-small">
               <span class="icon is-small">
                 <font-awesome-icon icon="pencil-alt" />
               </span>
@@ -58,6 +59,10 @@ const props = defineProps<{
 
 const description = computed(() =>
   props.selectedEvent ? props.selectedEvent.description : ""
+);
+
+const emoji = computed(() => 
+  props.selectedEvent ? props.selectedEvent.emoji : ""
 );
 
 const notes = computed(() =>

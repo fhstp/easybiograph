@@ -36,7 +36,7 @@
         />
       </p>
       <p class="control">
-        <a class="button is-link is-light" @click="addDimension"> {{ t("adddimension") }}</a>
+        <a class="button is-dark" @click="addDimension"> {{ t("adddimension") }}</a>
       </p>
     </div>
   </form>
