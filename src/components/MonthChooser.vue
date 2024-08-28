@@ -71,14 +71,14 @@ const age = computed(() => {
   if (minYear.value && minMonth.value !== undefined) {
     const ageMon =
       (year.value - minYear.value) * 12 + (month.value - minMonth.value);
-    
+
     const yearsLabel = langIsGerman.value ? "Jahre" : "years";
     const monthsLabel = langIsGerman.value ? "Monate" : "months";
     const invalidLabel = langIsGerman.value ? "ungültig" : "invalid";
 
     return ageMon >= 0
       ? `${Math.floor(ageMon / 12)} ${yearsLabel}, ${ageMon % 12} ${monthsLabel}`
-      : invalidLabel; 
+      : invalidLabel;
   } else {
     return undefined;
   }
@@ -192,6 +192,6 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
 
 <style scoped lang="scss">
 .age {
-  color: hsl(0, 0%, 71%);
+  color: hsl(0, 0%, 45%);
 }
 </style>
