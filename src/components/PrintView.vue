@@ -18,37 +18,48 @@
       </div>
     </div>
 
-  <div id="print">
-    <div id="titlebar">
-      <div id="brand"><i>easy</i>Biograph</div>
-    </div>
-    <div id="egobar">
-      <p class="name">{{ "Name: "  + person.name}} </p>
-      <p>{{ "Geburtsdatum: " + formatDate(person.birthDate) }}</p>
-      <p>{{ "Zeitbalken bis: " + formatDate(person.endDate) }}</p>
-      <p>{{ "Erstellt am: " + formatDate(person.creationDate) }}</p>
-      <p v-if="person.birthplace.length > 0">{{ "Geburtort: " + person.birthplace }}</p>
-      <p v-if="person.interviewers.length > 0">{{ "Ersteller*in: " + person.interviewers }}</p>
-      <p v-if="person.notes.length > 0">{{ "Notizen: " + person.notes }}</p>
-    </div>
-    <div class="rows">
-      <div class="row" v-for="dimension in sortedDimensions">
-        <p class="panel-heading">{{ dimension.title }}</p>
-        <div class="panel-block" v-for="event in filteredEvents(dimension)" :key="event.id" >
-          <p class="name"> {{ event.description }}</p>
-          <div class="date-row">
-            <p>{{ formatDate(event.startDate) }} </p>
-            <p v-if="!event.isOpenEnd && event.startDate != event.endDate">{{ "bis " + formatDate(event.endDate) }}</p>
-            <p v-if="event.isOpenEnd">{{ "bis offenes Ende" }}</p>
-          </div>
-          <p>{{ event.notes }}</p>
-         </div>
+    <div id="print">
+      <div id="titlebar">
+        <div id="brand"><i>easy</i>Biograph</div>
       </div>
+      <div id="egobar">
+        <p class="name">{{ "Name: "  + person.name}} </p>
+        <p>{{ "Geburtsdatum: " + formatDate(person.birthDate) }}</p>
+        <p>{{ "Zeitbalken bis: " + formatDate(person.endDate) }}</p>
+        <p>{{ "Erstellt am: " + formatDate(person.creationDate) }}</p>
+        <p v-if="person.birthplace.length > 0">{{ "Geburtort: " + person.birthplace }}</p>
+        <p v-if="person.interviewers.length > 0">{{ "Ersteller*in: " + person.interviewers }}</p>
+        <p v-if="person.notes.length > 0">{{ "Notizen: " + person.notes }}</p>
+      </div>
+
+      <!-- Hochformat -->
+      <div class="rows">
+        <div class="row" v-for="dimension in sortedDimensions">
+          <p class="panel-heading">{{ dimension.title }}</p>
+          <div class="panel-block" v-for="event in filteredEvents(dimension)" :key="event.id" >
+            <p class="name"> {{ event.description }}</p>
+            <div class="date-row">
+              <p>{{ formatDate(event.startDate) }} </p>
+              <p v-if="!event.isOpenEnd && event.startDate != event.endDate">{{ "bis " + formatDate(event.endDate) }}</p>
+              <p v-if="event.isOpenEnd">{{ "bis offenes Ende" }}</p>
+            </div>
+            <p>{{ event.notes }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Querformat auf 4 Seiten
+      <div class="timegraph-container">
+        <div class="timegraph-page">
+          <TimePane :is-black-mode="true" :page="1" />
+        </div>
+        <div class="timegraph-page">
+          <TimePane :is-black-mode="true" :page="2" />
+        </div>
+      </div>
+      -->
+
     </div>
-    <div>
-    <TimePane :is-black-mode="true" />
-  </div>
-  </div>
   </div>
 </template>
 
@@ -71,11 +82,11 @@ export default {
     const createPdf = () => {
       const today = new Date();
       (document.title =
-        store.state.data.person.name +
-        " " +
-        today.toLocaleDateString("en-CA") +
-        ".pdf"),
-        window.print();
+          store.state.data.person.name +
+          " " +
+          today.toLocaleDateString("en-CA") +
+          ".pdf"),
+          window.print();
     };
 
     onMounted(() => {
@@ -157,7 +168,7 @@ export default {
   border: 1px solid black
 }
 .date-row {
-  display: flex; 
+  display: flex;
   gap: 5px;
 }
 #brand {
@@ -211,5 +222,37 @@ export default {
   #printinfo {
     display: none;
   }
+
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  .timegraph-container {
+    page-break-before: always;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .timegraph-page {
+    page-break-after: always;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @page timegraph {
+    size: A4 landscape;
+  }
+
+  .timegraph-page {
+    page: timegraph;
+    margin: 0;
+    transform: none;
+  }
 }
+
 </style>
