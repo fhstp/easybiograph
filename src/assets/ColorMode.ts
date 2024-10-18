@@ -1,6 +1,6 @@
 const colorModes = {
     'green-mode': { primary: '#488193', secondary: '#d2dee2', text: 'white', secondaryText: 'black', moment: "#a1d592", button: "#333", buttonText: "white" },
-    'yellow-mode': { primary: '#F2BC1B', secondary: '#F2DC99', text: 'black', secondaryText: 'black', moment: "#c1121f", button: "#333", buttonText: "white" },
+    'yellow-mode': { primary: '#c99c16', secondary: '#F2DC99', text: 'black', secondaryText: 'black', moment: "#c1121f", button: "#333", buttonText: "white" },
     'black-mode': { primary: '#333333', secondary: '#666666', text: 'white', secondaryText: 'white', moment: "black",button: "#e3e3e3", buttonText: "black" }
   };
 
