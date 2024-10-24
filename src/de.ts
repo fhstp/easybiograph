@@ -18,7 +18,7 @@ export default {
   greenmode: "Grün",
   yellowmode: "Gelb",
   blackmode: "Schwarz-Weiß",
-  enabled: "Ein",
+  enabled: "An",
   disabled: "Aus",
   //}
   //eventDialogue: {
