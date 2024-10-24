@@ -100,7 +100,7 @@
       <div class="field-body">
         <div class="field is-narrow">
           <div class="control">
-            <div class="select is-fullwidth">
+            <div class="select is-fullwidth is-link">
               <select v-model="tempEvent.dimensionId">
                 <option
                   v-for="(dim, index) in dimensionOptions"
@@ -124,7 +124,7 @@
           <div class="control">
             <form @submit.prevent="isNewEvent ? addEvent() : editEvent()">
             <input
-              class="input"
+              class="input is-link"
               :class="{'is-danger': tempEvent.description.length < 1}"
               v-model="tempEvent.description"
               type="text"
@@ -204,7 +204,7 @@
         <div class="field">
           <div class="control">
             <textarea
-              class="textarea"
+              class="textarea is-link"
               v-model="tempEvent.notes"
               :placeholder="t('eventnotesplaceholder')"
               id="noteId"

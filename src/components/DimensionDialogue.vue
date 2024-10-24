@@ -30,7 +30,7 @@
       <p class="control is-expanded">
         <input
           v-model="newDimDetails.title"
-          class="input"
+          class="input is-link"
           type="text"
           :placeholder="t('dimensionplaceholder')"
         />
