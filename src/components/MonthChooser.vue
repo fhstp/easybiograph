@@ -71,14 +71,14 @@ const age = computed(() => {
   if (minYear.value && minMonth.value !== undefined) {
     const ageMon =
       (year.value - minYear.value) * 12 + (month.value - minMonth.value);
-    
+
     const yearsLabel = langIsGerman.value ? "Jahre" : "years";
     const monthsLabel = langIsGerman.value ? "Monate" : "months";
     const invalidLabel = langIsGerman.value ? "ungültig" : "invalid";
 
     return ageMon >= 0
       ? `${Math.floor(ageMon / 12)} ${yearsLabel}, ${ageMon % 12} ${monthsLabel}`
-      : invalidLabel; 
+      : invalidLabel;
   } else {
     return undefined;
   }
@@ -152,7 +152,7 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
 
 <template>
   <div class="control has-icons-left">
-    <div class="select">
+    <div class="select is-link">
       <select v-model="day" :disabled="disabled">
         <option v-for="label in AVAIL_DAYS" :key="label" :value="label">
           {{ label }}
@@ -165,7 +165,7 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
   </div>
   &nbsp;
   <div class="control">
-    <div class="select">
+    <div class="select is-link">
       <select v-model="month" :disabled="disabled">
         <option v-for="(label, i) in langIsGerman ? AVAIL_MONTHS : AVAIL_MONTHS_ENG" :key="i" :value="i">
           {{ label }}
@@ -175,14 +175,14 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
   </div>
   &nbsp;
   <div class="control">
-    <div v-if="avail_years" class="select">
+    <div v-if="avail_years" class="select is-link">
       <select v-model="year" :disabled="disabled">
         <option v-for="label in avail_years" :key="label" :value="label">
           {{ label }}
         </option>
       </select>
     </div>
-    <input v-else v-model="year" class="input" type="number" />
+    <input v-else v-model="year" class="input is-link" type="number" />
   </div>
   &nbsp;
   <div class="age field-label is-normal">
@@ -192,6 +192,6 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
 
 <style scoped lang="scss">
 .age {
-  color: hsl(0, 0%, 71%);
+  color: hsl(0, 0%, 45%);
 }
 </style>

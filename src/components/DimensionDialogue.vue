@@ -30,13 +30,13 @@
       <p class="control is-expanded">
         <input
           v-model="newDimDetails.title"
-          class="input"
+          class="input is-link"
           type="text"
           :placeholder="t('dimensionplaceholder')"
         />
       </p>
       <p class="control">
-        <a class="button is-link is-light" @click="addDimension"> {{ t("adddimension") }}</a>
+        <a class="button is-dark" @click="addDimension"> {{ t("adddimension") }}</a>
       </p>
     </div>
   </form>

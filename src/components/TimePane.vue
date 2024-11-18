@@ -43,7 +43,7 @@
             :event="mark.datum"
             :labelSpace="(100 * mark.spx) / mark.w"
             class="events"
-            :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * 1.8}rem; height: 1.8rem; z-index: 2`"
+            :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * 1.8}rem; height: 1.8rem`"
             @click="$emit('display-event', mark.datum)"
           />
         </div>
@@ -98,7 +98,7 @@ onMounted(() => {
 
 const isBlackMode = computed(() => props.isBlackMode);
 const zoomMode = computed(() => props.zoomMode);
-      
+
 
 const initializeBrushing = () => {
   const dimensions = store.state.data.dimensions;
@@ -112,19 +112,33 @@ const initializeBrushing = () => {
           .brushX<SVGSVGElement>()
           .extent([[0, 0], [5000, 300]])
           .on('start brush end', (event) => {
-            if (event.sourceEvent && event.sourceEvent.type === 'mousedown') {
+            const sourceEvent = event.sourceEvent;
+
+            if (sourceEvent && (sourceEvent.type === 'mousedown' || sourceEvent.type === 'touchstart')) {
               const timePane = document.querySelector('.pane');
               const rect = timePane?.getBoundingClientRect();
+
+              // Handle touch events
+              const clientX = sourceEvent.type === 'touchstart'
+                  ? sourceEvent.touches[0].clientX
+                  : sourceEvent.clientX;
+
               if (rect) {
-                const clickX = event.sourceEvent.clientX - rect.left;
+                const clickX = clientX - rect.left;
                 const timeAxisWidth = rect.width;
                 pressedDate = calculateDateFromClick(clickX, timeAxisWidth);
               }
-            } else if (event.sourceEvent && event.sourceEvent.type === 'mouseup') {
+
+            } else if (sourceEvent && (sourceEvent.type === 'mouseup' || sourceEvent.type === 'touchend')) {
               const timePane = document.querySelector('.pane');
               const rect = timePane?.getBoundingClientRect();
+
+              const clientX = sourceEvent.type === 'touchend'
+                  ? sourceEvent.changedTouches[0].clientX
+                  : sourceEvent.clientX;
+
               if (rect) {
-                const clickX = event.sourceEvent.clientX - rect.left;
+                const clickX = clientX - rect.left;
                 const timeAxisWidth = rect.width;
                 releasedDate = calculateDateFromClick(clickX, timeAxisWidth);
 
@@ -143,10 +157,6 @@ const initializeBrushing = () => {
                   releasedDate = null;
                 }
               }
-              /*
-              const element = d3.select<SVGSVGElement, unknown>(brushingElement).call(brush as any);
-              brush.move(element as any, null);
-               */
             }
           });
 
@@ -154,6 +164,7 @@ const initializeBrushing = () => {
     }
   });
 };
+
 
 /*const initializeZoom = () => {
   const dimensions = store.state.data.dimensions;

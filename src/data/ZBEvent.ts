@@ -7,6 +7,7 @@ export interface ZBEvent {
   startDate: string;
   endDate: string;
   isOpenEnd: boolean;
+  emoji: string;
 }
 
 export function initEvent(): ZBEvent {
@@ -19,5 +20,6 @@ export function initEvent(): ZBEvent {
     startDate: "",
     endDate: "",
     isOpenEnd: false,
+    emoji: "",
   };
 }

@@ -5,6 +5,7 @@
     v-show="showEventDialogue"
     @close="showEventDialogue = false"
     :event="selectedEvent"
+    style="z-index: 100;"
   />
 
   <PersonDialogue
@@ -52,55 +53,69 @@
           easyBiograph
         </div>
 
-        
-        <div class="buttons">
-        <a
+        <div class="navbar-item"> 
+          <div class="buttons">
+            <a
             class="button is-dark navbar-item in-nav"
             @click="showAddEventDialogue()"
             v-show="!showIntro"
-        >
-              <span class="icon">
-                <font-awesome-icon icon="plus" />
-              </span>
-          <span>{{ t("createevent") }}</span>
-        </a>
-
-        <a
+            >
+            <span class="icon">
+              <font-awesome-icon icon="plus" />
+            </span>
+            <span>{{ t("createevent") }}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+      
+      <div class="navbar-item">
+        <div class="buttons">
+          <a
             class="button is-dark navbar-item in-nav"
             @click="toggleZoomMode"
             v-show="!showIntro"
-        >
-              <span class="icon">
-                <font-awesome-icon icon="magnifying-glass-plus" />
-              </span>
-          <span>Zoom</span>
-        </a>
-        <a
+            >
+            <span class="icon">
+              <font-awesome-icon icon="magnifying-glass-plus" />
+            </span>
+            <span>Zoom</span>
+          </a>
+          <a
             class="button is-dark navbar-item in-nav"
             @click="zoomUndo"
             v-show="!showIntro && isZoomed"
             :title="t('resetzoom')"
-        >
-              <span class="icon">
-                <font-awesome-icon icon="magnifying-glass-minus" />
-              </span>
-        </a>
+            >
+            <span class="icon">
+              <font-awesome-icon icon="magnifying-glass-minus" />
+            </span>
+          </a>
           <a
               class="button is-dark navbar-item in-nav"
               @click="moveZoomLeft"
               v-show="!showIntro && isZoomed"
               :title="t('totheleft')"
+              style="margin-right: 1vw"
           >
             &lt;
           </a>
-          <a
-              class="button is-dark navbar-item in-nav"
-              @click="moveZoomRight"
-              v-show="!showIntro && isZoomed"
-              :title="t('totheright')"
-              style="margin-right: 2vw"
+          <div class="years-text" style="color: var(--text-color);" v-show="!showIntro && isZoomed">
+            Zoom: {{ zoomedYears }} {{t("outof")}} {{ totalYears }} {{ t("years") }}
+            <div class="horizontal-bar-container">
+              <div class="white-bar">
+                <div class="grey-bar" :style="{ width: greyBarWidth, left: greyBarLeft }"></div>
+              </div>
+            </div>
+          </div>
+          <a 
+            class="button is-dark navbar-item in-nav"
+            @click="moveZoomRight"
+            v-show="!showIntro && isZoomed"
+            :title="t('totheright')"
+            style="margin-left: 1vw"
           >
-            >
+          >
           </a>
         </div>
       </div>
@@ -177,43 +192,37 @@
           </div>
         </div>
       </div>
-      <div class="years-text" v-show="!showIntro && isZoomed">
-        Zoom: {{ zoomedYears }} {{t("outof")}} {{ totalYears }} {{ t("years") }}
-      <div class="horizontal-bar-container">
-        <div class="white-bar">
-          <div class="grey-bar" :style="{ width: greyBarWidth, left: greyBarLeft }"></div>
-        </div>
-      </div>
-      </div>
+      
 
       <div class="navbar-end">
-        <div class=" navbar-item">
+        <div class="navbar-item">
+          <div class="buttons">
+        <a @click="changeGridState(!showGrid)" class="button is-dark navbar-item in-nav">
+            <span class="icon">
+              <font-awesome-icon icon="table-columns" />
+            </span>
+            <span>{{ showGrid ? t("enabled") : t("disabled") }}</span>
+          </a>
             <span class="icon" :style="{ color: selectedMode !== 'yellow-mode' ? 'white' : 'inherit' }">
               <font-awesome-icon icon="paint-roller" />
             </span>
-            <select id="colorselect" name="selectedMode" v-model="selectedMode">
+            <select id="colorselect" name="selectedMode" v-model="selectedMode" style="height: 2em;">
               <option value="green-mode">{{ t("greenmode") }}</option>
               <option value="yellow-mode">{{ t("yellowmode") }}</option>
               <option value="black-mode">{{ t("blackmode") }}</option>
             </select>
-          </div>
-          <span>
-            <input type="checkbox" :checked="showGrid" @change="changeGridState(!showGrid)">
-          <span class="icon">
-            <font-awesome-icon icon="table-columns" />
-          </span>
-              <span>{{ t("grid") }}</span>
-        </span>
-          <div class="navbar-item in-nav">
+        
           <select
+              style="margin-right: 1vw; height: 2em"
               id="langselect"
               name="lang"
               v-model="lang">
               <option value="de">Deutsch</option>
               <option value="en">English</option>
             </select>
+          </div>
+          </div>
         </div>
-      </div>
   </nav>
 
     <TimePane
@@ -576,12 +585,14 @@ export default {
       store.commit("data/removeEvent", 0);
     },
     openPopUp() {
+      this.toggleBurgerMenu()
       //@ts-ignore
       this.newPerson = true;
       const modal = document.querySelector("#modal-popUp"); // TODO: https://vuejs.org/guide/essentials/class-and-style.html#binding-html-classes
       if (modal) modal.classList.add("is-active");
     },
     openHelpPopUp() {
+      this.toggleBurgerMenu()
       this.showHelpDialogue = true;
     },
     closeModal() {
@@ -649,6 +660,7 @@ export default {
     //   return displayObj;
     // },
     newData() {
+      this.toggleBurgerMenu()
       this.closeModal();
       console.log("jetzt")
       store.commit("data/newZeitbalken");
@@ -667,6 +679,7 @@ export default {
       this.closeModalEvent();
     },
     downloadData() {
+      this.toggleBurgerMenu()
       // TODO move to utils.ts (consistent with easynwk)
       const filename = "easybiograph_" + store.state.data.person.name + ".json";
       const dataObject = store.getters.getDownloadData;
@@ -682,6 +695,7 @@ export default {
       document.body.removeChild(dlAnchorElem);
     },
     importData(event: any) {
+      this.toggleBurgerMenu()
       const temporaryZoom = {
         birthDate: "",
         endDate: "",
@@ -785,15 +799,14 @@ export default {
 }
 
 .horizontal-bar-container {
-  margin-top: 10px;
   display: flex;
   align-items: center;
-  height: 20px;
+  height: 19px;
 }
 
 .white-bar {
   background-color: white;
-  width: 10vw;
+  width: 12em;
   height: 100%;
   border: 1px solid #ccc;
   position: relative;
@@ -869,9 +882,8 @@ export default {
   color: var(--text-color);
 }
 
-.navbar-end {
-  align-items: center;
-  justify-content: flex-end;
+.navbar {
+  flex-wrap: wrap; 
 }
 
 @media screen {

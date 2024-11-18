@@ -1,5 +1,13 @@
 # easyBiograph Version History
 
+## version 2.2.0 beta, released 28 Aug 2024
+
+* (feature) set emoji for each event
+* (usability) reorganize toolbar
+* (accessibility) check & adapt color contrasts using a tool (to level AA)
+* (bugfix) tooltip placement in front
+* (security) minor updates of libraries
+
 ## version 2.1.1 beta, released 21 Aug 2024
 
 * (feature) show 5 year grid lines (with setting to turn off)
