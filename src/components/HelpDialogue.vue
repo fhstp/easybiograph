@@ -20,9 +20,7 @@ function t(prop) {
         <p class="title is-4">easyBiograph</p>
         <p class="subtitle is-6">version {{ appVersion }}</p>
         <p class="block">
-          <!-- TODO provide link to https://easybiograph.fhstp.ac.at/ -->
-          Die Webseite mit Handbüchern und Einführungsmaterialien ist noch nicht
-          verfügbar.
+          {{ t("help0_1") }} <a href="https://easybiograph.com/">{{ t("help0_2") }}</a>.
         </p>
         <p class="block">
           {{ t("help1") }} <a href="https://github.com/fhstp/easybiograph">GitHub</a>.
