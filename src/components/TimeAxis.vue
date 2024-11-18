@@ -47,21 +47,39 @@ onMounted(() => {
   brush = d3.brushX()
       .extent([[0, 0], [5000, 300]])
       .on('start brush end', (event) => {
-        if (event.sourceEvent.type === 'mousedown') {
+        let eventSource = event.sourceEvent;
+
+        if (eventSource.type === 'mousedown' || eventSource.type === 'touchstart') {
+          // Mouse & touch start
           const timePane = document.querySelector('.pane');
           const rect = timePane?.getBoundingClientRect();
+
           if (rect) {
-            const clickX = event.sourceEvent.clientX - rect.left;
+            let clickX;
+            if (eventSource.type === 'mousedown') {
+              clickX = eventSource.clientX - rect.left;
+            } else if (eventSource.type === 'touchstart') {
+              clickX = eventSource.touches[0].clientX - rect.left;
+            }
+
             const timeAxisWidth = rect.width;
             pressedDateZoom = calculateDateFromClick(clickX, timeAxisWidth);
           }
-        }else if (event.sourceEvent.type === 'mouseup') {
+        } else if (eventSource.type === 'mouseup' || eventSource.type === 'touchend') {
+          // Mouse & touch end
           const timePane = document.querySelector('.pane');
           const rect = timePane?.getBoundingClientRect();
+
           if (rect) {
-            const clickX = event.sourceEvent.clientX - rect.left;
+            let clickX;
+            if (eventSource.type === 'mouseup') {
+              clickX = eventSource.clientX - rect.left;
+            } else if (eventSource.type === 'touchend') {
+              clickX = eventSource.changedTouches[0].clientX - rect.left;
+            }
+
             const timeAxisWidth = rect.width;
-             releasedDateZoom = calculateDateFromClick(clickX, timeAxisWidth);
+            releasedDateZoom = calculateDateFromClick(clickX, timeAxisWidth);
 
             if (pressedDateZoom && releasedDateZoom) {
               const pressedDate = new Date(pressedDateZoom);
@@ -78,7 +96,6 @@ onMounted(() => {
                 };
 
                 store.commit("data/addZoom", temporaryZoom);
-
                 console.log("Zoom committed - temporary");
 
                 pressedDateZoom = null;
@@ -102,7 +119,6 @@ onMounted(() => {
                 };
 
                 store.commit("data/addZoom", temporaryZoom);
-
                 console.log("Automatically zoomed to 3 closest months");
 
                 pressedDateZoom = null;
@@ -124,6 +140,7 @@ onMounted(() => {
       .selectAll('rect')
       .attr('height', '100%');
 });
+
 
 let pressedDateZoom: string | null = null;
 let releasedDateZoom: string | null = null;
