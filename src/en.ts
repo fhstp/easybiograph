@@ -76,6 +76,8 @@ export default {
   toopenend: " to open end",
   //}
   //helpDialogue{
+  help0_1: "Handbooks, introductory materials, and background information can be found on the",
+  help0_2: "companion website",
   help1: "easyBiograph is a free and open source software. You can find the source code at",
   help2: "This software was developed as part of the Erasmus+ project",
   help3: ", co-financed by the European Union.",

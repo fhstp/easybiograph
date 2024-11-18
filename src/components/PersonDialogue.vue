@@ -34,7 +34,7 @@
         <div class="field">
           <div class="control">
             <input
-              class="input"
+              class="input is-link"
               :class="{'is-danger': newPersonDetails.name.length < 1}"
               type="text"
               placeholder="Name"
@@ -76,7 +76,7 @@
         <div class="field">
           <div class="control">
             <input
-              class="input"
+              class="input is-link"
               type="text"
               v-model="newPersonDetails.birthplace"
               :placeholder="t('birthplaceplaceholder')"
@@ -94,7 +94,7 @@
         <div class="field">
           <div class="control">
             <input
-              class="input"
+              class="input is-link"
               type="text"
               :placeholder="t('creatorplaceholder')"
               v-model="newPersonDetails.interviewers"
@@ -112,7 +112,7 @@
         <div class="field">
           <div class="control">
             <textarea
-                class="textarea"
+                class="textarea is-link"
                 v-model="newPersonDetails.notes"
                 :placeholder="t('personnotesplaceholder')"
                 id="noteId"

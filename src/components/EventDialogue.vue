@@ -100,7 +100,7 @@
       <div class="field-body">
         <div class="field is-narrow">
           <div class="control">
-            <div class="select is-fullwidth">
+            <div class="select is-fullwidth is-link">
               <select v-model="tempEvent.dimensionId">
                 <option
                   v-for="(dim, index) in dimensionOptions"
@@ -124,7 +124,7 @@
           <div class="control">
             <form @submit.prevent="isNewEvent ? addEvent() : editEvent()">
             <input
-              class="input"
+              class="input is-link"
               :class="{'is-danger': tempEvent.description.length < 1}"
               v-model="tempEvent.description"
               type="text"
@@ -166,7 +166,7 @@
         <div class="dropdown" :class="{ 'is-active': showEmojiPicker }">
           <div >
             <button
-              class="button is-small"
+              class="button is-small emoji"
               @click="toggleEmojiPicker"
             >
             <span>{{ t("selectemoji") }}</span>
@@ -174,7 +174,7 @@
             <button
               v-if="tempEvent.emoji != null && tempEvent.emoji.length > 0"
               @click="removeEmoji"
-              class="button is-small"
+              class="button is-small emoji"
               style="margin-left: 10px;"
             >
             <span>{{t("removeemoji")}}</span>
@@ -204,7 +204,7 @@
         <div class="field">
           <div class="control">
             <textarea
-              class="textarea"
+              class="textarea is-link"
               v-model="tempEvent.notes"
               :placeholder="t('eventnotesplaceholder')"
               id="noteId"
@@ -278,7 +278,7 @@ export default {
       tempEvent.value.emoji = emoji.i;
       showEmojiPicker.value = false;
     }
-    
+
     function removeEmoji() {
       tempEvent.value.emoji = "";
     }
@@ -392,6 +392,10 @@ export default {
 
 .dropdown.is-active .dropdown-menu {
   display: block;
+}
+
+button.emoji {
+  border-color: #42ABC2;
 }
 
 @media screen and (min-width: 769px), print {

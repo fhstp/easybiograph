@@ -18,7 +18,7 @@ export default {
   greenmode: "Grün",
   yellowmode: "Gelb",
   blackmode: "Schwarz-Weiß",
-  enabled: "Ein",
+  enabled: "An",
   disabled: "Aus",
   //}
   //eventDialogue: {
@@ -76,6 +76,8 @@ export default {
   toopenend: " bis Offenes Ende",
   //}
   //helpDialogue{
+  help0_1: "Handbücher, Einführungsmaterialien und Hintergrundinformationen finden Sie auf der",
+  help0_2: "Begleitwebseite",
   help1: "easyBiograph ist Free and Open Source Software. Den Source Code finden Sie auf",
   help2: "Diese Software wurde im Rahmen des Erasmus+ Projekts",
   help3: "entwickelt, das von der Europäischen Union kofinanziert wurde.",

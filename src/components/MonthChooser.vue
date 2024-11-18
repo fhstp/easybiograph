@@ -152,7 +152,7 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
 
 <template>
   <div class="control has-icons-left">
-    <div class="select">
+    <div class="select is-link">
       <select v-model="day" :disabled="disabled">
         <option v-for="label in AVAIL_DAYS" :key="label" :value="label">
           {{ label }}
@@ -165,7 +165,7 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
   </div>
   &nbsp;
   <div class="control">
-    <div class="select">
+    <div class="select is-link">
       <select v-model="month" :disabled="disabled">
         <option v-for="(label, i) in langIsGerman ? AVAIL_MONTHS : AVAIL_MONTHS_ENG" :key="i" :value="i">
           {{ label }}
@@ -175,14 +175,14 @@ watch([day, month, year], ([newDay, newMonth, newYear]) => {
   </div>
   &nbsp;
   <div class="control">
-    <div v-if="avail_years" class="select">
+    <div v-if="avail_years" class="select is-link">
       <select v-model="year" :disabled="disabled">
         <option v-for="label in avail_years" :key="label" :value="label">
           {{ label }}
         </option>
       </select>
     </div>
-    <input v-else v-model="year" class="input" type="number" />
+    <input v-else v-model="year" class="input is-link" type="number" />
   </div>
   &nbsp;
   <div class="age field-label is-normal">
