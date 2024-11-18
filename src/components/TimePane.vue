@@ -98,11 +98,10 @@ onMounted(() => {
 
 const isBlackMode = computed(() => props.isBlackMode);
 const zoomMode = computed(() => props.zoomMode);
-      
+
 
 const initializeBrushing = () => {
   const dimensions = store.state.data.dimensions;
-  console.log("Text here")
 
   dimensions.forEach((dim) => {
     const brushingElement = d3.select(`#dataviz_brushing1D_${dim.id}`);

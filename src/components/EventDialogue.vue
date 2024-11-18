@@ -166,7 +166,7 @@
         <div class="dropdown" :class="{ 'is-active': showEmojiPicker }">
           <div >
             <button
-              class="button is-small"
+              class="button is-small emoji"
               @click="toggleEmojiPicker"
             >
             <span>{{ t("selectemoji") }}</span>
@@ -174,7 +174,7 @@
             <button
               v-if="tempEvent.emoji != null && tempEvent.emoji.length > 0"
               @click="removeEmoji"
-              class="button is-small"
+              class="button is-small emoji"
               style="margin-left: 10px;"
             >
             <span>{{t("removeemoji")}}</span>
@@ -278,7 +278,7 @@ export default {
       tempEvent.value.emoji = emoji.i;
       showEmojiPicker.value = false;
     }
-    
+
     function removeEmoji() {
       tempEvent.value.emoji = "";
     }
@@ -392,6 +392,10 @@ export default {
 
 .dropdown.is-active .dropdown-menu {
   display: block;
+}
+
+button.emoji {
+  border-color: #42ABC2;
 }
 
 @media screen and (min-width: 769px), print {
