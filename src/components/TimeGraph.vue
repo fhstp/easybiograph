@@ -36,7 +36,6 @@
         aria-label="main navigation"
     >
       <div class="navbar-brand">
-        
         <a
             role="button"
             :class="['navbar-burger', 'colorMode']"
@@ -53,7 +52,7 @@
           easyBiograph
         </div>
 
-        <div class="navbar-item"> 
+        <div class="navbar-item">
           <div class="buttons">
             <a
             class="button is-dark navbar-item in-nav"
@@ -68,7 +67,7 @@
         </div>
       </div>
     </div>
-      
+
       <div class="navbar-item">
         <div class="buttons">
           <a
@@ -108,7 +107,7 @@
               </div>
             </div>
           </div>
-          <a 
+          <a
             class="button is-dark navbar-item in-nav"
             @click="moveZoomRight"
             v-show="!showIntro && isZoomed"
@@ -149,7 +148,7 @@
           </span>
               <span>{{ t("new") }}</span>
             </a>
-            <a class="file navbar-item" style="margin-top: -8px; margin-bottom: 1px; margin-left: -4px">
+            <a class="file">
               <label class="file-label">
                 <input class="file-input" type="file" @change="importData" />
                 <span class="file-cta">
@@ -166,13 +165,21 @@
           </span>
               <span>{{ t("save") }}</span>
             </a>
+
             <a class="button navbar-item out-nav" @click="showCreateBiograph = true; newPerson = false;" v-show="!showIntro">
           <span class="icon">
             <font-awesome-icon icon="pencil-alt" />
           </span>
               <span>{{ t("edittimebar") }}</span>
             </a>
-            
+
+            <a class="button navbar-item out-nav" @click="openPrintView">
+              <span class="icon">
+                <font-awesome-icon icon="print" />
+              </span>
+              <span>Drucken</span>
+            </a>
+
             <a class="button navbar-item out-nav" @click="openHelpPopUp()">
           <span class="icon">
             <font-awesome-icon icon="question" />
@@ -182,7 +189,7 @@
           </div>
         </div>
       </div>
-      
+
 
       <div class="navbar-end">
         <div class="navbar-item">
@@ -201,7 +208,7 @@
               <option value="yellow-mode">{{ t("yellowmode") }}</option>
               <option value="black-mode">{{ t("blackmode") }}</option>
             </select>
-        
+
           <select
               style="margin-right: 1vw; height: 2em"
               id="langselect"
@@ -436,6 +443,12 @@ export default {
     },
   },
   methods: {
+    openPrintView() {
+      const printViewUrl = `${window.location.origin}/#/print-view`;
+      window.open(printViewUrl, '_blank');
+      this.toggleBurgerMenu();
+    },
+
     moveZoomLeft() {
       const zoomStartDate = new Date(store.state.data.zoom.birthDate);
       const zoomEndDate = new Date(store.state.data.zoom.endDate);
@@ -748,8 +761,18 @@ export default {
   color: #333;
 }
 
-.contrast .button.navbar-item {
-  background-color: #001f3f;
+.sidebar-menu > .buttons {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.sidebar-menu .file {
+  margin-left: 8px;
+  margin-bottom: 10px;
+}
+
+span.file-cta {
+  color: #333;
 }
 
 .navbar-start .buttons:last-child {
@@ -869,7 +892,7 @@ export default {
 }
 
 .navbar {
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
 }
 
 @media screen {

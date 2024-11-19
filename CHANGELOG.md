@@ -1,5 +1,13 @@
 # easyBiograph Version History
 
+## version 2.2.1, released 18 Nov 2024
+
+* (feature) print content of Zeitbalken as a list
+* (usability) touch interaction for brushing zoom and event creation
+* (accessibility) check & adapt colors based on user testing
+* (feature) link to companion website
+* (security) minor updates of libraries
+
 ## version 2.2.0 beta, released 28 Aug 2024
 
 * (feature) set emoji for each event

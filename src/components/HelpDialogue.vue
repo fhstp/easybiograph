@@ -43,4 +43,8 @@ function t(prop) {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+a {
+  color: #318091;
+}
+</style>
