@@ -55,7 +55,7 @@ onMounted(() => {
           const rect = timePane?.getBoundingClientRect();
 
           if (rect) {
-            let clickX;
+            let clickX = 0;
             if (eventSource.type === 'mousedown') {
               clickX = eventSource.clientX - rect.left;
             } else if (eventSource.type === 'touchstart') {
@@ -71,7 +71,7 @@ onMounted(() => {
           const rect = timePane?.getBoundingClientRect();
 
           if (rect) {
-            let clickX;
+            let clickX = 0;
             if (eventSource.type === 'mouseup') {
               clickX = eventSource.clientX - rect.left;
             } else if (eventSource.type === 'touchend') {
@@ -153,7 +153,7 @@ const props = defineProps<{
 const zoomModeUse = ref(props.zoomMode);
 const gridState = computed(() => store.state.settings.showGrid);
 
-watch(() => props.zoomMode, (newVal, oldVal) => {
+watch(() => props.zoomMode, (newVal) => {
   zoomModeUse.value = newVal;
   if (zoomModeUse.value) {
     const timePane = document.querySelector('.pane');

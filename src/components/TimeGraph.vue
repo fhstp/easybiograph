@@ -316,7 +316,6 @@
 </template>
 
 <script lang="ts">
-import {initDimension} from "@/data/Dimension";
 import { store } from "@/store";
 import PersonDialogue from "@/components/PersonDialogue.vue";
 import PopUpNew from "@/components/PopUpNew.vue";
