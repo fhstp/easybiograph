@@ -12,10 +12,9 @@ authors:
     affiliation: 'St. Pölten University of Applied Sciences, Austria'
   - given-names: Julia
     family-names: Böck
+    orcid: 'https://orcid.org/0009-0009-3991-6407'
     affiliation: 'St. Pölten University of Applied Sciences, Austria'
-  - given-names: Elias
-    family-names: Patru
-    affiliation: 'HTL St. Pölten'
+  - name: 'easyBiograph contributors'
 repository-code: 'https://github.com/fhstp/easybiograph'
 url: 'https://www.easybiograph.com/'
 license: MIT

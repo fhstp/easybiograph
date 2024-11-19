@@ -173,14 +173,7 @@
               <span>{{ t("edittimebar") }}</span>
             </a>
 
-            <!--<a class="button navbar-item out-nav" @click="openPrintView">-->
-              <a
-                  :href="
-            '/print-view'
-          "
-                  target="_blank"
-                  class="button"
-              >
+            <a class="button navbar-item out-nav" @click="openPrintView">
               <span class="icon">
                 <font-awesome-icon icon="print" />
               </span>
@@ -450,12 +443,12 @@ export default {
     },
   },
   methods: {
-    /*openPrintView() {
-      const printViewUrl = `${window.location.origin}/print-view`;
+    openPrintView() {
+      const printViewUrl = `${window.location.origin}/#/print-view`;
       window.open(printViewUrl, '_blank');
+      this.toggleBurgerMenu();
     },
 
-     */
     moveZoomLeft() {
       const zoomStartDate = new Date(store.state.data.zoom.birthDate);
       const zoomEndDate = new Date(store.state.data.zoom.endDate);
