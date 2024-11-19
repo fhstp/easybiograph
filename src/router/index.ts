@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import PersonDialogue from "@/components/PersonDialogue.vue";
 import TimeGraph from "@/components/TimeGraph.vue";
-import PrintView from "@/components/PrintView.vue";
+import PrintView from "@/views/PrintView.vue";
 
 const router = createRouter({
   history: createWebHashHistory(),

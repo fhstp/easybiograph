@@ -13,7 +13,7 @@
           <span class="icon">
             <font-awesome-icon icon="arrow-left" />
           </span>
-          <span>Schließen & zu easyBiograph zurückkehren</span>
+          <span>Schließen &amp; zu easyBiograph zurückkehren</span>
         </button>
       </div>
     </div>
@@ -34,7 +34,7 @@
 
       <!-- Hochformat -->
       <div class="rows">
-        <div class="row" v-for="dimension in sortedDimensions">
+        <div class="row" v-for="(dimension, i) in sortedDimensions" :key="i">
           <p class="panel-heading">{{ dimension.title }}</p>
           <div class="panel-block" v-for="event in filteredEvents(dimension)" :key="event.id" >
             <p class="name"> {{ event.description }}</p>
@@ -64,15 +64,15 @@
 </template>
 
 <script>
-import TimePane from "./TimePane.vue";
+// import TimePane from "./TimePane.vue";
 import { store, useStore } from "@/store";
 import { computed, onMounted } from "vue";
 
 export default {
   name: 'PrintView',
-  components: {
-    TimePane
-  },
+  // components: {
+  //   TimePane
+  // },
   setup: function () {
     const store = useStore();
     const person = computed(() => store.state.data.person);
@@ -84,8 +84,7 @@ export default {
       (document.title =
           store.state.data.person.name +
           " " +
-          today.toLocaleDateString("en-CA") +
-          ".pdf"),
+          today.toLocaleDateString("en-CA")),
           window.print();
     };
 
