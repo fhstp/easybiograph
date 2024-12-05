@@ -74,6 +74,7 @@
             class="button is-dark navbar-item in-nav"
             @click="toggleZoomMode"
             v-show="!showIntro"
+            :title= "t('zoomButton')"
             >
             <span class="icon">
               <font-awesome-icon icon="magnifying-glass-plus" />
@@ -136,13 +137,13 @@
         </div>
         <div class="sidebar-menu">
           <div class="buttons sidebar-buttons">
-            <a class="button navbar-item out-nav" @click="openPopUp" v-if="!showIntro">
+            <a class="button navbar-item out-nav" @click="openPopUp" v-if="!showIntro" :title="t('newButton')">
           <span class="icon is-small">
             <font-awesome-icon icon="file" />
           </span>
               <span>{{ t("new") }}</span>
             </a>
-            <a class="button navbar-item out-nav" @click="newData" v-if="showIntro">
+            <a class="button navbar-item out-nav" @click="newData" v-if="showIntro" :title="t('newButton')">
           <span class="icon is-small">
             <font-awesome-icon icon="file" />
           </span>
@@ -150,7 +151,7 @@
             </a>
             <a class="file">
               <label class="file-label">
-                <input class="file-input" type="file" @change="importData" />
+                <input class="file-input" type="file" @change="importData" :title="t('openButton')" />
                 <span class="file-cta">
               <span class="file-icon icon is-small">
                 <font-awesome-icon icon="folder-open" />
@@ -159,28 +160,28 @@
             </span>
               </label>
             </a>
-            <a class="button navbar-item out-nav" @click="downloadData" v-show="!showIntro">
+            <a class="button navbar-item out-nav" @click="downloadData" v-show="!showIntro" :title="t('saveButton')">
           <span class="icon is-small">
             <font-awesome-icon icon="save" />
           </span>
               <span>{{ t("save") }}</span>
             </a>
 
-            <a class="button navbar-item out-nav" @click="showCreateBiograph = true; newPerson = false;" v-show="!showIntro">
+            <a class="button navbar-item out-nav" @click="showCreateBiograph = true; newPerson = false;" v-show="!showIntro" :title="t('editButton')">
           <span class="icon">
             <font-awesome-icon icon="pencil-alt" />
           </span>
               <span>{{ t("edittimebar") }}</span>
             </a>
 
-            <a class="button navbar-item out-nav" @click="openPrintView">
+            <a class="button navbar-item out-nav" @click="openPrintView" v-show="!showIntro" :title="t('printButton')">
               <span class="icon">
                 <font-awesome-icon icon="print" />
               </span>
-              <span>Drucken</span>
+              <span>{{ t("print") }}</span>
             </a>
 
-            <a class="button navbar-item out-nav" @click="openHelpPopUp()">
+            <a class="button navbar-item out-nav" @click="openHelpPopUp()" :title="t('infoButton')">
           <span class="icon">
             <font-awesome-icon icon="question" />
           </span>
@@ -194,7 +195,7 @@
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
-        <a @click="changeGridState(!showGrid)" class="button is-dark navbar-item in-nav">
+        <a @click="changeGridState(!showGrid)" class="button is-dark navbar-item in-nav" v-show="!showIntro" :title= "t('gridTitle')">
             <span class="icon">
               <font-awesome-icon icon="table-columns" />
             </span>
@@ -893,6 +894,16 @@ span.file-cta {
 .navbar {
   flex-wrap: wrap;
 }
+
+/* .button.is-primary {
+  background-color: #3693A9;
+}
+
+.button.is-primary:hover {
+  background-color: #3693A9;
+}
+ */
+
 
 @media screen {
   .navbar-menu {
