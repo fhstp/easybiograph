@@ -443,6 +443,23 @@ export default {
     },
   },
   methods: {
+    closeOnEsc(event) {
+      if (event.key === 'Escape') {
+        this.showEventDialogue = false;
+      }
+      if (this.showCreateBiograph) {
+        this.showCreateBiograph = false;
+      }
+      if (this.showHelpDialogue) {
+        this.showHelpDialogue = false;
+      }
+      if (this.burgerMenuActive) {
+        this.burgerMenuActive = false;
+      }
+      this.closeModal();
+      this.closeModalEvent();
+    },
+
     openPrintView() {
       const printViewUrl = `${window.location.origin}/#/print-view`;
       window.open(printViewUrl, '_blank');
@@ -731,6 +748,7 @@ export default {
   },
   mounted() {
     changeColorMode(this.selectedMode);
+    document.addEventListener('keydown', this.closeOnEsc);
   },
 };
 </script>
