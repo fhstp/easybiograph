@@ -1,5 +1,14 @@
 # easyBiograph Version History
 
+## version 2.2.2, released 11 Dec 2024
+
+* (usability) Escape keyboard binding in dialogs and menu
+* (usability) tooltips for buttons
+* (usability) remove unnessary buttons on welcome screen
+* (usability) better dialogs on small screens
+* (accessibility) increase contrast between alternating dimensions
+* (security) minor updates of libraries (nanoid)
+
 ## version 2.2.1, released 18 Nov 2024
 
 * (feature) print content of Zeitbalken as a list
