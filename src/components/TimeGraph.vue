@@ -446,18 +446,12 @@ export default {
     closeOnEsc(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         this.showEventDialogue = false;
-      }
-      if (this.showCreateBiograph) {
         this.showCreateBiograph = false;
-      }
-      if (this.showHelpDialogue) {
         this.showHelpDialogue = false;
-      }
-      if (this.burgerMenuActive) {
         this.burgerMenuActive = false;
+        this.closeModal();
+        this.closeModalEvent();
       }
-      this.closeModal();
-      this.closeModalEvent();
     },
 
     openPrintView() {
