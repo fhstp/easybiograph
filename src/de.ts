@@ -107,6 +107,6 @@ export default {
   saveButton: "Aktuellen Zeitbalken speichern",
   editButton: "Aktuellen Zeitbalken bearbeiten",
   printButton: "PDF mit Informationen des Zeitbalkens erstellen",
-  infoButton: "Informationen zum easybiograph öffnen"
+  infoButton: "Informationen zur easyBiograph App öffnen"
 
 };

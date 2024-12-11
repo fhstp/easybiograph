@@ -443,7 +443,7 @@ export default {
     },
   },
   methods: {
-    closeOnEsc(event) {
+    closeOnEsc(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         this.showEventDialogue = false;
       }
