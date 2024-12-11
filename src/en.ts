@@ -98,5 +98,14 @@ export default {
   //timeEvent{
   toopen: "Ongoing",
   //}
-  language: "en-EN"
+  language: "en-US",
+  print: "Print",
+  gridTitle: "Turn on/off of vertical five year grid lines",
+  zoomButton: "Zoom into the timeline",
+  newButton: "Create new timeline",
+  openButton: "Open existing timeline",
+  saveButton: "Save current timeline",
+  editButton: "Edit current timeline",
+  printButton: "Create PDF with information of current timeline",
+  infoButton: "Open information about the easyBiograph app"
 };

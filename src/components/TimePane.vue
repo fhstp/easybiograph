@@ -337,7 +337,7 @@ const layout = computed((): Array<DimensionLayout> => {
 <style scoped lang="scss">
 
 .grey-background {
-  background-color: #f2f2f2;
+  background-color: #e6e6e6;
 }
 
 .white-background {

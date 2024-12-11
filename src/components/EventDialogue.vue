@@ -403,4 +403,12 @@ button.emoji {
     flex-grow: 3;
   }
 }
+
+@media screen and (max-width: 768px) {
+  #box {
+    width: 100vw !important;
+    left: 0 !important;
+    margin-left: 0 !important;
+  }
+}
 </style>

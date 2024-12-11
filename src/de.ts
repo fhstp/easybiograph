@@ -98,5 +98,15 @@ export default {
   //timeEvent{
   toopen: "Offen",
   //}
-  language: "de-DE"
+  language: "de-DE",
+  print: "Drucken",
+  gridTitle: "Ein-/Ausschalten von vertikalen Linien, welche alle 5 Jahre angezeigt werden",
+  zoomButton: "In den Zeitbalken zoomen",
+  newButton: "Neuen Zeitbalken erstellen",
+  openButton: "Einen bestehenden Zeitbalken laden",
+  saveButton: "Aktuellen Zeitbalken speichern",
+  editButton: "Aktuellen Zeitbalken bearbeiten",
+  printButton: "PDF mit Informationen des Zeitbalkens erstellen",
+  infoButton: "Informationen zur easyBiograph App öffnen"
+
 };
