@@ -1,7 +1,9 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14389169.svg)](https://doi.org/10.5281/zenodo.14389169)
+
 # easyBiograph
 
-This project aims to provide a modern web-based version of the easyBiograph.
-The easyBiograph visualizes the biographical time bar based on the book 
+This project provides a modern web-based version of the easyBiograph.
+The easyBiograph visualizes the biographical time bar based on the book
 [Soziale Diagnostik](https://www.vandenhoeck-ruprecht-verlage.com/themen-entdecken/paedagogik-soziale-arbeit/soziale-arbeit/26908/soziale-diagnostik)
 by Peter Pantuček-Eisenbacher.
 The biographical time bar (or timeline) is an important instrument for biographical diagnostics in social work. It enables the presentation and analysis of a person's life course in a visual and structured form. It provides information about individual life conditions, events and trajectories that are relevant for the design of help and support services.
