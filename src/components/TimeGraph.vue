@@ -188,6 +188,12 @@
               <span>{{ t("help") }}</span>
             </a>
           </div>
+          <div>
+            <!-- TODO you must replace this link, if the app is hosted elsewhere -->
+            <a href="https://easybiograph.fhstp.ac.at/impressum-datenschutz">
+              {{ t("imprint") }}
+            </a>
+          </div>
         </div>
       </div>
 
@@ -885,6 +891,10 @@ span.file-cta {
   text-align: left;
   margin-bottom: 8px;
   background-color: #333;
+}
+
+.sidebar a {
+  color: white;
 }
 
 .navbar-brand {

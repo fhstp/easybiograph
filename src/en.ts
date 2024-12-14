@@ -98,6 +98,7 @@ export default {
   //timeEvent{
   toopen: "Ongoing",
   //}
+  imprint: "Legal information",
   language: "en-US",
   print: "Print",
   gridTitle: "Turn on/off of vertical five year grid lines",
