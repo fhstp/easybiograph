@@ -16,16 +16,15 @@
       ]"
       @click="showDetails"
     >
-      &nbsp;
-    </div>
     <p
       class="eventText"
       :class="{ int: event.isInterval }"
-      :style="`max-width: ${labelSpace}%`"
+      :style="`max-width: ${labelSpace > 150 ? 'calc(' + labelSpace + '% + ' + 0.03*labelSpace + 'px)' : 'calc(100% - 6px)' }`"
     >
     {{ event.emoji }}
       {{ event.description }}
     </p>
+    </div>
     <p class="subcontent" v-show="showNotes">
       {{ event.notes ? event.notes : temporalExtentLabel }}
     </p>
@@ -43,6 +42,7 @@ export default {
   props: {
     event: Object,
     labelSpace: Number,
+    // markWidth: Number,
     showNotes: Boolean,
   },
   computed: {
@@ -90,6 +90,7 @@ export default {
 
 <style scoped lang="scss">
 .ebox {
+  position: relative;
   display: block;
   line-height: 1;
   height: 100%;
@@ -131,20 +132,23 @@ export default {
 
 .eventText {
   position: absolute;
-  top: 5px;
-  left: 3px;
+  // margin-left: 3px;
+  // margin-right: 3px;
+  top: 2px;
+  left: 0px;
   font-size: smaller;
   line-height: 1.4;
-  white-space: nowrap;
+  // min-width: 5rem;
+  max-height: calc(100% - 4px);
+  // white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 0 2px 0 2px;
+  padding: 0 0 0 4px;
   background-color: white;
 }
 
-.eventText.int {
-  background: white;
-  padding: 0 2px 0 1px;
+.event .eventText {
+  padding: 0 2px 0 4px;
 }
 
 .subcontent {
