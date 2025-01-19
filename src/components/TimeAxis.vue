@@ -256,13 +256,17 @@ onBeforeUnmount(() => {
 });
 
 // ... and font size
-const size = computed(() =>
-  substrateRef.value
-    ? parseFloat(
-        getComputedStyle(substrateRef.value).getPropertyValue("font-size")
-      )
-    : 10.0
-);
+const size = computed(() => {
+  if (substrateRef.value) {
+    const size = parseFloat(
+      getComputedStyle(substrateRef.value).getPropertyValue("font-size")
+    );
+    // make it more robust
+    if (!isNaN(size) && size > 0)
+      return size;
+  }
+  return 10.0;
+});
 
 const yearTicks = computed(() => {
   const idealtickCount = Math.round(axisWidth.value / size.value / 7);
@@ -329,7 +333,7 @@ const ageTicks = computed(() => {
 
   if (birthdays.length > 0) {
     // reduce tick count
-    const spacePerTick = axisWidth.value / size.value / birthdays.length;
+    const spacePerTick = axisWidth.value > 0 ? axisWidth.value / size.value / birthdays.length : 2;
     // 2.0 is a tested guess
     const steps = Math.ceil(2.0 / spacePerTick);
     // add steps extra birthdays, so that there is border line right of last label
