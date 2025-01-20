@@ -356,7 +356,7 @@ export default {
       newPerson: true,
       zoomMode: false,
       selectedEvent: null as ZBEvent | null,
-      showEventPopUp: false,
+      // showEventPopUp: false,
       showEventDialogue: false,
       showHelpDialogue: false,
       // personYears: store.getters.getTimeline,
