@@ -1,34 +1,22 @@
 <template>
   <div class="ttParent">
-    <span class="tooltiptext"
-      >{{ event.description }}
+    <span class="tooltiptext">{{ event.description }}
       <br />
       {{ temporalExtentLabel }}
     </span>
-    <div
-      class="ebox"
-      :class="[
-        event.isInterval && event.isOpenEnd
-          ? 'openEnd'
-          : event.isInterval
+    <div class="ebox" :class="[
+      event.isInterval && event.isOpenEnd
+        ? 'openEnd'
+        : event.isInterval
           ? 'period'
           : 'event',
-      ]"
-      @click="showDetails"
-    >
-      &nbsp;
+    ]" @click="showDetails">
+      <div class="eventText" :class="{ int: event.isInterval }" :style="`max-width: ${maxWidth}`">
+        {{ event.emoji }}
+        {{ event.description }}
+        <p class="subcontent" v-if="event.notes.length > 0">{{ event.notes }}</p>
+      </div>
     </div>
-    <p
-      class="eventText"
-      :class="{ int: event.isInterval }"
-      :style="`max-width: ${labelSpace}%`"
-    >
-    {{ event.emoji }}
-      {{ event.description }}
-    </p>
-    <p class="subcontent" v-show="showNotes">
-      {{ event.notes ? event.notes : temporalExtentLabel }}
-    </p>
   </div>
 </template>
 
@@ -43,7 +31,6 @@ export default {
   props: {
     event: Object,
     labelSpace: Number,
-    showNotes: Boolean,
   },
   computed: {
     temporalExtentLabel() {
@@ -57,7 +44,17 @@ export default {
         : this.event.startDate.substring(8, 10) > 0
         ? this.event.startDate.substring(8, 10) + ". " + start
         : start;
-    }
+    },
+    maxWidth() {
+      if (this.event.isOpenEnd) {
+        return 'calc(85% - 6px)';
+      }
+      else if (this.labelSpace > 150) {
+        return 'calc(' + this.labelSpace + '% + ' + 0.03 * this.labelSpace + 'px)';
+      } else {
+        return 'calc(100% - 6px)';
+      }
+    },
   },
   mounted() {
     // this.setHeight();
@@ -90,6 +87,7 @@ export default {
 
 <style scoped lang="scss">
 .ebox {
+  position: relative;
   display: block;
   line-height: 1;
   height: 100%;
@@ -115,44 +113,29 @@ export default {
   box-shadow: #2c3e50;
 }
 
-/*
-.content[value="false"] {
-  border-right: 0.5px solid lightgrey;
-  width: 10%;
-  text-align: center;
-}
-
-.content[value="true"] {
-  border-right: 0.5px solid lightgrey;
-  width: 10%;
-  text-align: center;
-}
-*/
-
 .eventText {
   position: absolute;
-  top: 5px;
-  left: 3px;
+  top: 2px;
+  left: 0px;
   font-size: smaller;
   line-height: 1.4;
-  white-space: nowrap;
+  max-height: calc(100% - 4px);
+  // white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 0 2px 0 2px;
+  padding: 0 0 0 4px;
   background-color: white;
 }
 
-.eventText.int {
-  background: white;
-  padding: 0 2px 0 1px;
+.event .eventText {
+  padding: 0 2px 0 4px;
 }
 
 .subcontent {
-  color: var(--main-color);
+  color: #6f6f6f;
   font-size: smaller;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .ttParent {

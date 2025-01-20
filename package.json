@@ -1,9 +1,8 @@
 {
   "name": "easybiograph",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "private": true,
   "type": "module",
-  "author": "Alexander Rind (https://github.com/alex-rind/)",
   "repository": "https://github.com/fhstp/easybiograph/",
   "license": "MIT",
   "scripts": {

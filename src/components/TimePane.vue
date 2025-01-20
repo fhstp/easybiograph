@@ -43,7 +43,7 @@
             :event="mark.datum"
             :labelSpace="(100 * mark.spx) / mark.w"
             class="events"
-            :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * 1.8}rem; height: 1.8rem`"
+            :style="`left: ${mark.x}%; width: ${mark.w}%; top: ${mark.row * mark.height}%; height: ${mark.height}%`"
             @click="$emit('display-event', mark.datum)"
           />
         </div>
@@ -54,7 +54,7 @@
 
 <script setup lang="ts">
 // import { scaleLinear } from "d3-scale";
-import {computed, getCurrentInstance, onMounted} from "vue";
+import {computed, onMounted} from "vue";
 import { useStore } from "@/store";
 import type { ZBEvent } from "@/data/ZBEvent";
 import { translateDim } from "@/data/Dimension";
@@ -63,7 +63,7 @@ import TimeAxis from "./TimeAxis.vue";
 import { germanTimeFormat } from "../assets/util";
 import PersonInfo from "@/components/PersonInfo.vue";
 import TimeEvent from "@/components/TimeEvent.vue";
-import {brushX, zoom} from "d3";
+// import {brushX, zoom} from "d3";
 
 interface EventMark {
   datum: ZBEvent;
@@ -73,6 +73,7 @@ interface EventMark {
   /** available width to the next event */
   spx: number;
   row: number;
+  height: number;
   // collapsed: boolean;
 }
 
@@ -81,7 +82,7 @@ interface DimensionLayout {
   label: string;
   marks: EventMark[];
   rows: number;
-  fullRows: number;
+  // fullRows: number;
 }
 
 // interface Layout {
@@ -251,8 +252,8 @@ const layout = computed((): Array<DimensionLayout> => {
   // Create a sorted copy of the filtered dimensions array
   const sortedDimensions = [...filteredDimensions].reverse();
 
-  const buffer = sortedDimensions.map((dim, i) => {
-    return { id: dim.id, label: dim.title, marks: [] as EventMark[], rows: 0, fullRows: 0 };
+  const buffer = sortedDimensions.map((dim) => {
+    return { id: dim.id, label: dim.title, marks: [] as EventMark[], rows: 0 };
   });
 
 
@@ -276,9 +277,15 @@ const layout = computed((): Array<DimensionLayout> => {
     const rowOccup: number[] = [];
     const rightEventbyRow: (EventMark | null)[] = [];
 
+    // buffer events that are overlapping to postpone their vertical layout
+    let cluster = [] as EventMark[];
+    let maxRow = 0;
+
     eventsInDim.forEach((datum) => {
       const leftDate = new Date(datum.startDate);
       const nextDate = new Date(datum.endDate);
+      // reset hours to midnight avoids strange summer time bugs
+      nextDate.setHours(0);
       if (datum.endDate.length < 8) {
         nextDate.setMonth(nextDate.getMonth() + 1);
       } else {
@@ -289,8 +296,27 @@ const layout = computed((): Array<DimensionLayout> => {
       const rightX = timeScale.value(nextDate);
       // in case of short events --> make space at least for 2% of substrate width (guessed minimum)
       const rightCorrX = leftX + Math.max(rightX - leftX, 2);
-      let eventRow = 0;
 
+      // check if a new cluster starts
+      if (rowOccup.every(v => v <= leftX)) {
+        // distribute vertical space for this cluster
+        for (const cEvent of cluster) {
+          cEvent.height = Math.floor(100 / (maxRow + 1));
+        }
+        // limit labels to start of next cluster
+        for (const rEvent of rightEventbyRow) {
+          if (rEvent !== null) {
+            rEvent.spx = leftX - rEvent.x;
+          }
+        }
+        rightEventbyRow.fill(null);
+        // console.log("end block");
+        // console.log(cluster);
+        cluster = [];
+        maxRow = 0;
+      }
+
+      let eventRow = 0;
       for (;;) {
         if (rowOccup.length == eventRow) {
           // row occupation array full --> start new row & occupy
@@ -310,6 +336,9 @@ const layout = computed((): Array<DimensionLayout> => {
       // remember the maximum row
       dim.rows = Math.max(dim.rows, eventRow);
 
+      // vertical layout
+      maxRow = Math.max(maxRow, eventRow);
+
       // update space for label for previous event in this row
       const prevMarkInRow = rightEventbyRow[eventRow];
       if (prevMarkInRow !== null) {
@@ -322,11 +351,19 @@ const layout = computed((): Array<DimensionLayout> => {
         w: Math.max(rightX - leftX, 0.5),
         spx: 100 - leftX, // default space is rest to 100%
         row: eventRow,
+        height: 50,
         // collapsed: false,
       };
       rightEventbyRow[eventRow] = newMark;
       dim.marks.push(newMark);
+      cluster.push(newMark);
     });
+
+    for (const cEvent of cluster) {
+      cEvent.height = Math.floor(100 / (maxRow + 1));
+    }
+    // console.log("absolute end block");
+    // console.log(cluster);
   });
 
 
