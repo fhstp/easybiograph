@@ -1,33 +1,22 @@
 <template>
   <div class="ttParent">
-    <span class="tooltiptext"
-      >{{ event.description }}
+    <span class="tooltiptext">{{ event.description }}
       <br />
       {{ temporalExtentLabel }}
     </span>
-    <div
-      class="ebox"
-      :class="[
-        event.isInterval && event.isOpenEnd
-          ? 'openEnd'
-          : event.isInterval
+    <div class="ebox" :class="[
+      event.isInterval && event.isOpenEnd
+        ? 'openEnd'
+        : event.isInterval
           ? 'period'
           : 'event',
-      ]"
-      @click="showDetails"
-    >
-    <p
-      class="eventText"
-      :class="{ int: event.isInterval }"
-      :style="`max-width: ${labelSpace > 150 ? 'calc(' + labelSpace + '% + ' + 0.03*labelSpace + 'px)' : 'calc(100% - 6px)' }`"
-    >
-    {{ event.emoji }}
-      {{ event.description }}
-    </p>
+    ]" @click="showDetails">
+      <div class="eventText" :class="{ int: event.isInterval }" :style="`max-width: ${maxWidth}`">
+        {{ event.emoji }}
+        {{ event.description }}
+        <p class="subcontent" v-if="event.notes.length > 0">{{ event.notes }}</p>
+      </div>
     </div>
-    <p class="subcontent" v-show="showNotes">
-      {{ event.notes ? event.notes : temporalExtentLabel }}
-    </p>
   </div>
 </template>
 
@@ -42,8 +31,6 @@ export default {
   props: {
     event: Object,
     labelSpace: Number,
-    // markWidth: Number,
-    showNotes: Boolean,
   },
   computed: {
     temporalExtentLabel() {
@@ -57,7 +44,17 @@ export default {
         : this.event.startDate.substring(8, 10) > 0
         ? this.event.startDate.substring(8, 10) + ". " + start
         : start;
-    }
+    },
+    maxWidth() {
+      if (this.event.isOpenEnd) {
+        return 'calc(85% - 6px)';
+      }
+      else if (this.labelSpace > 150) {
+        return 'calc(' + this.labelSpace + '% + ' + 0.03 * this.labelSpace + 'px)';
+      } else {
+        return 'calc(100% - 6px)';
+      }
+    },
   },
   mounted() {
     // this.setHeight();
@@ -152,11 +149,10 @@ export default {
 }
 
 .subcontent {
-  color: var(--main-color);
+  color: #6f6f6f;
   font-size: smaller;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .ttParent {
