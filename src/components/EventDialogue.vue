@@ -255,7 +255,7 @@ import { initEvent } from "../data/ZBEvent";
 import type { ZBEvent } from "../data/ZBEvent";
 import { translateDim } from "@/data/Dimension";
 import { ref, computed } from "vue";
-import type { defineComponent, PropType } from "vue";
+import type { PropType } from "vue";
 import de from "@/de";
 import en from "@/en";
 import EmojiPicker from "vue3-emoji-picker"

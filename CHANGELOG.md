@@ -1,5 +1,10 @@
 # easyBiograph Version History
 
+## version 2.3.0, released 20 Jan 2025
+
+* (feature) height of events as equally split of dimension height for overlapping events
+* (accessibility) events note better readable color
+
 ## version 2.2.2, released 11 Dec 2024
 
 * (usability) Escape keyboard binding in dialogs and menu
