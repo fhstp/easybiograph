@@ -310,8 +310,8 @@ const layout = computed((): Array<DimensionLayout> => {
           }
         }
         rightEventbyRow.fill(null);
-        console.log("end block");
-        console.log(cluster);
+        // console.log("end block");
+        // console.log(cluster);
         cluster = [];
         maxRow = 0;
       }
@@ -362,8 +362,8 @@ const layout = computed((): Array<DimensionLayout> => {
     for (const cEvent of cluster) {
       cEvent.height = Math.floor(100 / (maxRow + 1));
     }
-    console.log("absolute end block");
-    console.log(cluster);
+    // console.log("absolute end block");
+    // console.log(cluster);
   });
 
 

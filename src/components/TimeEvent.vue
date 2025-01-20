@@ -113,29 +113,12 @@ export default {
   box-shadow: #2c3e50;
 }
 
-/*
-.content[value="false"] {
-  border-right: 0.5px solid lightgrey;
-  width: 10%;
-  text-align: center;
-}
-
-.content[value="true"] {
-  border-right: 0.5px solid lightgrey;
-  width: 10%;
-  text-align: center;
-}
-*/
-
 .eventText {
   position: absolute;
-  // margin-left: 3px;
-  // margin-right: 3px;
   top: 2px;
   left: 0px;
   font-size: smaller;
   line-height: 1.4;
-  // min-width: 5rem;
   max-height: calc(100% - 4px);
   // white-space: nowrap;
   overflow: hidden;
