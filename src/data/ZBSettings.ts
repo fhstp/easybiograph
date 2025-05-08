@@ -1,4 +1,5 @@
 /** settings are persisted in local storage but independent from client data */
+import { changeColorMode } from "@/assets/ColorMode";
 
 export interface ZBSettingsFlags {
   // put boolean settings here
@@ -22,5 +23,15 @@ export function initSettingsAsJSON(): string {
 export function loadSettings(state: ZBSettings, loadedText: string): void {
   const loaded = JSON.parse(loadedText);
   // TODO: untested loading of settings
-  state = { ...state, ...loaded };
+  // state = { ...state, ...loaded };
+  for (const [key, value] of Object.entries(loaded)) {
+    // console.log(key);
+    // console.log(value);
+    (state as any)[key] = value;
+
+    if (loaded.colorMode && loaded.colorMode) {
+      // Manually trigger the effect since we bypassed the Vuex mutation
+      changeColorMode(loaded.colorMode);
+    }
+  }
 }

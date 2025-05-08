@@ -21,6 +21,8 @@ export interface IUnReDoState {
 }
 
 export function loadZeitbalkenFromStore(): string {
+
+  console.log("loadZeitbalkenFromStore");
   const storedZeitbalken = localStorage.getItem(STORAGE_DATA);
   if (storedZeitbalken != null && storedZeitbalken != "undefined") {
     return storedZeitbalken;
@@ -30,6 +32,7 @@ export function loadZeitbalkenFromStore(): string {
 }
 
 export function loadSettingsFromStore(): string {
+  console.log("loadSettingsFromStore");
   const storedSettings = localStorage.getItem(STORAGE_STNG);
   if (storedSettings != null && storedSettings != "undefined") {
     return storedSettings;
@@ -48,6 +51,10 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
     replaying: false,
   };
 
+  console.log("localstoreage plugin");
+  console.log(history.initialData)
+  console.log(history.initialSettings)
+
   store.registerModule(UNREDO_MODULE, {
     namespaced: true,
     state: {
@@ -65,6 +72,9 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
           history.undone.push(last);
           state.redoCount++;
         }
+        console.log("last")
+        console.log(history.initialSettings)
+        console.log(store.state.settings)
 
         // make subscribers aware that we are replaying
         history.replaying = true;
@@ -76,6 +86,7 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
 
         // replay all mutations (but last)
         for (const c of history.done) {
+          console.log("replaying")
           store.commit(c.type, c.payload);
         }
 
@@ -112,6 +123,8 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
 
   // track mutation in undo history
   store.subscribe((mutation) => {
+    console.log("track changes")
+    console.log(mutation)
     if (!mutation.type.startsWith(UNREDO_MODULE)) {
       if (!history.replaying) {
         history.done.push(mutation);
@@ -124,6 +137,10 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
   store.subscribe((mutation, stateAfter: IStoreState) => {
     // skip replayed mutations, but persist after undo mutation itself
     // skip internal update counts mutation
+    console.log("persis changes")
+    console.log(mutation)
+    console.log(stateAfter)
+
     if (
       !(
         history.replaying ||

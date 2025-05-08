@@ -68,6 +68,31 @@
       </div>
     </div>
 
+    <div class="navbar-item">
+      <div class="buttons">
+      <button
+        class="button is-small"
+        :title="t('canundo')"
+        @click="undo"
+        :disabled="!canUndo"
+      >
+        <span class="icon">
+          <font-awesome-icon icon="undo" />
+        </span>
+      </button>
+      <button
+        class="button is-small"
+        :title="t('restore')"
+        @click="redo"
+        :disabled="!canRedo"
+      >
+        <span class="icon">
+          <font-awesome-icon icon="redo" />
+        </span>
+      </button>
+      </div>
+    </div>
+
       <div class="navbar-item">
         <div class="buttons">
           <a
@@ -369,6 +394,12 @@ export default {
     };
   },
   computed: {
+    canUndo(): boolean {
+      return store.state.unredo &&  store.state.unredo.undoCount > 0;
+    },
+    canRedo(): boolean {
+      return store.state.unredo &&  store.state.unredo.redoCount > 0;
+    },
     isZoomed(): boolean {
       return store.state.data.zoom.birthDate.length > 0;
     },
@@ -449,6 +480,13 @@ export default {
     },
   },
   methods: {
+
+    undo() {
+      store.commit("unredo/undo");
+    },
+    redo() {
+      store.commit("unredo/redo");
+    },
     closeOnEsc(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         this.showEventDialogue = false;
