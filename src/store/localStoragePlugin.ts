@@ -14,6 +14,7 @@ import { initSessionState } from "./sessionModule";
 const STORAGE_DATA = "eb_zeitbalken";
 const STORAGE_STNG = "eb_settings";
 const UNREDO_MODULE = "unredo";
+const UNALLOWED_MUTATIONS = ["data/addZoom"]; // Array, which mutations should not be added to the undo history
 
 export interface IUnReDoState {
   undoCount: number;
@@ -118,14 +119,75 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         state.undoCount = history.done.length;
         state.redoCount = 0;
       },
+      saveUndoZoomState(state: IUnReDoState) {
+        // Save undo history for when the user zooms
+        const undoZoomRestore = {
+          timestamp: Date.now(),
+          done: [...history.done],
+          undone: [...history.undone],
+          initialData: history.initialData,
+          initialSettings: history.initialSettings,
+          undoCount: state.undoCount,
+          redoCount: state.redoCount,
+        };
+      
+        sessionStorage.setItem("undoZoomRestore", JSON.stringify(undoZoomRestore));
+      },
+      setUndoRedoCounts(state: IUnReDoState, payload: { undoCount: number, redoCount: number }) {
+        // Allow seeting of undo and redo counts for when the user zoom
+        state.undoCount = payload.undoCount;
+        state.redoCount = payload.redoCount;
+      }
+    },
+    actions: {
+      saveUndoZoomState({ commit, rootState }) {
+        // Call correct mutation in order to save the undo history to local Storage
+        commit("saveUndoZoomState", rootState);
+      },
     },
   });
+
+  // Code for keeping Undo history after zoom
+  const restore = sessionStorage.getItem("undoZoomRestore");
+  let restoreData: any = null;
+
+  if (restore) {
+    try {
+      restoreData = JSON.parse(restore);
+    } catch (e) {
+      console.warn("Failed to parse undoZoomRestore", e);
+    }
+  }
+
+  console.log(restore);
+
+  // check if undo historie from zoom should be loadded
+  const isZoomReload =
+    restoreData && 
+    typeof restoreData.timestamp === "number" &&
+    Date.now() - restoreData.timestamp < 3000;
+
+  if (isZoomReload) {
+    // Set Data from zoom Store
+    history.done = restoreData.done ?? [];
+    history.undone = restoreData.undone ?? [];
+    history.initialData = restoreData.initialData ?? history.initialData;
+    history.initialSettings = restoreData.initialSettings ?? history.initialSettings;
+    const undoCount = restoreData.undoCount ?? 0;
+    const redoCount = restoreData.redoCount ?? 0;
+
+    store.commit(`${UNREDO_MODULE}/setUndoRedoCounts`, { undoCount, redoCount }); // Set undo and redo count
+    sessionStorage.removeItem("undoZoomRestore"); // Remove Zoom history from local Storage
+  }
+  else {
+    sessionStorage.removeItem("undoZoomRestore"); // Remove Zoom history from local Storage
+  }
 
   // track mutation in undo history
   store.subscribe((mutation) => {
     console.log("track changes")
     console.log(mutation)
-    if (!mutation.type.startsWith(UNREDO_MODULE)) {
+    if (!mutation.type.startsWith(UNREDO_MODULE) && !UNALLOWED_MUTATIONS.includes(mutation.type)) {
       if (!history.replaying) {
         history.done.push(mutation);
         store.commit(UNREDO_MODULE + "/usermutation");

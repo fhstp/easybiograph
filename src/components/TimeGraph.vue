@@ -480,7 +480,6 @@ export default {
     },
   },
   methods: {
-
     undo() {
       store.commit("unredo/undo");
     },
@@ -555,7 +554,9 @@ export default {
       console.log("Zoom moved 10% to the right");
     },
     toggleZoomMode() {
-      this.zoomMode = !this.zoomMode;
+      store.dispatch("unredo/saveUndoZoomState").then(() => {
+        this.zoomMode = !this.zoomMode;
+      });
     },
     toggleBurgerMenu() {
       this.burgerMenuActive = !this.burgerMenuActive;
@@ -610,7 +611,9 @@ export default {
       console.log("Zoom commited - original");
 
       // @ts-ignore
-      this.$router.go(0);
+      store.dispatch("unredo/saveUndoZoomState").then(() => {
+        this.$router.go(0);
+      });
     },
 
     showAddEventDialogue() {
