@@ -77,7 +77,7 @@ export default {
     addDimension() {
       const newDim = initDimension();
       newDim.title = this.newDimDetails.title;
-      newDim.position = 0;
+      //newDim.position = 0;
       newDim.visible = true;
       store.commit("data/addDimension", newDim);
 //      this.updateDimensionList();
@@ -99,6 +99,7 @@ export default {
     },
 
     moveUp(index) {
+      console.log("moveup", index);
       if (index > 0) {
         const dimensionOne = this.Dimension[index];
         const dimensionTwo = this.Dimension[index - 1];
@@ -112,9 +113,12 @@ export default {
     },
 
     moveDown(index) {
+      console.log("movedown", index);
       if (index < this.Dimension.length) {
         const dimensionOne = this.Dimension[index];
         const dimensionTwo = this.Dimension[index + 1];
+        console.log(dimensionOne);
+        console.log(dimensionTwo);
 
         store.commit("data/switchDimensions", {
           dimensionOne,

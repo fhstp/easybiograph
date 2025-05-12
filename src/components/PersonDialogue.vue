@@ -185,8 +185,14 @@ export default {
       //@ts-ignore
       this.creationYear = this.newPersonDetails.creationDate;
 
+      console.log("Persons");
+      console.log(store.state.data.person);
+      console.log(this.newPersonDetails);
+
       //@ts-ignore
-      store.commit("data/addPerson", this.newPersonDetails);
+      if (!this.deepEqual(store.state.data.person, this.newPersonDetails)) {
+        store.commit("data/addPerson", this.newPersonDetails);
+      }
 
       const temporaryZoom = {
         birthDate: "",
@@ -196,8 +202,13 @@ export default {
       store.commit("data/addZoom", temporaryZoom);
 
       //@ts-ignore
-      this.$router.go(0);
+      // store.dispatch("unredo/saveUndoState").then(() => {
+      //   //this.$router.go(0);
+      // });
       this.close();
+    },
+    deepEqual(a: object, b: object) {
+      return JSON.stringify(a) === JSON.stringify(b);
     },
     updateDimensionList() {
       const dimensions = store.state.data.dimensions;
@@ -235,7 +246,9 @@ export default {
       // store.commit("data/addTimeline", this.personYears);
       //store.commit("data/addDimensions");
       //@ts-ignore
-      this.$router.go(0);
+      store.dispatch("unredo/saveUndoState").then(() => {
+        this.$router.go(0);
+      });
       //@ts-ignore
       this.$emit("close");
     },

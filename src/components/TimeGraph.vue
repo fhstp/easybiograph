@@ -554,7 +554,7 @@ export default {
       console.log("Zoom moved 10% to the right");
     },
     toggleZoomMode() {
-      store.dispatch("unredo/saveUndoZoomState").then(() => {
+      store.dispatch("unredo/saveUndoState").then(() => {
         this.zoomMode = !this.zoomMode;
       });
     },
@@ -611,7 +611,7 @@ export default {
       console.log("Zoom commited - original");
 
       // @ts-ignore
-      store.dispatch("unredo/saveUndoZoomState").then(() => {
+      store.dispatch("unredo/saveUndoState").then(() => {
         this.$router.go(0);
       });
     },

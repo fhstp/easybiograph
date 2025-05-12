@@ -22,8 +22,6 @@ export interface IUnReDoState {
 }
 
 export function loadZeitbalkenFromStore(): string {
-
-  console.log("loadZeitbalkenFromStore");
   const storedZeitbalken = localStorage.getItem(STORAGE_DATA);
   if (storedZeitbalken != null && storedZeitbalken != "undefined") {
     return storedZeitbalken;
@@ -33,7 +31,6 @@ export function loadZeitbalkenFromStore(): string {
 }
 
 export function loadSettingsFromStore(): string {
-  console.log("loadSettingsFromStore");
   const storedSettings = localStorage.getItem(STORAGE_STNG);
   if (storedSettings != null && storedSettings != "undefined") {
     return storedSettings;
@@ -52,10 +49,6 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
     replaying: false,
   };
 
-  console.log("localstoreage plugin");
-  console.log(history.initialData)
-  console.log(history.initialSettings)
-
   store.registerModule(UNREDO_MODULE, {
     namespaced: true,
     state: {
@@ -73,9 +66,8 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
           history.undone.push(last);
           state.redoCount++;
         }
-        console.log("last")
-        console.log(history.initialSettings)
-        console.log(store.state.settings)
+        console.log("undo")
+        console.log(store.state.data)
 
         // make subscribers aware that we are replaying
         history.replaying = true;
@@ -88,6 +80,7 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         // replay all mutations (but last)
         for (const c of history.done) {
           console.log("replaying")
+          console.log(c.type, c.payload);
           store.commit(c.type, c.payload);
         }
 
@@ -102,6 +95,8 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         if (state.redoCount == 0) {
           history.undone = [];
         }
+        console.log("redo")
+        console.log(store.state.data)
 
         // simply commit most recently undone mutation
         const last = history.undone.pop();
@@ -119,9 +114,9 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         state.undoCount = history.done.length;
         state.redoCount = 0;
       },
-      saveUndoZoomState(state: IUnReDoState) {
+      saveUndoState(state: IUnReDoState) {
         // Save undo history for when the user zooms
-        const undoZoomRestore = {
+        const undoRestore = {
           timestamp: Date.now(),
           done: [...history.done],
           undone: [...history.undone],
@@ -131,7 +126,7 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
           redoCount: state.redoCount,
         };
       
-        sessionStorage.setItem("undoZoomRestore", JSON.stringify(undoZoomRestore));
+        sessionStorage.setItem("undoRestore", JSON.stringify(undoRestore));
       },
       setUndoRedoCounts(state: IUnReDoState, payload: { undoCount: number, redoCount: number }) {
         // Allow seeting of undo and redo counts for when the user zoom
@@ -140,34 +135,34 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
       }
     },
     actions: {
-      saveUndoZoomState({ commit, rootState }) {
+      saveUndoState({ commit, rootState }) {
         // Call correct mutation in order to save the undo history to local Storage
-        commit("saveUndoZoomState", rootState);
+        commit("saveUndoState", rootState);
       },
     },
   });
 
   // Code for keeping Undo history after zoom
-  const restore = sessionStorage.getItem("undoZoomRestore");
+  const restore = sessionStorage.getItem("undoRestore");
   let restoreData: any = null;
 
   if (restore) {
     try {
       restoreData = JSON.parse(restore);
     } catch (e) {
-      console.warn("Failed to parse undoZoomRestore", e);
+      console.warn("Failed to parse undoRestore", e);
     }
   }
 
   console.log(restore);
 
   // check if undo historie from zoom should be loadded
-  const isZoomReload =
+  const isUndoReload =
     restoreData && 
     typeof restoreData.timestamp === "number" &&
-    Date.now() - restoreData.timestamp < 3000;
+    Date.now() - restoreData.timestamp < 5000;
 
-  if (isZoomReload) {
+  if (isUndoReload) {
     // Set Data from zoom Store
     history.done = restoreData.done ?? [];
     history.undone = restoreData.undone ?? [];
@@ -177,20 +172,22 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
     const redoCount = restoreData.redoCount ?? 0;
 
     store.commit(`${UNREDO_MODULE}/setUndoRedoCounts`, { undoCount, redoCount }); // Set undo and redo count
-    sessionStorage.removeItem("undoZoomRestore"); // Remove Zoom history from local Storage
+    sessionStorage.removeItem("undoRestore"); // Remove Zoom history from local Storage
   }
   else {
-    sessionStorage.removeItem("undoZoomRestore"); // Remove Zoom history from local Storage
+    sessionStorage.removeItem("undoRestore"); // Remove Zoom history from local Storage
   }
 
   // track mutation in undo history
   store.subscribe((mutation) => {
-    console.log("track changes")
-    console.log(mutation)
     if (!mutation.type.startsWith(UNREDO_MODULE) && !UNALLOWED_MUTATIONS.includes(mutation.type)) {
       if (!history.replaying) {
         history.done.push(mutation);
         store.commit(UNREDO_MODULE + "/usermutation");
+
+        console.log("history");
+        console.log(mutation);
+        console.log(history);
       }
     }
   });
@@ -199,9 +196,6 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
   store.subscribe((mutation, stateAfter: IStoreState) => {
     // skip replayed mutations, but persist after undo mutation itself
     // skip internal update counts mutation
-    console.log("persis changes")
-    console.log(mutation)
-    console.log(stateAfter)
 
     if (
       !(
