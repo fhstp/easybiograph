@@ -72,7 +72,7 @@
       <div class="buttons">
       <button
         class="button is-small"
-        :title="t('canundo')"
+        :title="t('undoTooltip')"
         @click="undo"
         :disabled="!canUndo"
       >
@@ -82,7 +82,7 @@
       </button>
       <button
         class="button is-small"
-        :title="t('restore')"
+        :title="t('redoTooltip')"
         @click="redo"
         :disabled="!canRedo"
       >

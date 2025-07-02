@@ -1,6 +1,8 @@
 export default {
   //TimeGraph: {
   createevent: "Create event",
+  undoTooltip: "Undo last action",
+  redoTooltip: "Redo last action",
   resetzoom: "Reset zoom",
   totheleft: "Move 10% to the left",
   totheright: "Move 10% to the right",
