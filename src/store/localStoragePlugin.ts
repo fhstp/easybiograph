@@ -15,7 +15,7 @@ const STORAGE_DATA = "eb_zeitbalken";
 const STORAGE_STNG = "eb_settings";
 const UNREDO_MODULE = "unredo";
 const UNALLOWED_MUTATIONS = ["data/addZoom"]; // Array, which mutations should not be added to the undo history
-const SESSION_STORAGE_KEY = "undoRestore";
+const UNDO_STORAGE_KEY = "undoRestore";
 
 export interface IUnReDoState {
   undoCount: number;
@@ -127,7 +127,7 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
           redoCount: state.redoCount,
         };
       
-        sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(undoRestore));
+        sessionStorage.setItem(UNDO_STORAGE_KEY, JSON.stringify(undoRestore));
       },
       setUndoRedoCounts(state: IUnReDoState, payload: { undoCount: number, redoCount: number }) {
         // Allow seeting of undo and redo counts for when the user zoom
@@ -144,7 +144,7 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
   });
 
   // Code for keeping Undo history after zoom
-  const restore = sessionStorage.getItem(SESSION_STORAGE_KEY);
+  const restore = sessionStorage.getItem(UNDO_STORAGE_KEY);
   let restoreData: any = null;
 
   if (restore) {
@@ -173,10 +173,10 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
     const redoCount = restoreData.redoCount ?? 0;
 
     store.commit(`${UNREDO_MODULE}/setUndoRedoCounts`, { undoCount, redoCount }); // Set undo and redo count
-    sessionStorage.removeItem(SESSION_STORAGE_KEY); // Remove Zoom history from local Storage
+    sessionStorage.removeItem(UNDO_STORAGE_KEY); // Remove Zoom history from local Storage
   }
   else {
-    sessionStorage.removeItem(SESSION_STORAGE_KEY); // Remove Zoom history from local Storage
+    sessionStorage.removeItem(UNDO_STORAGE_KEY); // Remove Zoom history from local Storage
   }
 
   // track mutation in undo history
