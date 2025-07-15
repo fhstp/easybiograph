@@ -68,6 +68,31 @@
       </div>
     </div>
 
+    <div class="navbar-item">
+      <div class="buttons">
+      <button
+        class="button is-small"
+        :title="t('undoTooltip')"
+        @click="undo"
+        :disabled="!canUndo"
+      >
+        <span class="icon">
+          <font-awesome-icon icon="undo" />
+        </span>
+      </button>
+      <button
+        class="button is-small"
+        :title="t('redoTooltip')"
+        @click="redo"
+        :disabled="!canRedo"
+      >
+        <span class="icon">
+          <font-awesome-icon icon="redo" />
+        </span>
+      </button>
+      </div>
+    </div>
+
       <div class="navbar-item">
         <div class="buttons">
           <a
@@ -369,6 +394,12 @@ export default {
     };
   },
   computed: {
+    canUndo(): boolean {
+      return store.state.unredo &&  store.state.unredo.undoCount > 0;
+    },
+    canRedo(): boolean {
+      return store.state.unredo &&  store.state.unredo.redoCount > 0;
+    },
     isZoomed(): boolean {
       return store.state.data.zoom.birthDate.length > 0;
     },
@@ -449,6 +480,12 @@ export default {
     },
   },
   methods: {
+    undo() {
+      store.commit("unredo/undo");
+    },
+    redo() {
+      store.commit("unredo/redo");
+    },
     closeOnEsc(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         this.showEventDialogue = false;
@@ -517,7 +554,9 @@ export default {
       console.log("Zoom moved 10% to the right");
     },
     toggleZoomMode() {
-      this.zoomMode = !this.zoomMode;
+      store.dispatch("unredo/saveUndoState").then(() => {
+        this.zoomMode = !this.zoomMode;
+      });
     },
     toggleBurgerMenu() {
       this.burgerMenuActive = !this.burgerMenuActive;
@@ -572,7 +611,9 @@ export default {
       console.log("Zoom commited - original");
 
       // @ts-ignore
-      this.$router.go(0);
+      store.dispatch("unredo/saveUndoState").then(() => {
+        this.$router.go(0);
+      });
     },
 
     showAddEventDialogue() {

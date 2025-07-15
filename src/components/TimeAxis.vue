@@ -210,8 +210,9 @@ if(store.state.data.zoom.birthDate.length >= 1){
 };
 
 function updateAfterZoom() {
-  // @ts-ignore
-  window.location.reload()
+  store.dispatch("unredo/saveUndoState").then(() => {
+    window.location.reload();
+  });
 };
 
 const calculateDateFromClick = (clickX: number, axisWidth: number): string | null => {

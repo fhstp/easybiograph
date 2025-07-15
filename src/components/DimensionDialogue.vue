@@ -77,7 +77,7 @@ export default {
     addDimension() {
       const newDim = initDimension();
       newDim.title = this.newDimDetails.title;
-      newDim.position = 0;
+      //newDim.position = 0;
       newDim.visible = true;
       store.commit("data/addDimension", newDim);
 //      this.updateDimensionList();

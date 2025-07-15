@@ -137,14 +137,16 @@ const mutations = {
     state: Zeitbalken,
     payload: { dimensionOne: ZBDimension; dimensionTwo: ZBDimension }
   ) {
-    const indexToMoveUp = state.dimensions.indexOf(payload.dimensionOne);
-    const indexToMoveDown = state.dimensions.indexOf(payload.dimensionTwo);
+    const indexToMoveUp = state.dimensions.findIndex(d => d.id === payload.dimensionOne.id);
+    const indexToMoveDown = state.dimensions.findIndex(d => d.id === payload.dimensionTwo.id);
 
     if (indexToMoveUp !== -1 && indexToMoveDown !== -1) {
-      [state.dimensions[indexToMoveUp], state.dimensions[indexToMoveDown]] = [
-        state.dimensions[indexToMoveDown],
-        state.dimensions[indexToMoveUp],
+      const newDimensions = [...state.dimensions];
+      [newDimensions[indexToMoveUp], newDimensions[indexToMoveDown]] = [
+        newDimensions[indexToMoveDown],
+        newDimensions[indexToMoveUp],
       ];
+      state.dimensions = newDimensions;
     }
   },
 

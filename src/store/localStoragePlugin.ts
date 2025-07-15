@@ -14,6 +14,8 @@ import { initSessionState } from "./sessionModule";
 const STORAGE_DATA = "eb_zeitbalken";
 const STORAGE_STNG = "eb_settings";
 const UNREDO_MODULE = "unredo";
+const UNALLOWED_MUTATIONS = ["data/addZoom"]; // Array, which mutations should not be added to the undo history
+const UNDO_STORAGE_KEY = "undoRestore";
 
 export interface IUnReDoState {
   undoCount: number;
@@ -56,8 +58,6 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
     },
     mutations: {
       undo(state: IUnReDoState) {
-        // console.log("undo, done length is " + history.done.length);
-
         // move last mutation to undone list
         const last = history.done.pop();
         if (last) {
@@ -81,8 +81,6 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
 
         // replaying finished (now the undo is a normal mutation)
         history.replaying = false;
-
-        // console.log("ok,   done length is " + history.done.length);
       },
 
       redo(state: IUnReDoState) {
@@ -107,12 +105,71 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         state.undoCount = history.done.length;
         state.redoCount = 0;
       },
+      saveUndoState(state: IUnReDoState) {
+        // Save undo history for when the user zooms
+        const undoRestore = {
+          timestamp: Date.now(),
+          done: [...history.done],
+          undone: [...history.undone],
+          initialData: history.initialData,
+          initialSettings: history.initialSettings,
+          undoCount: state.undoCount,
+          redoCount: state.redoCount,
+        };
+      
+        sessionStorage.setItem(UNDO_STORAGE_KEY, JSON.stringify(undoRestore));
+      },
+      setUndoRedoCounts(state: IUnReDoState, payload: { undoCount: number, redoCount: number }) {
+        // Allow seeting of undo and redo counts for when the user zoom
+        state.undoCount = payload.undoCount;
+        state.redoCount = payload.redoCount;
+      }
+    },
+    actions: {
+      saveUndoState({ commit, rootState }) {
+        // Call correct mutation in order to save the undo history to local Storage
+        commit("saveUndoState", rootState);
+      },
     },
   });
 
+  // Code for keeping Undo history after zoom
+  const restore = sessionStorage.getItem(UNDO_STORAGE_KEY);
+  let restoreData: any = null;
+
+  if (restore) {
+    try {
+      restoreData = JSON.parse(restore);
+    } catch (e) {
+      console.warn("Failed to parse undoRestore", e);
+    }
+  }
+
+  // check if undo historie from zoom should be loadded
+  const isUndoReload =
+    restoreData && 
+    typeof restoreData.timestamp === "number" &&
+    Date.now() - restoreData.timestamp < 5000;
+
+  if (isUndoReload) {
+    // Set Data from zoom Store
+    history.done = restoreData.done ?? [];
+    history.undone = restoreData.undone ?? [];
+    history.initialData = restoreData.initialData ?? history.initialData;
+    history.initialSettings = restoreData.initialSettings ?? history.initialSettings;
+    const undoCount = restoreData.undoCount ?? 0;
+    const redoCount = restoreData.redoCount ?? 0;
+
+    store.commit(`${UNREDO_MODULE}/setUndoRedoCounts`, { undoCount, redoCount }); // Set undo and redo count
+    sessionStorage.removeItem(UNDO_STORAGE_KEY); // Remove Zoom history from local Storage
+  }
+  else {
+    sessionStorage.removeItem(UNDO_STORAGE_KEY); // Remove Zoom history from local Storage
+  }
+
   // track mutation in undo history
   store.subscribe((mutation) => {
-    if (!mutation.type.startsWith(UNREDO_MODULE)) {
+    if (!mutation.type.startsWith(UNREDO_MODULE) && !UNALLOWED_MUTATIONS.includes(mutation.type)) {
       if (!history.replaying) {
         history.done.push(mutation);
         store.commit(UNREDO_MODULE + "/usermutation");
@@ -124,6 +181,7 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
   store.subscribe((mutation, stateAfter: IStoreState) => {
     // skip replayed mutations, but persist after undo mutation itself
     // skip internal update counts mutation
+
     if (
       !(
         history.replaying ||
