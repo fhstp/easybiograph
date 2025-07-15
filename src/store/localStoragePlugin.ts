@@ -58,8 +58,6 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
     },
     mutations: {
       undo(state: IUnReDoState) {
-        // console.log("undo, done length is " + history.done.length);
-
         // move last mutation to undone list
         const last = history.done.pop();
         if (last) {
@@ -67,8 +65,6 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
           history.undone.push(last);
           state.redoCount++;
         }
-        console.log("undo")
-        console.log(store.state.data)
 
         // make subscribers aware that we are replaying
         history.replaying = true;
@@ -80,15 +76,11 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
 
         // replay all mutations (but last)
         for (const c of history.done) {
-          console.log("replaying")
-          console.log(c.type, c.payload);
           store.commit(c.type, c.payload);
         }
 
         // replaying finished (now the undo is a normal mutation)
         history.replaying = false;
-
-        // console.log("ok,   done length is " + history.done.length);
       },
 
       redo(state: IUnReDoState) {
@@ -96,8 +88,6 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
         if (state.redoCount == 0) {
           history.undone = [];
         }
-        console.log("redo")
-        console.log(store.state.data)
 
         // simply commit most recently undone mutation
         const last = history.undone.pop();
@@ -155,8 +145,6 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
     }
   }
 
-  console.log(restore);
-
   // check if undo historie from zoom should be loadded
   const isUndoReload =
     restoreData && 
@@ -185,10 +173,6 @@ export const localStoragePlugin = (store: Store<IStoreState>): void => {
       if (!history.replaying) {
         history.done.push(mutation);
         store.commit(UNREDO_MODULE + "/usermutation");
-
-        console.log("history");
-        console.log(mutation);
-        console.log(history);
       }
     }
   });

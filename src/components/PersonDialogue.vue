@@ -185,10 +185,6 @@ export default {
       //@ts-ignore
       this.creationYear = this.newPersonDetails.creationDate;
 
-      console.log("Persons");
-      console.log(store.state.data.person);
-      console.log(this.newPersonDetails);
-
       //@ts-ignore
       if (!this.deepEqual(store.state.data.person, this.newPersonDetails)) {
         store.commit("data/addPerson", this.newPersonDetails);
